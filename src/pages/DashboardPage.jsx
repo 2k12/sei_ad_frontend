@@ -23,7 +23,7 @@ const DashboardPage = () => {
             <div className="bg-blue-500 p-4 rounded shadow">
               <h2 className="text-white text-lg">Usuarios</h2>
               <button
-                onClick={() => navigate("/usuarios")}
+                onClick={() => navigate("/users")}
                 className="text-white mt-2 block w-full bg-blue-700 hover:bg-blue-800 py-1 rounded"
               >
                 Ver usuarios
