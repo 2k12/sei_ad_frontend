@@ -5,19 +5,16 @@ import EditUserForm from "../components/EditUserForm";
 import Navbar from "../components/Navbar";
 
 const UsersPage = () => {
-    // const { users, fetchUsers, updateUser, deleteUser, loading, pagination } = useUsers();
-    const { users, fetchUsers, updateUser, loading, pagination } = useUsers();
+    const { users, fetchUsers, updateUser, createUser, loading, pagination } = useUsers();
     const [filters, setFilters] = useState({ name: "", email: "", active: "" });
     const [editingUser, setEditingUser] = useState(null); // Usuario en edición
+    const [addingUser, setAddingUser] = useState(false); // Controla el modal de agregar usuario
+    const [newUser, setNewUser] = useState({ name: "", email: "", password: "", active: true });
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchUsers({ page: pagination.page, pageSize: pagination.limit, ...filters });
     }, [pagination.page, pagination.limit, filters]);
-
-    console.log("--------------------")
-    console.log(users);
-    console.log("--------------------")
 
     const handleFilterChange = (e) => {
         setFilters({ ...filters, [e.target.name]: e.target.value });
@@ -26,10 +23,6 @@ const UsersPage = () => {
     const handleToggleActive = (id, active) => {
         updateUser(id, { active: !active });
     };
-
-    // const handleDelete = (id) => {
-    //     deleteUser(id);
-    // };
 
     const handlePageChange = (newPage) => {
         fetchUsers({ page: newPage, pageSize: pagination.limit, ...filters });
@@ -48,12 +41,23 @@ const UsersPage = () => {
         setEditingUser(null); 
     };
 
+    const handleAddUser = () => {
+        createUser(newUser);
+        setAddingUser(false); // Cierra el modal después de crear el usuario
+        setNewUser({ name: "", email: "", password: "", active: true }); // Reinicia el formulario
+    };
+
+    const handleNewUserChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setNewUser({ ...newUser, [name]: type === "checkbox" ? checked : value });
+    };
+
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-blue-500">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-100">
             <Navbar />
 
             <div className="max-w-7xl mx-auto px-4 py-8">
-                <h1 className="text-3xl font-semibold  text-gray-800 dark:text-white mb-6">Gestión de Usuarios</h1>
+                <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-400 mb-6">Gestión de Usuarios</h1>
 
                 <div className="mb-6 flex gap-4 items-center">
                     <input
@@ -82,6 +86,13 @@ const UsersPage = () => {
                     </select>
                 </div>
 
+                <button
+                    onClick={() => setAddingUser(true)}
+                    className="mb-6 px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 ease-in-out"
+                >
+                    Agregar Usuario
+                </button>
+
                 <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
                     <table className="table-auto w-full text-sm text-gray-600">
                         <thead className="bg-gray-200">
@@ -105,9 +116,7 @@ const UsersPage = () => {
                                         <td className="px-6 py-3">{user.active ? "Activo" : "Inactivo"}</td>
                                         <td className="px-6 py-3">
                                             <button
-                                                onClick={() =>
-                                                    navigate(`/users/${user.id}`, { state: { user } })
-                                                }
+                                                onClick={() => navigate(`/users/${user.id}`, { state: { user } })}
                                                 className="mr-3 px-4 py-2 bg-gray-200 text-green-500 font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
                                             >
                                                 Ver
@@ -147,7 +156,7 @@ const UsersPage = () => {
                     >
                         Anterior
                     </button>
-                    <span className="text-lg text-gray-800 dark:text-white">
+                    <span className="text-lg text-gray-800 dark:text-gray-800">
                         Pagina {pagination.page} de {Math.ceil(pagination.total / pagination.limit)}
                     </span>
                     <button
@@ -167,6 +176,74 @@ const UsersPage = () => {
                                 onSave={handleSaveUser}
                                 onCancel={handleCancelEdit}
                             />
+                        </div>
+                    </div>
+                )}
+
+                {addingUser && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                        <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+                            <h2 className="text-xl font-bold mb-4">Agregar Usuario</h2>
+                            <form onSubmit={(e) => { e.preventDefault(); handleAddUser(); }}>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700">Nombre</label>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={newUser.name}
+                                        onChange={handleNewUserChange}
+                                        className="w-full p-2 border border-gray-300 rounded-lg"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700">Email</label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={newUser.email}
+                                        onChange={handleNewUserChange}
+                                        className="w-full p-2 border border-gray-300 rounded-lg"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700">Contraseña</label>
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        value={newUser.password}
+                                        onChange={handleNewUserChange}
+                                        className="w-full p-2 border border-gray-300 rounded-lg"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4 flex items-center">
+                                    <input
+                                        type="checkbox"
+                                        name="active"
+                                        checked={newUser.active}
+                                        onChange={handleNewUserChange}
+                                        className="mr-2"
+                                    />
+                                    <label className="text-gray-700">Activo</label>
+                                </div>
+                                <div className="flex justify-end">
+                                    <button
+                                        type="button"
+                                        onClick={() => setAddingUser(false)}
+                                        className="mr-4 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                                    >
+                                        Guardar
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 )}
