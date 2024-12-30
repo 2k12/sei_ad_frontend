@@ -71,7 +71,7 @@ const ProfileUserPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-600">
+        <div className="min-h-screen bg-gray-100 dark:bg-black">
             <Navbar />
             <div className="max-w-7xl mx-auto px-4 py-8">
                 <h1 className="text-3xl font-semibold text-gray-900 dark:text-white mb-6">
@@ -80,23 +80,23 @@ const ProfileUserPage = () => {
                 {user ? (
                     <>
                         {/* Información Personal */}
-                        <div className="mb-6 bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
-                            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+                        <div className="mb-6 bg-white dark:dark:bg-black p-6 rounded-lg shadow-md dark:border border-gray-500">
+                            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4 ">
                                 Información Personal
                             </h2>
                             {!editingUserInfo ? (
                                 <div className="space-y-4 text-gray-800">
                                     <div>
                                         <strong className="block text-sm font-medium text-gray-700 dark:text-white">Nombre</strong>
-                                        <p>{userData.name}</p>
+                                        <p className="dark:text-gray-300">{userData.name}</p>
                                     </div>
                                     <div>
                                         <strong className="block text-sm font-medium text-gray-700 dark:text-white">Correo Electrónico</strong>
-                                        <p>{userData.email}</p>
+                                        <p className="dark:text-gray-300">{userData.email}</p>
                                     </div>
                                     <div>
                                         <strong className="block text-sm font-medium text-gray-700 dark:text-white">Estado</strong>
-                                        <p>{userData.active ? "Activo" : "Inactivo"}</p>
+                                        <p className="dark:text-gray-300">{userData.active ? "Activo" : "Inactivo"}</p>
                                     </div>
                                     <button
                                         className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
@@ -150,7 +150,7 @@ const ProfileUserPage = () => {
                         </div>
 
                         {/* Roles */}
-                        <div className="mb-6 bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
+                        <div className="mb-6 bg-white  p-6 rounded-lg shadow-md dark:bg-black dark:border border-gray-500">
                             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Roles</h2>
                             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                                 {roles.length > 0 ? (
@@ -167,7 +167,7 @@ const ProfileUserPage = () => {
                         </div>
 
                         {/* Permisos */}
-                        <div className="mb-6 bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
+                        <div className="mb-6 bg-white p-6 rounded-lg shadow-md dark:bg-black dark:border border-gray-500">
                             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Permisos</h2>
                             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                                 {permissions.length > 0 ? (
