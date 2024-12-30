@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { useUsers } from "../context/UserContext";
 import EditUserForm from "../components/EditUserForm";
 import Navbar from "../components/Navbar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faEye, faExchange } from "@fortawesome/free-solid-svg-icons";
+
 
 const UsersPage = () => {
     const { users, fetchUsers, updateUser, createUser, loading, pagination } = useUsers();
     const [filters, setFilters] = useState({ name: "", email: "", active: "" });
-    const [editingUser, setEditingUser] = useState(null); // Usuario en edición
-    const [addingUser, setAddingUser] = useState(false); // Controla el modal de agregar usuario
+    const [editingUser, setEditingUser] = useState(null);
+    const [addingUser, setAddingUser] = useState(false); 
     const [newUser, setNewUser] = useState({ name: "", email: "", password: "", active: true });
     const navigate = useNavigate();
 
@@ -29,22 +32,22 @@ const UsersPage = () => {
     };
 
     const handleEditUser = (user) => {
-        setEditingUser(user); 
+        setEditingUser(user);
     };
 
     const handleSaveUser = (id, updatedData) => {
-        updateUser(id, updatedData); 
-        setEditingUser(null); 
+        updateUser(id, updatedData);
+        setEditingUser(null);
     };
 
     const handleCancelEdit = () => {
-        setEditingUser(null); 
+        setEditingUser(null);
     };
 
     const handleAddUser = () => {
         createUser(newUser);
-        setAddingUser(false); // Cierra el modal después de crear el usuario
-        setNewUser({ name: "", email: "", password: "", active: true }); // Reinicia el formulario
+        setAddingUser(false); 
+        setNewUser({ name: "", email: "", password: "", active: true }); 
     };
 
     const handleNewUserChange = (e) => {
@@ -57,8 +60,16 @@ const UsersPage = () => {
             <Navbar />
 
             <div className="max-w-7xl mx-auto px-4 py-8">
-                <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-400 mb-6">Gestión de Usuarios</h1>
-
+                {/* <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-400 mb-6">Gestión de Usuarios</h1> */}
+                <div className="mb-6 flex justify-start items-start gap-5">
+                    <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-400">Gestión de Usuarios</h1>
+                    <button
+                        onClick={() => setAddingUser(true)}
+                        className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 ease-in-out"
+                    >
+                        Agregar
+                    </button>
+                </div>
                 <div className="mb-6 flex gap-4 items-center">
                     <input
                         name="name"
@@ -85,13 +96,13 @@ const UsersPage = () => {
                         <option value="false">Inactive</option>
                     </select>
                 </div>
-
+                {/* 
                 <button
                     onClick={() => setAddingUser(true)}
                     className="mb-6 px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 ease-in-out"
                 >
                     Agregar Usuario
-                </button>
+                </button> */}
 
                 <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
                     <table className="table-auto w-full text-sm text-gray-600">
@@ -117,29 +128,31 @@ const UsersPage = () => {
                                         <td className="px-6 py-3">
                                             <button
                                                 onClick={() => navigate(`/users/${user.id}`, { state: { user } })}
-                                                className="mr-3 px-4 py-2 bg-gray-200 text-green-500 font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
+                                                className="mr-3 px-4 py-2 bg-gray-200 text-green-500 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
                                             >
-                                                Ver
+                                                <FontAwesomeIcon icon={faEye} className="mr-2" />
                                             </button>
 
                                             <button
                                                 onClick={() => handleEditUser(user)}
-                                                className="mr-3 px-4 py-2 bg-gray-200 text-blue-500 font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
+                                                className="mr-3 px-4 py-2 bg-gray-200 text-blue-500 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
                                             >
-                                                Editar
+                                                <FontAwesomeIcon icon={faEdit} className="mr-2" />
+
                                             </button>
                                             <button
                                                 onClick={() => handleToggleActive(user.id, user.active)}
-                                                className="mr-3 px-4 py-2 bg-gray-200 text-orange-500 font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
+                                                className="mr-3 px-4 py-2 bg-gray-200 text-orange-500 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
                                             >
-                                                Cambiar Estado
+                                                <FontAwesomeIcon icon={faExchange} className="mr-2" />
+
                                             </button>
-                                            <button
+                                            {/* <button
                                                 // onClick={() => handleToggleActive(user.id, user.active)}
-                                                className="mr-3 px-4 py-2 bg-gray-200 text-red-500 font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
+                                                className="mr-3 px-4 py-2 bg-gray-200 text-red-500 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
                                             >
                                                 Reporte Auditoría
-                                            </button>
+                                            </button> */}
                                         </td>
                                     </tr>
                                 ))
