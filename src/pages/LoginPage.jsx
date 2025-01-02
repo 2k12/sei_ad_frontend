@@ -20,8 +20,8 @@ function LoginPage() {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4 sm:p-8">
             <form className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg dark:bg-gray-800" onSubmit={handleSubmit}>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
-                    Iniciar Sesión
+                <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6 text-center">
+                    Iniciar Sesión SECURITYService
                 </h1>
 
                 <div className="mb-6">
