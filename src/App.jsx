@@ -3,12 +3,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { UserProvider } from './context/UserContext';
+import { PermissionProvider } from './context/PermissionContext';
 import Navbar from './components/Navbar';
 import DashboardPage from './pages/DashboardPage';
 import LoginPage from './pages/LoginPage';
 import UsersPage from './pages/UsersPage';
 import ProfileUserPage from './pages/ProfileUserPage'; 
 import { Navigate } from 'react-router-dom';
+import PermissionsPage from './pages/PermissionsPage'; 
+import PermissionDetailPage from './pages/PermissionDetailPage'; 
 // import Breadcrumbs from './components/Breadcrumbs';
 
 const App = () => {
@@ -21,7 +24,9 @@ const App = () => {
     <Router>
       <AuthProvider>
         <UserProvider>
-          <Layout />
+          <PermissionProvider>
+            <Layout />
+          </PermissionProvider>
         </UserProvider>
       </AuthProvider>
     </Router>
@@ -41,6 +46,8 @@ const Layout = () => {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/users" element={<UsersPage />} />
           <Route path="/users/:userId" element={<ProfileUserPage />} />
+          <Route path="/permissions" element={<PermissionsPage />} />
+          <Route path="/permissions/:permissionId" element={<PermissionDetailPage />} /> 
         </Routes>
       </div>
     </div>
