@@ -1,32 +1,33 @@
-import { useEffect } from 'react';
-import 'react-toastify/dist/ReactToastify.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import { UserProvider } from './context/UserContext';
+import { useEffect } from "react";
+import "react-toastify/dist/ReactToastify.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import { UserProvider } from "./context/UserContext";
+import { RoleProvider } from "./context/RoleContext";
 import { PermissionProvider } from './context/PermissionContext';
-import Navbar from './components/Navbar';
-import DashboardPage from './pages/DashboardPage';
-import LoginPage from './pages/LoginPage';
-import UsersPage from './pages/UsersPage';
+import Navbar from "./components/Navbar";
+import DashboardPage from "./pages/DashboardPage";
+import LoginPage from "./pages/LoginPage";
+import UsersPage from "./pages/UsersPage";
 import ProfileUserPage from './pages/ProfileUserPage'; 
 import { Navigate } from 'react-router-dom';
 import PermissionsPage from './pages/PermissionsPage'; 
 import PermissionDetailPage from './pages/PermissionDetailPage'; 
 // import Breadcrumbs from './components/Breadcrumbs';
+import RolesPage from "./pages/rolesPage";
 
 const App = () => {
-
-
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <Router>
       <AuthProvider>
         <UserProvider>
+        <RoleProvider>
           <PermissionProvider>
             <Layout />
           </PermissionProvider>
+          </RoleProvider>
         </UserProvider>
       </AuthProvider>
     </Router>
@@ -44,10 +45,12 @@ const Layout = () => {
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/users" element={<UsersPage />} />
+          <Route path="/users" element={<UsersPage />} />{" "}
+         
           <Route path="/users/:userId" element={<ProfileUserPage />} />
           <Route path="/permissions" element={<PermissionsPage />} />
           <Route path="/permissions/:permissionId" element={<PermissionDetailPage />} /> 
+          <Route path="/roles" element={<RolesPage />} />
         </Routes>
       </div>
     </div>

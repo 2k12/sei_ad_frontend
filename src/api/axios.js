@@ -28,6 +28,12 @@ export const userApi = {
   updateUser: (id, userData) => axiosInstance.put(`/users/${id}`, userData),
   deleteUser: (id) => axiosInstance.delete(`/users/${id}`),
 };
+export const roleApi = {
+  createRole: (roleData) => axiosInstance.post("/roles", roleData),
+  getRoles: (params) => axiosInstance.get("/roles", { params }),
+  updateRole: (id, roleData) => axiosInstance.put(`/roles/${id}`, roleData),
+  deleteRole: (id) => axiosInstance.delete(`/roles/${id}`),
+};
 
 export const roleUserApi = {
   getRolePermissions: (roleId) => axiosInstance.get(`/roles/${roleId}/permissions`),
