@@ -16,7 +16,7 @@ const Navbar = () => {
     const routes = {
         Dashboard: "/dashboard", // Añadido la ruta para Dashboard
         Usuarios: "/users",
-        // Roles: "/roles",
+        Roles: "/roles",
         // Modulos: "/modules",
         // Permisos: "/permissions",
     };

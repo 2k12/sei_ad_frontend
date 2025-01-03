@@ -1,21 +1,34 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useRoles } from "../context/RoleContext";
 import Navbar from "../components/Navbar";
 import EditRoleForm from "../components/EditRoleForm";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEdit,
+  faPlus,
+  faArrowsRotate,
+} from "@fortawesome/free-solid-svg-icons";
 
 const RolesPage = () => {
   const {
     roles,
     fetchRoles,
     updateRole,
-    deleteRole,
     createRole,
+    updateRoleState,
     loading,
     pagination,
   } = useRoles();
-  const [filters, setFilters] = useState({ name: "" });
-  const [editingRole, setEditingRole] = useState(null); // Rol en edición
-  const [isCreating, setIsCreating] = useState(false); // Estado para abrir el formulario de creación
+  const [filters, setFilters] = useState({ name: "", active: "" });
+  const [editingRole, setEditingRole] = useState(null);
+  const [addingRole, setAddingRole] = useState(false);
+  const [newRole, setNewRole] = useState({
+    name: "",
+    description: "",
+    active: true,
+  });
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchRoles({
@@ -42,29 +55,43 @@ const RolesPage = () => {
     setEditingRole(null);
   };
 
-  const handleDelete = (id) => {
-    deleteRole(id);
+  const handleAddRole = () => {
+    createRole(newRole);
+    setAddingRole(false);
+    setNewRole({ name: "", description: "", active: true });
+  };
+
+  const handleNewRoleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setNewRole({ ...newRole, [name]: type === "checkbox" ? checked : value });
+  };
+
+  const handleToggleActive = (id, active) => {
+    updateRoleState(id, !active); // Invierte el estado actual y lo actualiza
   };
 
   const handlePageChange = (newPage) => {
     fetchRoles({ page: newPage, pageSize: pagination.limit, ...filters });
   };
 
-  const handleCreateRole = (newRole) => {
-    createRole(newRole); // Llama a la función para crear el rol
-    setIsCreating(false); // Cierra el modal
-  };
-
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-blue-500">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-100">
       <Navbar />
-
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-semibold text-white mb-6">
-          Gestión de Roles
-        </h1>
+        <div className="mb-6 flex justify-between items-center">
+          <h1 className="text-3xl font-semibold text-gray-800">
+            Gestión de Roles
+          </h1>
+          <button
+            onClick={() => setAddingRole(true)}
+            className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition"
+          >
+            <FontAwesomeIcon icon={faPlus} className="mr-2" />
+            Agregar Rol
+          </button>
+        </div>
 
-        {/* Filtros y Botón para Crear */}
+        {/* Filtros */}
         <div className="mb-6 flex gap-4 items-center">
           <input
             name="name"
@@ -73,12 +100,16 @@ const RolesPage = () => {
             placeholder="Buscar por nombre"
             className="w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400"
           />
-          <button
-            onClick={() => setIsCreating(true)}
-            className="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600 transition"
+          <select
+            name="active"
+            value={filters.active}
+            onChange={handleFilterChange}
+            className="w-full md:w-48 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400"
           >
-            Crear Rol
-          </button>
+            <option value="">Todos</option>
+            <option value="true">Activos</option>
+            <option value="false">Inactivos</option>
+          </select>
         </div>
 
         {/* Tabla */}
@@ -87,8 +118,8 @@ const RolesPage = () => {
             <thead className="bg-gray-200">
               <tr>
                 <th className="px-6 py-3 text-left">Nombre del Rol</th>
+                <th className="px-6 py-3 text-left">Descripción</th>
                 <th className="px-6 py-3 text-left">Estado</th>
-                {/* Nueva columna */}
                 <th className="px-6 py-3 text-left">Acciones</th>
               </tr>
             </thead>
@@ -103,6 +134,7 @@ const RolesPage = () => {
                 roles.map((role) => (
                   <tr key={role.id} className="hover:bg-gray-100">
                     <td className="px-6 py-3">{role.name}</td>
+                    <td className="px-6 py-3">{role.description}</td>
                     <td className="px-6 py-3">
                       {role.active ? (
                         <span className="px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs font-bold">
@@ -114,19 +146,30 @@ const RolesPage = () => {
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-3">
+                    <td className="px-6 py-3 flex items-center gap-2">
                       <button
                         onClick={() => handleEditRole(role)}
-                        className="mr-3 px-4 py-2 bg-gray-500 text-blue-500 font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
+                        className="px-3 py-2 bg-gray-200 text-blue-500 rounded-lg hover:bg-gray-400 transition"
+                        title={"Editar Rol"} 
                       >
-                        Editar
+                        <FontAwesomeIcon icon={faEdit} className="mr-0" />
                       </button>
                       <button
-                        onClick={() => handleDelete(role.id)}
-                        className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-400 transition duration-200 ease-in-out"
+                        onClick={() => handleToggleActive(role.id, role.active)}
+                        className="px-3 py-2 bg-gray-200 text-orange-400 rounded-lg hover:bg-gray-400 transition"
+                        title={role.active ? "Desactivar Rol" : "Activar Rol"}
                       >
-                        Eliminar
+                        <FontAwesomeIcon
+                          icon={faArrowsRotate}
+                          className="mr-0"
+                        />
                       </button>
+                      {/* <button
+                        onClick={() => handleDelete(role.id)}
+                        className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                      >
+                        <FontAwesomeIcon icon={faTrash} className="mr-0" />
+                      </button> */}
                     </td>
                   </tr>
                 ))
@@ -173,52 +216,47 @@ const RolesPage = () => {
         )}
 
         {/* Formulario de creación */}
-        {isCreating && (
+        {addingRole && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+              <h2 className="text-xl font-bold mb-4">Agregar Rol</h2>
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  const name = e.target.name.value;
-                  const description = e.target.description.value;
-                  handleCreateRole({ name, description });
+                  handleAddRole();
                 }}
               >
-                <h2 className="text-black text-lg font-bold mb-4">
-                  Crear Nuevo Rol
-                </h2>
                 <div className="mb-4">
-                  <label className="block text-sm font-bold mb-2 text-gray-400">
-                    Nombre del Rol
-                  </label>
+                  <label className="block text-gray-700">Nombre</label>
                   <input
                     type="text"
                     name="name"
-                    className="border p-2 rounded w-full text-gray-400"
+                    value={newRole.name}
+                    onChange={handleNewRoleChange}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
                     required
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-bold mb-2 text-gray-400">
-                    Descripción
-                  </label>
+                  <label className="block text-gray-700">Descripción</label>
                   <textarea
                     name="description"
-                    className="border p-2 rounded w-full text-gray-400"
-                    rows="3"
+                    value={newRole.description}
+                    onChange={handleNewRoleChange}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
                   />
                 </div>
-                <div className="flex justify-end gap-2">
+                <div className="flex justify-end">
                   <button
                     type="button"
-                    onClick={() => setIsCreating(false)}
-                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded"
+                    onClick={() => setAddingRole(false)}
+                    className="mr-4 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
-                    className="bg-green-500 text-white px-4 py-2 rounded"
+                    className="px-4 py-2 bg-green-500 text-white rounded-lg"
                   >
                     Guardar
                   </button>

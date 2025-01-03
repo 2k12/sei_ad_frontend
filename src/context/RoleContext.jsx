@@ -35,7 +35,6 @@ export const RoleProvider = ({ children }) => {
     }
   };
 
-  // Crear un nuevo rol
   const createRole = async (roleData) => {
     try {
       const { data } = await roleApi.createRole(roleData);
@@ -58,6 +57,18 @@ export const RoleProvider = ({ children }) => {
     }
   };
 
+  // Nueva función para actualizar solo el estado del rol
+  const updateRoleState = async (id, active) => {
+    try {
+      await roleApi.updateRoleState(id, { active });
+      toast.success("Estado del rol actualizado correctamente.");
+      await fetchRoles();
+    } catch (error) {
+      console.error("Error updating role state:", error);
+      toast.error("Error al actualizar el estado del rol.");
+    }
+  };
+
   const deleteRole = async (id) => {
     try {
       await roleApi.deleteRole(id);
@@ -76,6 +87,7 @@ export const RoleProvider = ({ children }) => {
         createRole,
         fetchRoles,
         updateRole,
+        updateRoleState,
         deleteRole,
         loading,
         pagination,
