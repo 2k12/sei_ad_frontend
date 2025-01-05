@@ -51,4 +51,13 @@ export const permissionApi = {
   deletePermission: (id) => axiosInstance.delete(`/permissions/${id}`),
 };
 
+export const role_UserApi = {
+  getUserRoles: (userId) => axiosInstance.get(`/users/${userId}/roles`),
+  assignRoleToUser: (userId, roleId) =>
+    axiosInstance.post(`/users/${userId}/roles`, { role_id: roleId }),
+  removeRoleFromUser: (userId, roleId) =>
+    axiosInstance.delete(`/users/${userId}/roles/${roleId}`),
+  getRoles: (params) => axiosInstance.get("/roles", { params }),
+};
+
 export default axiosInstance;
