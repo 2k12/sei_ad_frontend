@@ -258,6 +258,30 @@ const RolesPage = () => {
           </table>
         </div>
 
+        {/* Paginación */}
+        <div className="mt-6 flex justify-between items-center">
+          <button
+            disabled={pagination.page === 1}
+            onClick={() => handlePageChange(pagination.page - 1)}
+            className="bg-gray-300 p-2 rounded-md disabled:opacity-50 text-gray-700"
+          >
+            Anterior
+          </button>
+          <span className="text-lg">
+            Página {pagination.page} de{" "}
+            {Math.ceil(pagination.total / pagination.limit)}
+          </span>
+          <button
+            disabled={
+              pagination.page === Math.ceil(pagination.total / pagination.limit)
+            }
+            onClick={() => handlePageChange(pagination.page + 1)}
+            className="bg-gray-300 p-2 rounded-md disabled:opacity-50 text-gray-700"
+          >
+            Siguiente
+          </button>
+        </div>
+
         {/* Modales */}
         {assigningPermissions && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
