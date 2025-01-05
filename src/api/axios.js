@@ -32,7 +32,8 @@ export const roleApi = {
   createRole: (roleData) => axiosInstance.post("/roles", roleData),
   getRoles: (params) => axiosInstance.get("/roles", { params }),
   updateRole: (id, roleData) => axiosInstance.put(`/roles/${id}`, roleData),
-  deleteRole: (id) => axiosInstance.delete(`/roles/${id}`),
+  // deleteRole: (id) => axiosInstance.delete(`/roles/${id}`),
+  updateRoleState: (id, stateData) => axiosInstance.put(`/roles/${id}/state`, stateData),
 };
 
 export const roleUserApi = {
