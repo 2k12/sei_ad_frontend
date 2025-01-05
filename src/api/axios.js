@@ -30,10 +30,15 @@ export const userApi = {
 };
 
 export const permissionApi = {
-  getPermissions: () => axiosInstance.get("/permissions"),
+  getPermissions: (page = 1, limit = 10) => axiosInstance.get(`/permissions?page=${page}&limit=${limit}`),
   createPermission: (permissionData) => axiosInstance.post("/permissions", permissionData),
   updatePermission: (id, permissionData) => axiosInstance.put(`/permissions/${id}`, permissionData),
   deletePermission: (id) => axiosInstance.delete(`/permissions/${id}`),
+  getPermissionById: (id) => axiosInstance.get(`/permissions/${id}`), // Nueva función
 };
+
+//export const moduleApi = {
+//  getModules: () => axiosInstance.get("/modules"),
+//};
 
 export default axiosInstance;
