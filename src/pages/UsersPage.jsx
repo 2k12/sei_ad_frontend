@@ -9,7 +9,7 @@ import { faEdit, faEye, faExchange } from "@fortawesome/free-solid-svg-icons";
 
 const UsersPage = () => {
     const { users, fetchUsers, updateUser, createUser, loading, pagination } = useUsers();
-    const [filters, setFilters] = useState({ name: "", email: "", active: "" });
+    const [filters, setFilters] = useState({email: "", active: "" });
     const [editingUser, setEditingUser] = useState(null);
     const [addingUser, setAddingUser] = useState(false); 
     const [newUser, setNewUser] = useState({ name: "", email: "", password: "", active: true });
@@ -71,18 +71,18 @@ const UsersPage = () => {
                     </button>
                 </div>
                 <div className="mb-6 flex gap-4 items-center">
-                    <input
+                    {/* <input
                         name="name"
                         value={filters.name}
                         onChange={handleFilterChange}
                         placeholder="Search by name"
                         className="w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400"
-                    />
+                    /> */}
                     <input
                         name="email"
                         value={filters.email}
                         onChange={handleFilterChange}
-                        placeholder="Search by email"
+                        placeholder="Buscar por correo electrónico"
                         className="w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400"
                     />
                     <select
@@ -91,9 +91,9 @@ const UsersPage = () => {
                         onChange={handleFilterChange}
                         className="w-full md:w-48 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400"
                     >
-                        <option value="">All</option>
-                        <option value="true">Active</option>
-                        <option value="false">Inactive</option>
+                        <option value="">Todo</option>
+                        <option value="true">Activo</option>
+                        <option value="false">Inactivo</option>
                     </select>
                 </div>
                 {/* 
