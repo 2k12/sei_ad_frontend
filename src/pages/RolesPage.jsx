@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { useRoles } from "../context/RoleContext";
 import Navbar from "../components/Navbar";
 import EditRoleForm from "../components/EditRoleForm";
-import { roleUserApi } from "../api/axios"; // API para roles y permisos
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEdit,
   faPlus,
   faArrowsRotate,
 } from "@fortawesome/free-solid-svg-icons";
+import { roleUserApi } from "../api/axios"; // API para roles y permisos
 
 const RolesPage = () => {
   const {
@@ -21,6 +21,10 @@ const RolesPage = () => {
     loading,
     pagination,
   } = useRoles();
+
+  const navigate = useNavigate();
+
+  // Estados
   const [filters, setFilters] = useState({ name: "", active: "" });
   const [editingRole, setEditingRole] = useState(null);
   const [addingRole, setAddingRole] = useState(false);
@@ -29,9 +33,6 @@ const RolesPage = () => {
     description: "",
     active: true,
   });
-  const navigate = useNavigate();
-
-  const [isCreating, setIsCreating] = useState(false);
   const [assigningPermissions, setAssigningPermissions] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
   const [permissions, setPermissions] = useState([]);
@@ -41,6 +42,7 @@ const RolesPage = () => {
   const [confirmChanges, setConfirmChanges] = useState(false);
   const [changes, setChanges] = useState({ toAdd: [], toRemove: [] });
 
+  // Hooks
   useEffect(() => {
     fetchRoles({
       page: pagination.page,
@@ -66,9 +68,7 @@ const RolesPage = () => {
 
           const grouped = response.data.permissions.reduce((acc, perm) => {
             const moduleName = perm.module?.name || "Sin Módulo";
-            if (!acc[moduleName]) {
-              acc[moduleName] = [];
-            }
+            if (!acc[moduleName]) acc[moduleName] = [];
             acc[moduleName].push(perm);
             return acc;
           }, {});
@@ -81,13 +81,10 @@ const RolesPage = () => {
     }
   }, [assigningPermissions, selectedRole]);
 
-  const handleFilterChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
-  };
+  // Handlers
+  const handleFilterChange = (e) => setFilters({ ...filters, [e.target.name]: e.target.value });
 
-  const handleEditRole = (role) => {
-    setEditingRole(role);
-  };
+  const handleEditRole = (role) => setEditingRole(role);
 
   const handleAssignPermissions = (role) => {
     setSelectedRole(role);
@@ -95,21 +92,17 @@ const RolesPage = () => {
   };
 
   const handlePermissionChange = (permissionId) => {
-    if (selectedPermissions.includes(permissionId)) {
-      setSelectedPermissions(selectedPermissions.filter((id) => id !== permissionId));
-    } else {
-      setSelectedPermissions([...selectedPermissions, permissionId]);
-    }
+    setSelectedPermissions((prev) =>
+      prev.includes(permissionId)
+        ? prev.filter((id) => id !== permissionId)
+        : [...prev, permissionId]
+    );
   };
 
   const handleSavePermissions = () => {
     const currentPermissionIds = permissions.map((perm) => perm.id);
-    const toAdd = selectedPermissions.filter(
-      (id) => !currentPermissionIds.includes(id)
-    );
-    const toRemove = currentPermissionIds.filter(
-      (id) => !selectedPermissions.includes(id)
-    );
+    const toAdd = selectedPermissions.filter((id) => !currentPermissionIds.includes(id));
+    const toRemove = currentPermissionIds.filter((id) => !selectedPermissions.includes(id));
 
     setChanges({ toAdd, toRemove });
     setConfirmChanges(true);
@@ -144,9 +137,7 @@ const RolesPage = () => {
     setEditingRole(null);
   };
 
-  const handleCancelEdit = () => {
-    setEditingRole(null);
-  };
+  const handleCancelEdit = () => setEditingRole(null);
 
   const handleAddRole = () => {
     createRole(newRole);
@@ -159,29 +150,14 @@ const RolesPage = () => {
     setNewRole({ ...newRole, [name]: type === "checkbox" ? checked : value });
   };
 
-  const handleToggleActive = (id, active) => {
-    updateRoleState(id, !active); // Invierte el estado actual y lo actualiza
-  };
+  const handleToggleActive = (id, active) => updateRoleState(id, !active);
 
-  const handlePageChange = (newPage) => {
-    fetchRoles({ page: newPage, pageSize: pagination.limit, ...filters });
-  };
+  const handlePageChange = (newPage) => fetchRoles({ page: newPage, pageSize: pagination.limit, ...filters });
 
-  const handleCreateRole = (newRole) => {
-    createRole(newRole);
-    setIsCreating(false);
-  };
-
-  const moduleColors = [
-    "bg-red-500",
-    "bg-blue-500",
-    "bg-green-500",
-    "bg-yellow-500",
-    "bg-purple-500",
-  ];
+  const moduleColors = ["bg-red-500", "bg-blue-500", "bg-green-500", "bg-yellow-500", "bg-purple-500"];
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-100">
+    <div className="min-h-screen bg-gray-100">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-6 flex justify-between items-center">
@@ -218,6 +194,7 @@ const RolesPage = () => {
           </select>
         </div>
 
+        {/* Tabla */}
         <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
           <table className="table-auto w-full text-sm text-gray-600">
             <thead className="bg-gray-200">
@@ -231,7 +208,7 @@ const RolesPage = () => {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="3" className="text-center py-4">
+                  <td colSpan="4" className="text-center py-4">
                     Cargando...
                   </td>
                 </tr>
@@ -255,35 +232,24 @@ const RolesPage = () => {
                       <button
                         onClick={() => handleEditRole(role)}
                         className="px-3 py-2 bg-gray-200 text-blue-500 rounded-lg hover:bg-gray-400 transition"
-                        title={"Editar Rol"} 
-                        className="mr-3 px-4 py-2 bg-gray-500 text-blue-500 font-semibold rounded-lg"
+                        title="Editar Rol"
                       >
-                        <FontAwesomeIcon icon={faEdit} className="mr-0" />
+                        <FontAwesomeIcon icon={faEdit} />
                       </button>
                       <button
                         onClick={() => handleToggleActive(role.id, role.active)}
                         className="px-3 py-2 bg-gray-200 text-orange-400 rounded-lg hover:bg-gray-400 transition"
                         title={role.active ? "Desactivar Rol" : "Activar Rol"}
                       >
-                        <FontAwesomeIcon
-                          icon={faArrowsRotate}
-                          className="mr-0"
-                        />
+                        <FontAwesomeIcon icon={faArrowsRotate} />
                       </button>
-                      {/* <button
-                        onClick={() => handleDelete(role.id)}
-                        className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                      <button
                         onClick={() => handleAssignPermissions(role)}
-                        className="mr-3 px-4 py-2 bg-yellow-500 text-white font-semibold rounded-lg"
+                        className="px-3 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition"
+                        title="Asignar Permisos"
                       >
                         Asignar
                       </button>
-                      <button
-                        onClick={() => deleteRole(role.id)}
-                        className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg"
-                      >
-                        <FontAwesomeIcon icon={faTrash} className="mr-0" />
-                      </button> */}
                     </td>
                   </tr>
                 ))
@@ -292,6 +258,7 @@ const RolesPage = () => {
           </table>
         </div>
 
+        {/* Modales */}
         {assigningPermissions && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-black text-white p-6 rounded-lg shadow-lg w-full max-w-5xl overflow-y-auto">
@@ -400,6 +367,7 @@ const RolesPage = () => {
           </div>
         )}
 
+        {/* Modal de agregar rol */}
         {addingRole && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
