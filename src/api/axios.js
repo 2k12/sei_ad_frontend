@@ -46,10 +46,24 @@ export const roleUserApi = {
 };
 
 export const permissionApi = {
-  getPermissions: () => axiosInstance.get("/permissions"),
+  getPermissions: (page = 1, limit = 10) => axiosInstance.get(`/permissions?page=${page}&limit=${limit}`),
   createPermission: (permissionData) => axiosInstance.post("/permissions", permissionData),
   updatePermission: (id, permissionData) => axiosInstance.put(`/permissions/${id}`, permissionData),
   deletePermission: (id) => axiosInstance.delete(`/permissions/${id}`),
+  getPermissionById: async (id) => {
+    try {
+      const response = await axiosInstance.get(`/permissions/${id}`);
+      console.log("API response:", response.data); 
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching permission by ID:", error);
+      throw error;
+    }
+  },
+};
+
+export const moduleApi = {
+  getModules: () => axiosInstance.get("/modules"),
 };
 
 export const role_UserApi = {

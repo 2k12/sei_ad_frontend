@@ -7,14 +7,14 @@ import CreatePermissionForm from "../components/CreatePermissionForm"; // Import
 import { FaEdit, FaEye, FaToggleOn, FaToggleOff, FaPlus } from "react-icons/fa"; // Importa los iconos
 
 const PermissionsPage = () => {
-  const { permissions, fetchPermissions, createPermission, updatePermission, loading } = usePermissions();
+  const { permissions, fetchPermissions, createPermission, updatePermission, loading, pagination, setPagination } = usePermissions();
   const [editingPermission, setEditingPermission] = useState(null);
   const [creatingPermission, setCreatingPermission] = useState(false); // Estado para el modal de creación
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchPermissions();
-  }, []);
+    fetchPermissions(pagination.page, pagination.limit);
+  }, [pagination.page, pagination.limit]);
 
   const handleEditPermission = (permission) => {
     setEditingPermission(permission);
@@ -42,13 +42,25 @@ const PermissionsPage = () => {
     navigate(`/permissions/${permission.id}`, { state: { permission } });
   };
 
+  const handlePageChange = (newPage) => {
+    setPagination((prev) => ({ ...prev, page: newPage }));
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-600">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-semibold text-gray-900 dark:text-white mb-6">Gestión de Permisos</h1>
         <div className="mb-6 bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Lista de Permisos</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Lista de Permisos</h2>
+            <button
+              onClick={() => setCreatingPermission(true)}
+              className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition"
+            >
+              <FaPlus />
+            </button>
+          </div>
           {loading ? (
             <p className="text-center">Cargando...</p>
           ) : (
@@ -87,12 +99,6 @@ const PermissionsPage = () => {
                         >
                           <FaEye />
                         </button>
-                        <button
-                          onClick={() => setCreatingPermission(true)}
-                          className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition"
-                        >
-                          <FaPlus />
-                        </button>
                       </td>
                     </tr>
                   ))}
@@ -100,6 +106,25 @@ const PermissionsPage = () => {
               </table>
             </div>
           )}
+        </div>
+        <div className="flex justify-between items-center mt-4">
+          <button
+            disabled={pagination.page === 1}
+            onClick={() => handlePageChange(pagination.page - 1)}
+            className="bg-gray-300 p-2 rounded-md disabled:opacity-50 text-gray-700"
+          >
+            Anterior
+          </button>
+          <span className="text-lg text-gray-800 dark:text-gray-800">
+            Página {pagination.page} de {Math.ceil(pagination.total / pagination.limit)}
+          </span>
+          <button
+            disabled={pagination.page === Math.ceil(pagination.total / pagination.limit)}
+            onClick={() => handlePageChange(pagination.page + 1)}
+            className="bg-gray-300 p-2 rounded-md disabled:opacity-50 text-gray-700"
+          >
+            Siguiente
+          </button>
         </div>
         {editingPermission && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
