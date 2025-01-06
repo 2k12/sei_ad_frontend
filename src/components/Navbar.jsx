@@ -18,7 +18,7 @@ const Navbar = () => {
         Usuarios: "/users",
         Roles: "/roles",
         // Modulos: "/modules",
-        // Permisos: "/permissions",
+         Permisos: "/permissions",
     };
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);

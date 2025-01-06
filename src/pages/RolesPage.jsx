@@ -9,6 +9,7 @@ import {
   faPlus,
   faArrowsRotate,
 } from "@fortawesome/free-solid-svg-icons";
+import { roleUserApi } from "../api/axios"; // API para roles y permisos
 
 const RolesPage = () => {
   const {
@@ -20,6 +21,10 @@ const RolesPage = () => {
     loading,
     pagination,
   } = useRoles();
+
+  const navigate = useNavigate();
+
+  // Estados
   const [filters, setFilters] = useState({ name: "", active: "" });
   const [editingRole, setEditingRole] = useState(null);
   const [addingRole, setAddingRole] = useState(false);
@@ -28,8 +33,16 @@ const RolesPage = () => {
     description: "",
     active: true,
   });
-  const navigate = useNavigate();
+  const [assigningPermissions, setAssigningPermissions] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [permissions, setPermissions] = useState([]);
+  const [allPermissions, setAllPermissions] = useState([]);
+  const [selectedPermissions, setSelectedPermissions] = useState([]);
+  const [groupedPermissions, setGroupedPermissions] = useState({});
+  const [confirmChanges, setConfirmChanges] = useState(false);
+  const [changes, setChanges] = useState({ toAdd: [], toRemove: [] });
 
+  // Hooks
   useEffect(() => {
     fetchRoles({
       page: pagination.page,
@@ -38,12 +51,85 @@ const RolesPage = () => {
     });
   }, [pagination.page, pagination.limit, filters]);
 
-  const handleFilterChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
+  useEffect(() => {
+    if (assigningPermissions && selectedRole) {
+      const fetchPermissions = async () => {
+        try {
+          const response = await roleUserApi.getAllPermissions();
+          setAllPermissions(response.data.permissions);
+
+          const rolePermissions = await roleUserApi.getRolePermissions(
+            selectedRole.id
+          );
+          setPermissions(rolePermissions.data.permissions || []);
+          setSelectedPermissions(
+            rolePermissions.data.permissions.map((perm) => perm.id)
+          );
+
+          const grouped = response.data.permissions.reduce((acc, perm) => {
+            const moduleName = perm.module?.name || "Sin Módulo";
+            if (!acc[moduleName]) acc[moduleName] = [];
+            acc[moduleName].push(perm);
+            return acc;
+          }, {});
+          setGroupedPermissions(grouped);
+        } catch (error) {
+          console.error("Error al cargar permisos:", error);
+        }
+      };
+      fetchPermissions();
+    }
+  }, [assigningPermissions, selectedRole]);
+
+  // Handlers
+  const handleFilterChange = (e) => setFilters({ ...filters, [e.target.name]: e.target.value });
+
+  const handleEditRole = (role) => setEditingRole(role);
+
+  const handleAssignPermissions = (role) => {
+    setSelectedRole(role);
+    setAssigningPermissions(true);
   };
 
-  const handleEditRole = (role) => {
-    setEditingRole(role);
+  const handlePermissionChange = (permissionId) => {
+    setSelectedPermissions((prev) =>
+      prev.includes(permissionId)
+        ? prev.filter((id) => id !== permissionId)
+        : [...prev, permissionId]
+    );
+  };
+
+  const handleSavePermissions = () => {
+    const currentPermissionIds = permissions.map((perm) => perm.id);
+    const toAdd = selectedPermissions.filter((id) => !currentPermissionIds.includes(id));
+    const toRemove = currentPermissionIds.filter((id) => !selectedPermissions.includes(id));
+
+    setChanges({ toAdd, toRemove });
+    setConfirmChanges(true);
+  };
+
+  const confirmSave = async () => {
+    try {
+      for (const permissionId of changes.toAdd) {
+        await roleUserApi.assignPermission(selectedRole.id, permissionId);
+      }
+      for (const permissionId of changes.toRemove) {
+        await roleUserApi.removePermission(selectedRole.id, permissionId);
+      }
+
+      setPermissions(
+        allPermissions.filter((perm) => selectedPermissions.includes(perm.id))
+      );
+      setAssigningPermissions(false);
+      setConfirmChanges(false);
+    } catch (error) {
+      console.error("Error al guardar permisos:", error);
+    }
+  };
+
+  const handleCancelAssign = () => {
+    setAssigningPermissions(false);
+    setSelectedRole(null);
   };
 
   const handleSaveRole = (id, updatedData) => {
@@ -51,9 +137,7 @@ const RolesPage = () => {
     setEditingRole(null);
   };
 
-  const handleCancelEdit = () => {
-    setEditingRole(null);
-  };
+  const handleCancelEdit = () => setEditingRole(null);
 
   const handleAddRole = () => {
     createRole(newRole);
@@ -66,16 +150,14 @@ const RolesPage = () => {
     setNewRole({ ...newRole, [name]: type === "checkbox" ? checked : value });
   };
 
-  const handleToggleActive = (id, active) => {
-    updateRoleState(id, !active); // Invierte el estado actual y lo actualiza
-  };
+  const handleToggleActive = (id, active) => updateRoleState(id, !active);
 
-  const handlePageChange = (newPage) => {
-    fetchRoles({ page: newPage, pageSize: pagination.limit, ...filters });
-  };
+  const handlePageChange = (newPage) => fetchRoles({ page: newPage, pageSize: pagination.limit, ...filters });
+
+  const moduleColors = ["bg-red-500", "bg-blue-500", "bg-green-500", "bg-yellow-500", "bg-purple-500"];
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-100">
+    <div className="min-h-screen bg-gray-100">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-6 flex justify-between items-center">
@@ -126,7 +208,7 @@ const RolesPage = () => {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="3" className="text-center py-4">
+                  <td colSpan="4" className="text-center py-4">
                     Cargando...
                   </td>
                 </tr>
@@ -150,26 +232,24 @@ const RolesPage = () => {
                       <button
                         onClick={() => handleEditRole(role)}
                         className="px-3 py-2 bg-gray-200 text-blue-500 rounded-lg hover:bg-gray-400 transition"
-                        title={"Editar Rol"} 
+                        title="Editar Rol"
                       >
-                        <FontAwesomeIcon icon={faEdit} className="mr-0" />
+                        <FontAwesomeIcon icon={faEdit} />
                       </button>
                       <button
                         onClick={() => handleToggleActive(role.id, role.active)}
                         className="px-3 py-2 bg-gray-200 text-orange-400 rounded-lg hover:bg-gray-400 transition"
                         title={role.active ? "Desactivar Rol" : "Activar Rol"}
                       >
-                        <FontAwesomeIcon
-                          icon={faArrowsRotate}
-                          className="mr-0"
-                        />
+                        <FontAwesomeIcon icon={faArrowsRotate} />
                       </button>
-                      {/* <button
-                        onClick={() => handleDelete(role.id)}
-                        className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                      <button
+                        onClick={() => handleAssignPermissions(role)}
+                        className="px-3 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition"
+                        title="Asignar Permisos"
                       >
-                        <FontAwesomeIcon icon={faTrash} className="mr-0" />
-                      </button> */}
+                        Asignar
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -202,7 +282,103 @@ const RolesPage = () => {
           </button>
         </div>
 
-        {/* Formulario de edición */}
+        {/* Modales */}
+        {assigningPermissions && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-black text-white p-6 rounded-lg shadow-lg w-full max-w-5xl overflow-y-auto">
+              <h2 className="text-xl font-semibold mb-4">Asignar Permisos</h2>
+              {Object.keys(groupedPermissions).map((moduleName, index) => (
+                <div
+                  key={moduleName}
+                  className={`p-4 rounded-lg shadow-md ${moduleColors[index % moduleColors.length]} text-white mb-4`}
+                >
+                  <h3 className="text-lg font-semibold mb-2">{moduleName}</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {groupedPermissions[moduleName].map((permission) => (
+                      <div
+                        key={permission.id}
+                        className="bg-gray-800 p-2 rounded-md flex items-center justify-between"
+                      >
+                        <span>{permission.name}</span>
+                        <input
+                          type="checkbox"
+                          className="accent-green-500"
+                          checked={selectedPermissions.includes(permission.id)}
+                          onChange={() => handlePermissionChange(permission.id)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <div className="flex justify-end mt-4">
+                <button
+                  className="px-4 py-2 bg-gray-500 text-white rounded-lg"
+                  onClick={handleCancelAssign}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                  onClick={handleSavePermissions}
+                >
+                  Guardar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {confirmChanges && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-black text-white p-6 rounded-lg shadow-lg w-full max-w-md">
+              <h2 className="text-xl font-semibold mb-4">Confirmar Cambios</h2>
+              <div>
+                {changes.toAdd.length > 0 && (
+                  <>
+                    <p className="mb-2">Permisos a agregar:</p>
+                    <ul className="mb-4">
+                      {changes.toAdd.map((id) => {
+                        const permission = allPermissions.find(
+                          (perm) => perm.id === id
+                        );
+                        return <li key={id}>- {permission?.name}</li>;
+                      })}
+                    </ul>
+                  </>
+                )}
+                {changes.toRemove.length > 0 && (
+                  <>
+                    <p className="mb-2">Permisos a eliminar:</p>
+                    <ul className="mb-4">
+                      {changes.toRemove.map((id) => {
+                        const permission = allPermissions.find(
+                          (perm) => perm.id === id
+                        );
+                        return <li key={id}>- {permission?.name}</li>;
+                      })}
+                    </ul>
+                  </>
+                )}
+              </div>
+              <div className="flex justify-end">
+                <button
+                  className="px-4 py-2 bg-gray-500 text-white rounded-lg"
+                  onClick={() => setConfirmChanges(false)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                  onClick={confirmSave}
+                >
+                  Confirmar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {editingRole && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
@@ -215,7 +391,7 @@ const RolesPage = () => {
           </div>
         )}
 
-        {/* Formulario de creación */}
+        {/* Modal de agregar rol */}
         {addingRole && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">

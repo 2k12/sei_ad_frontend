@@ -40,7 +40,7 @@ const DashboardPage = () => {
           <div className="bg-yellow-500 p-6 rounded-lg shadow-lg">
             <h2 className="text-white text-xl font-semibold mb-4">Permisos</h2>
             <button
-              onClick={() => navigate("/permisos")}
+              onClick={() => navigate("/permissions")}
               className="w-full bg-yellow-700 hover:bg-yellow-800 text-white py-2 rounded-lg font-semibold "
             >
               Ver permisos

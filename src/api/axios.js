@@ -36,4 +36,29 @@ export const roleApi = {
   updateRoleState: (id, stateData) => axiosInstance.put(`/roles/${id}/state`, stateData),
 };
 
+export const roleUserApi = {
+  getRolePermissions: (roleId) => axiosInstance.get(`/roles/${roleId}/permissions`),
+  assignPermission: (roleId, permissionId) =>
+    axiosInstance.post(`/roles/${roleId}/permissions`, { permission_id: permissionId }),
+  removePermission: (roleId, permissionId) =>
+    axiosInstance.delete(`/roles/${roleId}/permissions`, { data: { permission_id: permissionId } }),
+  getAllPermissions: () => axiosInstance.get("/permissions/all"),
+};
+
+export const permissionApi = {
+  getPermissions: () => axiosInstance.get("/permissions"),
+  createPermission: (permissionData) => axiosInstance.post("/permissions", permissionData),
+  updatePermission: (id, permissionData) => axiosInstance.put(`/permissions/${id}`, permissionData),
+  deletePermission: (id) => axiosInstance.delete(`/permissions/${id}`),
+};
+
+export const role_UserApi = {
+  getUserRoles: (userId) => axiosInstance.get(`/users/${userId}/roles`),
+  assignRoleToUser: (userId, roleId) =>
+    axiosInstance.post(`/users/${userId}/roles`, { role_id: roleId }),
+  removeRoleFromUser: (userId, roleId) =>
+    axiosInstance.delete(`/users/${userId}/roles/${roleId}`),
+  getRoles: (params) => axiosInstance.get("/roles", { params }),
+};
+
 export default axiosInstance;

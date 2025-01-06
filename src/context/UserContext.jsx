@@ -16,7 +16,6 @@ export const UserProvider = ({ children }) => {
             const { data } = await userApi.getUsers({
                 page: params.page || pagination.page,
                 pageSize: params.pageSize || pagination.limit,
-                name: params.name || '',
                 email: params.email || '',
                 active: params.active || '',
             });
@@ -83,7 +82,6 @@ export const UserProvider = ({ children }) => {
             }}
         >
             {children}
-            {/* <ToastContainer />   */}
         </UserContext.Provider>
     );
 };

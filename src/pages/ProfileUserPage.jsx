@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useUsers } from "../context/UserContext";
 import Navbar from "../components/Navbar";
 import { useLocation } from "react-router-dom";
+import EditRolesModal from "../components/EditRolesModal";
+
 
 const ProfileUserPage = () => {
     const { users, updateUser } = useUsers();
@@ -11,6 +13,8 @@ const ProfileUserPage = () => {
     const [userData, setUserData] = useState({ name: "", email: "", active: false });
     const [roles, setRoles] = useState([]);
     const [permissions, setPermissions] = useState([]);
+    const [isRoleModalOpen, setIsRoleModalOpen] = useState(false); // Estado para controlar el modal
+
 
     // useEffect(() => {
     //     const userFromState = location.state?.user;
@@ -69,6 +73,8 @@ const ProfileUserPage = () => {
         updateUser(user.id, userData);
         setEditingUserInfo(false);
     };
+
+    
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-black">
@@ -150,21 +156,45 @@ const ProfileUserPage = () => {
                         </div>
 
                         {/* Roles */}
-                        <div className="mb-6 bg-white  p-6 rounded-lg shadow-md dark:bg-black dark:border border-gray-500">
-                            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Roles</h2>
-                            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                                {roles.length > 0 ? (
-                                    roles.map((role, index) => (
-                                        <div key={index} className="bg-green-100 dark:bg-green-900 p-4 rounded-lg shadow-md">
-                                            <h3 className="text-lg font-semibold text-green-800 dark:text-green-200">{role.name}</h3>
-                                            <p className="text-sm text-gray-600 dark:text-gray-400">{role.description}</p>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p className="text-gray-500 dark:text-gray-300">No hay roles disponibles</p>
-                                )}
-                            </div>
-                        </div>
+<div className="mb-6 bg-white p-6 rounded-lg shadow-md dark:bg-black dark:border border-gray-500">
+    <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Roles</h2>
+    </div>
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {roles.length > 0 ? (
+            roles.map((role, index) => (
+                <div key={index} className="bg-green-100 dark:bg-green-900 p-4 rounded-lg shadow-md">
+                    <h3 className="text-lg font-semibold text-green-800 dark:text-green-200">{role.name}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{role.description}</p>
+                </div>
+            ))
+        ) : (
+            <p className="text-gray-500 dark:text-gray-300">No hay roles disponibles</p>
+        )}
+    </div>
+    <div className="mt-4 flex justify-start">
+        <button
+            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+            onClick={() => setIsRoleModalOpen(true)}
+        >
+            Editar
+        </button>
+    </div>
+  
+    {isRoleModalOpen && (
+        <EditRolesModal
+        currentRoles={roles}
+        userId={user.id}
+        onClose={() => setIsRoleModalOpen(false)}
+        onSave={(updatedRoles) => setRoles(updatedRoles)}
+    />
+    
+    )}
+
+</div>
+
+
+
 
                         {/* Permisos */}
                         <div className="mb-6 bg-white p-6 rounded-lg shadow-md dark:bg-black dark:border border-gray-500">
