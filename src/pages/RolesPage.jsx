@@ -10,7 +10,7 @@ import {
   faArrowsRotate,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
-import { roleUserApi } from "../api/axios"; // API para roles y permisos
+import { roleUserApi } from "../api/axios";
 
 const RolesPage = () => {
   const {
