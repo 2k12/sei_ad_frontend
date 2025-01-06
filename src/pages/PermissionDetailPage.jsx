@@ -20,11 +20,16 @@ const PermissionDetailPage = () => {
     const fetchPermissionById = async (id) => {
         try {
             const { data } = await permissionApi.getPermissionById(id);
+            console.log("Permission fetched:", data); // Verifica los datos obtenidos
             setPermission(data.permission);
         } catch (error) {
             console.error("Error fetching permission:", error);
         }
     };
+
+    useEffect(() => {
+        console.log("Permission state:", permission); // Verifica el estado del permiso
+    }, [permission]);
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-600">

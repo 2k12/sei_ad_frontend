@@ -32,7 +32,10 @@ const CreatePermissionForm = ({ onSave, onCancel }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSave(formData);
+        onSave({
+            ...formData,
+            module_id: parseInt(formData.module_id, 10), // Asegúrate de que module_id sea un número
+        });
     };
 
     return (
@@ -56,7 +59,6 @@ const CreatePermissionForm = ({ onSave, onCancel }) => {
                     value={formData.description}
                     onChange={handleChange}
                     className="border p-2 rounded w-full"
-                    required
                 />
             </div>
             <div className="mb-4">

@@ -34,11 +34,20 @@ export const permissionApi = {
   createPermission: (permissionData) => axiosInstance.post("/permissions", permissionData),
   updatePermission: (id, permissionData) => axiosInstance.put(`/permissions/${id}`, permissionData),
   deletePermission: (id) => axiosInstance.delete(`/permissions/${id}`),
-  getPermissionById: (id) => axiosInstance.get(`/permissions/${id}`), // Nueva función
+  getPermissionById: async (id) => {
+    try {
+      const response = await axiosInstance.get(`/permissions/${id}`);
+      console.log("API response:", response.data); 
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching permission by ID:", error);
+      throw error;
+    }
+  },
 };
 
-//export const moduleApi = {
-//  getModules: () => axiosInstance.get("/modules"),
-//};
+export const moduleApi = {
+  getModules: () => axiosInstance.get("/modules"),
+};
 
 export default axiosInstance;
