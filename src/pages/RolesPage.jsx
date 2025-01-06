@@ -157,7 +157,7 @@ const RolesPage = () => {
   const moduleColors = ["bg-red-500", "bg-blue-500", "bg-green-500", "bg-yellow-500", "bg-purple-500"];
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-amber-50S">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-6 flex justify-between items-center">
