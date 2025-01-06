@@ -8,6 +8,7 @@ import {
   faEdit,
   faPlus,
   faArrowsRotate,
+  faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { roleUserApi } from "../api/axios"; // API para roles y permisos
 
@@ -154,7 +155,8 @@ const RolesPage = () => {
 
   const handlePageChange = (newPage) => fetchRoles({ page: newPage, pageSize: pagination.limit, ...filters });
 
-  const moduleColors = ["bg-red-500", "bg-blue-500", "bg-green-500", "bg-yellow-500", "bg-purple-500"];
+  const moduleColors = [ "bg-gray-100"];
+  const moduleColorsPer = ["bg-gray-200"];
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -245,10 +247,10 @@ const RolesPage = () => {
                       </button>
                       <button
                         onClick={() => handleAssignPermissions(role)}
-                        className="px-3 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition"
+                        className="px-3 py-2 bg-gray-200 text-green-500 rounded-lg hover:bg-yellow-600 transition"
                         title="Asignar Permisos"
                       >
-                        Asignar
+                        <FontAwesomeIcon icon={faUserPlus} className="" />
                       </button>
                     </td>
                   </tr>
@@ -284,20 +286,24 @@ const RolesPage = () => {
 
         {/* Modales */}
         {assigningPermissions && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-black text-white p-6 rounded-lg shadow-lg w-full max-w-5xl overflow-y-auto">
-              <h2 className="text-xl font-semibold mb-4">Asignar Permisos</h2>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 sm:p-6">
+            <div className="bg-gray-200 text-gray-800 p-6 rounded-lg shadow-lg w-full max-w-2xl sm:max-w-4xl lg:max-w-5xl overflow-y-auto max-h-full">
+              <h2 className="text-2xl font-semibold mb-4 text-center">Asignar Permisos</h2>
               {Object.keys(groupedPermissions).map((moduleName, index) => (
                 <div
                   key={moduleName}
-                  className={`p-4 rounded-lg shadow-md ${moduleColors[index % moduleColors.length]} text-white mb-4`}
+                  className={`p-4 rounded-lg shadow-md ${moduleColors[index % moduleColors.length]
+                    } text-gray-800 mb-4`}
                 >
                   <h3 className="text-lg font-semibold mb-2">{moduleName}</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {groupedPermissions[moduleName].map((permission) => (
                       <div
                         key={permission.id}
-                        className="bg-gray-800 p-2 rounded-md flex items-center justify-between"
+                        moduleColorsPer
+                        className={`p-2 rounded-md ${moduleColorsPer[index % moduleColorsPer.length]
+                          } flex items-center justify-between`}
+
                       >
                         <span>{permission.name}</span>
                         <input
@@ -311,15 +317,15 @@ const RolesPage = () => {
                   </div>
                 </div>
               ))}
-              <div className="flex justify-end mt-4">
+              <div className="flex justify-between sm:justify-end mt-4 flex-wrap gap-4">
                 <button
-                  className="px-4 py-2 bg-gray-500 text-white rounded-lg"
+                  className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
                   onClick={handleCancelAssign}
                 >
                   Cancelar
                 </button>
                 <button
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
                   onClick={handleSavePermissions}
                 >
                   Guardar
@@ -331,7 +337,7 @@ const RolesPage = () => {
 
         {confirmChanges && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-black text-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <div className="bg-gray-100 text-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
               <h2 className="text-xl font-semibold mb-4">Confirmar Cambios</h2>
               <div>
                 {changes.toAdd.length > 0 && (
