@@ -9,6 +9,7 @@ import {
   faPlus,
   faArrowsRotate,
   faUserPlus,
+  faExchange,
 } from "@fortawesome/free-solid-svg-icons";
 import { roleUserApi } from "../api/axios";
 
@@ -240,17 +241,17 @@ const RolesPage = () => {
                       </button>
                       <button
                         onClick={() => handleToggleActive(role.id, role.active)}
-                        className="px-3 py-2 bg-gray-200 text-orange-400 rounded-lg hover:bg-gray-400 transition"
+                        className="px-3 py-2 bg-gray-200 text-orange-500 rounded-lg hover:bg-gray-400 transition"
                         title={role.active ? "Desactivar Rol" : "Activar Rol"}
                       >
-                        <FontAwesomeIcon icon={faArrowsRotate} />
+                        <FontAwesomeIcon icon={faExchange} className="" />
                       </button>
                       <button
                         onClick={() => handleAssignPermissions(role)}
                         className="px-3 py-2 bg-gray-200 text-green-500 rounded-lg hover:bg-yellow-600 transition"
                         title="Asignar Permisos"
                       >
-                        <FontAwesomeIcon icon={faUserPlus} className="" />
+                        <FontAwesomeIcon icon={faUserPlus} className=""/>
                       </button>
                     </td>
                   </tr>

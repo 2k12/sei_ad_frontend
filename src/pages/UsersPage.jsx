@@ -4,7 +4,7 @@ import { useUsers } from "../context/UserContext";
 import EditUserForm from "../components/EditUserForm";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faEye, faExchange } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faPlus, faEye, faExchange } from "@fortawesome/free-solid-svg-icons";
 
 
 const UsersPage = () => {
@@ -60,13 +60,13 @@ const UsersPage = () => {
             <Navbar />
 
             <div className="max-w-7xl mx-auto px-4 py-8">
-                {/* <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-400 mb-6">Gestión de Usuarios</h1> */}
-                <div className="mb-6 flex justify-start items-start gap-5">
+                <div className="mb-6 flex justify-between items-center">
                     <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-400">Gestión de Usuarios</h1>
                     <button
                         onClick={() => setAddingUser(true)}
-                        className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 ease-in-out"
+                        className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition"
                     >
+                        <FontAwesomeIcon icon={faPlus} className="mr-2" />
                         Agregar
                     </button>
                 </div>
@@ -124,27 +124,38 @@ const UsersPage = () => {
                                     <tr key={user.id} className="hover:bg-gray-100">
                                         <td className="px-6 py-3">👤 {user.name}</td>
                                         <td className="px-6 py-3">{user.email}</td>
-                                        <td className="px-6 py-3">{user.active ? "Activo" : "Inactivo"}</td>
+                                        <td className="px-6 py-3">{user.active ? (
+                                                <span className="px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs font-bold">
+                                                Activo
+                                                </span>
+                                            ) : (
+                                                <span className="px-2 py-1 bg-red-200 text-red-800 rounded-full text-xs font-bold">
+                                                Inactivo
+                                                </span>
+                                            )}</td>
                                         <td className="px-6 py-3">
                                             <button
                                                 onClick={() => navigate(`/users/${user.id}`, { state: { user } })}
                                                 className="mr-3 px-4 py-2 bg-gray-200 text-green-500 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
+                                                title="Ver usuario"
                                             >
-                                                <FontAwesomeIcon icon={faEye} className="mr-2" />
+                                                <FontAwesomeIcon icon={faEye} className="" />
                                             </button>
 
                                             <button
                                                 onClick={() => handleEditUser(user)}
                                                 className="mr-3 px-4 py-2 bg-gray-200 text-blue-500 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
+                                                title="Editar usuario"
                                             >
-                                                <FontAwesomeIcon icon={faEdit} className="mr-2" />
+                                                <FontAwesomeIcon icon={faEdit} className="" />
 
                                             </button>
                                             <button
                                                 onClick={() => handleToggleActive(user.id, user.active)}
                                                 className="mr-3 px-4 py-2 bg-gray-200 text-orange-500 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
+                                                title={user.active ? "Desactivar Usuario" : "Activar Usuario"}
                                             >
-                                                <FontAwesomeIcon icon={faExchange} className="mr-2" />
+                                                <FontAwesomeIcon icon={faExchange} className="" />
 
                                             </button>
                                             {/* <button
