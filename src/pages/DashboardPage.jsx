@@ -49,7 +49,7 @@ const DashboardPage = () => {
           <div className="bg-purple-500 p-6 rounded-lg shadow-lg">
             <h2 className="text-white text-xl font-semibold mb-4">Módulos</h2>
             <button
-              onClick={() => navigate("/modulos")}
+              onClick={() => navigate("/modules")}
               className="w-full bg-purple-700 hover:bg-purple-800 text-white py-2 rounded-lg font-semibold "
             >
               Ver módulos
