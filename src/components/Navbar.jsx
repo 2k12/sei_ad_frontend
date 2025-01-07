@@ -17,8 +17,8 @@ const Navbar = () => {
         Dashboard: "/dashboard", // Añadido la ruta para Dashboard
         Usuarios: "/users",
         Roles: "/roles",
-        // Modulos: "/modules",
-         Permisos: "/permissions",
+        Modulos: "/modules",
+        Permisos: "/permissions",
         Auditoria: "/audits",
     };
 

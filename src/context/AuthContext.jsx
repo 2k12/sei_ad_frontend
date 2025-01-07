@@ -1,13 +1,13 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import { toast, ToastContainer } from 'react-toastify';  
-import axiosInstance from '../api/axios.js'; 
-import { useNavigate } from 'react-router-dom'; 
+import { toast, ToastContainer } from 'react-toastify';
+import axiosInstance from '../api/axios.js';
+import { useNavigate } from 'react-router-dom';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('token') || null);
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (token) {
@@ -24,12 +24,12 @@ export const AuthProvider = ({ children }) => {
             setUser(user);
             setToken(token);
 
-            toast.success('Inicio de sesión exitoso'); 
+            toast.success('Inicio de sesión exitoso');
 
-            navigate('/dashboard'); 
+            navigate('/dashboard');
         } catch (error) {
-            console.error('Error al iniciar sesión', error);
-            toast.error('Credenciales incorrectas');  
+            // console.error('Error al iniciar sesión', error);
+            toast.error(error.response.data.error);
         }
     };
 
@@ -37,13 +37,13 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('token');
         setUser(null);
         setToken(null);
-        toast.info('Sesión cerrada');  
+        toast.info('Sesión cerrada');
     };
 
     return (
         <AuthContext.Provider value={{ user, token, login, logout }}>
             {children}
-            <ToastContainer />  
+            <ToastContainer />
         </AuthContext.Provider>
     );
 };

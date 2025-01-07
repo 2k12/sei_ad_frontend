@@ -66,8 +66,14 @@ export const permissionApi = {
 };
 
 export const moduleApi = {
-  getModules: () => axiosInstance.get("/modules"),
+  getModules: (params) => axiosInstance.get("/modules", { params }), // Recupera todos los módulos con paginación y filtros
+  createModule: (moduleData) => axiosInstance.post("/modules", moduleData),
+  updateModule: (id, moduleData) => axiosInstance.put(`/modules/${id}`, moduleData),
+  //deleteModule: (id) => axiosInstance.delete(`/modules/${id}`),
+  //toggleModuleActive: (id) => axiosInstance.patch(`/modules/${id}/toggle-active`),
+
 };
+  
 
 export const role_UserApi = {
   getUserRoles: (userId) => axiosInstance.get(`/users/${userId}/roles`),
