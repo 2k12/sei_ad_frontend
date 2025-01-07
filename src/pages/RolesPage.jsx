@@ -10,6 +10,8 @@ import {
   faArrowsRotate,
   faUserPlus,
   faExchange,
+  faUser,
+  faAddressBook,
 } from "@fortawesome/free-solid-svg-icons";
 import { roleUserApi } from "../api/axios";
 
@@ -218,7 +220,7 @@ const RolesPage = () => {
               ) : (
                 roles.map((role) => (
                   <tr key={role.id} className="hover:bg-gray-100">
-                    <td className="px-6 py-3">{role.name}</td>
+                    <td className="px-6 py-3"><FontAwesomeIcon icon={faAddressBook} className="mr-5"/>{role.name}</td>
                     <td className="px-6 py-3">{role.description}</td>
                     <td className="px-6 py-3">
                       {role.active ? (

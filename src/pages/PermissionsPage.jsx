@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import EditPermissionForm from "../components/EditPermissionForm";
 import CreatePermissionForm from "../components/CreatePermissionForm"; // Importa el nuevo componente
 import {
+  faAddressCard,
   faEdit,
   faExchange,
   faEye,
@@ -101,7 +102,7 @@ const PermissionsPage = () => {
               ) : (
                 permissions.map((permission) => (
                   <tr key={permission.id} className="hover:bg-gray-100">
-                    <td className="px-6 py-3">{permission.name}</td>
+                    <td className="px-6 py-3"><FontAwesomeIcon icon={faAddressCard} className="mr-5"/>{permission.name}</td>
                     <td className="px-6 py-3">{permission.description}</td>
                     <td className="px-6 py-3">
                       {permission.active ? (

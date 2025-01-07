@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPlus, faToggleOn, faToggleOff } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faPlus, faToggleOn, faToggleOff, faAddressBook, faCertificate, faAddressCard } from "@fortawesome/free-solid-svg-icons";
 import { useModuleContext } from "../context/ModuleContext";
+import { faMinus } from "@fortawesome/free-solid-svg-icons/faMinus";
 
 
 const ModulePage = () => {
@@ -109,7 +110,7 @@ const ModulePage = () => {
               ) : modules.length > 0 ? (
                 modules.map((module) => (
                   <tr key={module.id} className="hover:bg-gray-100">
-                    <td className="px-6 py-3">{module.name}</td>
+                    <td className="px-6 py-3"><FontAwesomeIcon icon={faMinus} className="mr-3"/>{module.name}</td>
                     <td className="px-6 py-3">{module.description}</td>
                     <td className="px-6 py-3">
                       {module.active ? (
