@@ -13,6 +13,7 @@ const ModulePage = () => {
     fetchModules,
     addModule,
     updateModule,
+    pagination
     //toggleModuleActive,
   } = useModuleContext();
 
@@ -20,11 +21,20 @@ const ModulePage = () => {
   const [editingModule, setEditingModule] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [newModule, setNewModule] = useState({ name: "", description: "", active: true });
-  const [pagination, setPagination] = useState({
-    page: 1,
-    limit: 10,
-    total: 0,
-  });
+
+
+  useEffect(() => {
+    fetchModules({
+      page: pagination.page,
+      pageSize: pagination.limit,
+      ...filters
+    });
+  }, [pagination.page, pagination.limit, filters]);
+
+  const handleFilterChange = (e) => {
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+  };
+
 
   const handleAddModule = async () => {
     try {
@@ -50,16 +60,11 @@ const ModulePage = () => {
   };
 
   const handlePageChange = (newPage) => {
-    setPagination((prev) => ({ ...prev, page: newPage }));
+    fetchModules({ page: newPage, pageSize: pagination.limit, ...filters });
   };
 
-  useEffect(() => {
-    fetchModules({
-      page: pagination.page,
-      limit: pagination.limit,
-      name: filters.name,
-    });
-  }, [pagination.page, filters]);
+
+
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -85,7 +90,8 @@ const ModulePage = () => {
           <input
             name="name"
             value={filters.name}
-            onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+            // onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+            onChange={handleFilterChange}
             placeholder="Buscar por nombre"
             className="w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400"
           />
