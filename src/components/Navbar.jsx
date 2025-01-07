@@ -19,6 +19,7 @@ const Navbar = () => {
         Roles: "/roles",
         // Modulos: "/modules",
          Permisos: "/permissions",
+        Auditoria: "/audits",
     };
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);

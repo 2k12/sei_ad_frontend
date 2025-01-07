@@ -35,6 +35,9 @@ export const roleApi = {
   // deleteRole: (id) => axiosInstance.delete(`/roles/${id}`),
   updateRoleState: (id, stateData) => axiosInstance.put(`/roles/${id}/state`, stateData),
 };
+export const auditApi = {
+  getAudits: (params) => axiosInstance.get("/audit", { params }),
+};
 
 export const roleUserApi = {
   getRolePermissions: (roleId) => axiosInstance.get(`/roles/${roleId}/permissions`),

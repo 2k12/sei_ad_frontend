@@ -58,7 +58,7 @@ const DashboardPage = () => {
           <div className="bg-red-500 p-6 rounded-lg shadow-lg">
             <h2 className="text-white text-xl font-semibold mb-4">Auditoría</h2>
             <button
-              onClick={() => navigate("/auditoria")}
+              onClick={() => navigate("/audits")}
               className="w-full bg-red-700 hover:bg-red-800 text-white py-2 rounded-lg font-semibold "
             >
               Ver auditoría
