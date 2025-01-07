@@ -82,65 +82,67 @@ const PermissionsPage = () => {
         </div>
         {/* Tabla */}
         <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
-          {loading ? (
-            <p className="text-center">Cargando...</p>
-          ) : (
-            <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
-              <table className="table-auto w-full text-sm text-gray-600">
-                <thead className="bg-gray-200">
-                  <tr>
-                    <th className="px-6 py-3 text-left">Nombre</th>
-                    <th className="px-6 py-3 text-left">Descripción</th>
-                    <th className="px-6 py-3 text-left">Estado</th>
-                    <th className="px-6 py-3 text-left">Acciones</th>
+          <table className="table-auto w-full text-sm text-gray-600">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="px-6 py-3 text-left">Nombre</th>
+                <th className="px-6 py-3 text-left">Descripción</th>
+                <th className="px-6 py-3 text-left">Estado</th>
+                <th className="px-6 py-3 text-left">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan="4" className="text-center py-4">
+                    Cargando...
+                  </td>
+                </tr>
+              ) : (
+                permissions.map((permission) => (
+                  <tr key={permission.id} className="hover:bg-gray-100">
+                    <td className="px-6 py-3">{permission.name}</td>
+                    <td className="px-6 py-3">{permission.description}</td>
+                    <td className="px-6 py-3">
+                      {permission.active ? (
+                        <span className="px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs font-bold">
+                          Activo
+                        </span>
+                      ) : (
+                        <span className="px-2 py-1 bg-red-200 text-red-800 rounded-full text-xs font-bold">
+                          Inactivo
+                        </span>
+                      )}
+                    </td>{" "}
+                    {/* Mostrar el estado */}
+                    <td className="px-6 py-3">
+                      <button
+                        onClick={() => handleViewPermission(permission)}
+                        className="mr-3 px-4 py-2 bg-gray-200 text-green-500 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
+                      >
+                        <FontAwesomeIcon icon={faEye} className="" />
+                      </button>
+                      <button
+                        onClick={() => handleEditPermission(permission)}
+                        className="mr-3 px-4 py-2 bg-gray-200 text-blue-500 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
+                      >
+                        <FontAwesomeIcon icon={faEdit} className="" />
+                      </button>
+                      <button
+                        onClick={() => handleToggleActive(permission)}
+                        className="mr-3 px-4 py-2 bg-gray-200 text-orange-500 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
+                        title={
+                          permission.active ? "Desactivar Rol" : "Activar Rol"
+                        }
+                      >
+                        <FontAwesomeIcon icon={faExchange} className="" />
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {permissions.map((permission) => (
-                    <tr key={permission.id} className="hover:bg-gray-100">
-                      <td className="px-6 py-3">{permission.name}</td>
-                      <td className="px-6 py-3">{permission.description}</td>
-                      <td className="px-6 py-3">
-                        {permission.active ? (
-                          <span className="px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs font-bold">
-                            Activo
-                          </span>
-                        ) : (
-                          <span className="px-2 py-1 bg-red-200 text-red-800 rounded-full text-xs font-bold">
-                            Inactivo
-                          </span>
-                        )}
-                      </td>{" "}
-                      {/* Mostrar el estado */}
-                      <td className="px-6 py-3">
-                        <button
-                          onClick={() => handleViewPermission(permission)}
-                          className="mr-3 px-4 py-2 bg-gray-200 text-green-500 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
-                        >
-                          <FontAwesomeIcon icon={faEye} className="" />
-                        </button>
-                        <button
-                          onClick={() => handleEditPermission(permission)}
-                          className="mr-3 px-4 py-2 bg-gray-200 text-blue-500 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
-                        >
-                          <FontAwesomeIcon icon={faEdit} className="" />
-                        </button>
-                        <button
-                          onClick={() => handleToggleActive(permission)}
-                          className="mr-3 px-4 py-2 bg-gray-200 text-orange-500 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
-                          title={
-                            permission.active ? "Desactivar Rol" : "Activar Rol"
-                          }
-                        >
-                          <FontAwesomeIcon icon={faExchange} className="" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
         <div className="flex justify-between items-center mt-4">
           <button
