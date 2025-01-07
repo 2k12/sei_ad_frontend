@@ -5,28 +5,32 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import { UserProvider } from "./context/UserContext";
 import { RoleProvider } from "./context/RoleContext";
 import { PermissionProvider } from './context/PermissionContext';
+import { ModuleProvider } from "./context/ModuleContext";
 import Navbar from "./components/Navbar";
 import DashboardPage from "./pages/DashboardPage";
 import LoginPage from "./pages/LoginPage";
 import UsersPage from "./pages/UsersPage";
-import ProfileUserPage from './pages/ProfileUserPage'; 
+import ProfileUserPage from './pages/ProfileUserPage';
 import { Navigate } from 'react-router-dom';
-import PermissionsPage from './pages/PermissionsPage'; 
-import PermissionDetailPage from './pages/PermissionDetailPage'; 
+import PermissionsPage from './pages/PermissionsPage';
+import PermissionDetailPage from './pages/PermissionDetailPage';
 // import Breadcrumbs from './components/Breadcrumbs';
 import RolesPage from "./pages/rolesPage";
+import ModulePage from "./pages/ModulePage";
 
 const App = () => {
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   return (
     <Router>
       <AuthProvider>
         <UserProvider>
-        <RoleProvider>
-          <PermissionProvider>
-            <Layout />
-          </PermissionProvider>
+          <RoleProvider>
+            <PermissionProvider>
+              <ModuleProvider>
+                <Layout />
+              </ModuleProvider>
+            </PermissionProvider>
           </RoleProvider>
         </UserProvider>
       </AuthProvider>
@@ -46,11 +50,11 @@ const Layout = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/users" element={<UsersPage />} />{" "}
-         
           <Route path="/users/:userId" element={<ProfileUserPage />} />
           <Route path="/permissions" element={<PermissionsPage />} />
-          <Route path="/permissions/:permissionId" element={<PermissionDetailPage />} /> 
+          <Route path="/permissions/:permissionId" element={<PermissionDetailPage />} />
           <Route path="/roles" element={<RolesPage />} />
+          <Route path="/modules" element={<ModulePage />} />  
         </Routes>
       </div>
     </div>
