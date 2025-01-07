@@ -56,7 +56,7 @@ const AuditsPage = () => {
             <thead className="bg-gray-200">
               <tr>
                 <th className="px-6 py-3 text-left">Evento</th>
-                <th className="px-6 py-3 text-left">Descripción</th>
+                <th className="px-6 py-3 text-center">Descripción</th>
                 <th className="px-6 py-3 text-left">Usuario</th>
                 <th className="px-6 py-3 text-left">Servicio</th>
                 <th className="px-6 py-3 text-left">Fecha</th>
