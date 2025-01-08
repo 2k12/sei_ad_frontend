@@ -64,7 +64,11 @@ function LoginPage() {
                 {error && (
                     <div className="mt-4 text-red-500 text-center">{error}</div>
                 )}
+                  <div className="mt-4 text-center text-sm text-gray-500">
+                V 1.0.0
+            </div>
             </form>
+            
         </div>
     );
 }
