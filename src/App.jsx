@@ -15,10 +15,10 @@ import { Navigate } from 'react-router-dom';
 import PermissionsPage from './pages/PermissionsPage'; 
 import PermissionDetailPage from './pages/PermissionDetailPage'; 
 // import Breadcrumbs from './components/Breadcrumbs';
-import RolesPage from "./pages/rolesPage";
+import RolesPage from "./pages/RolesPage";
 import ModulePage from "./pages/ModulePage";
 import { AuditProvider } from "./context/AuditContext";
-import AuditsPage from "./pages/auditPage";
+import AuditsPage from "./pages/AuditPage";
 
 const App = () => {
   useEffect(() => { }, []);
