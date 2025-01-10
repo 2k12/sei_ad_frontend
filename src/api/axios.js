@@ -86,4 +86,9 @@ export const role_UserApi = {
   getRoles: (params) => axiosInstance.get("/roles", { params }),
 };
 
+export const reportApi = {
+  generateReport: (all) =>
+    axiosInstance.post("/generate-report", { all }, { responseType: "blob" }),
+};
+
 export default axiosInstance;

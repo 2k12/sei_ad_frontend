@@ -10,7 +10,7 @@ function LoginPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await login(email, password); 
+            await login(email, password, "SECM"); 
         } catch (err) {
             console.log(err);
             setError('Error al iniciar sesión');

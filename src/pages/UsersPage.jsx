@@ -2,16 +2,18 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUsers } from "../context/UserContext";
 import EditUserForm from "../components/EditUserForm";
+import ReportModalForm from "../components/ReportModalForm";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPlus, faEye, faExchange } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faPlus, faEye, faExchange, faFolder } from "@fortawesome/free-solid-svg-icons";
 
 
 const UsersPage = () => {
     const { users, fetchUsers, updateUser, createUser, loading, pagination } = useUsers();
-    const [filters, setFilters] = useState({email: "", active: "" });
+    const [filters, setFilters] = useState({ email: "", active: "" });
     const [editingUser, setEditingUser] = useState(null);
-    const [addingUser, setAddingUser] = useState(false); 
+    const [addingUser, setAddingUser] = useState(false);
+    const [modalreport, setShowModalReport] = useState(false);
     const [newUser, setNewUser] = useState({ name: "", email: "", password: "", active: true });
     const navigate = useNavigate();
 
@@ -46,8 +48,8 @@ const UsersPage = () => {
 
     const handleAddUser = () => {
         createUser(newUser);
-        setAddingUser(false); 
-        setNewUser({ name: "", email: "", password: "", active: true }); 
+        setAddingUser(false);
+        setNewUser({ name: "", email: "", password: "", active: true });
     };
 
     const handleNewUserChange = (e) => {
@@ -62,22 +64,29 @@ const UsersPage = () => {
             <div className="max-w-7xl mx-auto px-4 py-8">
                 <div className="mb-6 flex justify-between items-center">
                     <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-400">Gestión de Usuarios</h1>
-                    <button
-                        onClick={() => setAddingUser(true)}
-                        className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition"
-                    >
-                        <FontAwesomeIcon icon={faPlus} className="mr-2" />
-                        Agregar
-                    </button>
+                    <div className="mb-6 flex justify-end items-end">
+                        <button
+                            onClick={() => setAddingUser(true)}
+                            className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition mr-2"
+                        >
+                            <FontAwesomeIcon icon={faPlus} className="mr-2" />
+                            Agregar
+                        </button>
+                        <div>
+                            <button
+                                className="px-4 py-2 bg-purple-500 text-white font-semibold rounded-lg shadow-md hover:bg-purple-600 transition"
+                                onClick={() => setShowModalReport(true)}
+                            >
+                                <FontAwesomeIcon icon={faFolder} className="mr-2" />
+                                Reportes
+                            </button>
+                            { modalreport && <ReportModalForm onClose={() => setShowModalReport(false)} />}
+                        </div>
+                    </div>
+
                 </div>
                 <div className="mb-6 flex gap-4 items-center">
-                    {/* <input
-                        name="name"
-                        value={filters.name}
-                        onChange={handleFilterChange}
-                        placeholder="Search by name"
-                        className="w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400"
-                    /> */}
+                    
                     <input
                         name="email"
                         value={filters.email}
@@ -96,13 +105,6 @@ const UsersPage = () => {
                         <option value="false">Inactivo</option>
                     </select>
                 </div>
-                {/* 
-                <button
-                    onClick={() => setAddingUser(true)}
-                    className="mb-6 px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 ease-in-out"
-                >
-                    Agregar Usuario
-                </button> */}
 
                 <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
                     <table className="table-auto w-full text-sm text-gray-600">
@@ -125,14 +127,14 @@ const UsersPage = () => {
                                         <td className="px-6 py-3">👤 {user.name}</td>
                                         <td className="px-6 py-3">{user.email}</td>
                                         <td className="px-6 py-3">{user.active ? (
-                                                <span className="px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs font-bold">
+                                            <span className="px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs font-bold">
                                                 Activo
-                                                </span>
-                                            ) : (
-                                                <span className="px-2 py-1 bg-red-200 text-red-800 rounded-full text-xs font-bold">
+                                            </span>
+                                        ) : (
+                                            <span className="px-2 py-1 bg-red-200 text-red-800 rounded-full text-xs font-bold">
                                                 Inactivo
-                                                </span>
-                                            )}</td>
+                                            </span>
+                                        )}</td>
                                         <td className="px-6 py-3">
                                             <button
                                                 onClick={() => navigate(`/users/${user.id}`, { state: { user } })}
