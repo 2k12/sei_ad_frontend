@@ -28,11 +28,17 @@ const PermissionsPage = () => {
   } = usePermissions();
   const [editingPermission, setEditingPermission] = useState(null);
   const [creatingPermission, setCreatingPermission] = useState(false);
+  const [filters, setFilters] = useState({ name: "", active: "" });
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchPermissions(pagination.page, pagination.limit);
+    fetchPermissions({page: pagination.page, limit: pagination.limit,});
   }, [pagination.page, pagination.limit]);
+
+  const handleSearch = () => {
+    fetchPermissions({ page: pagination.page, limit: pagination.limit, ...filters, });
+  };
+  
 
   const handleEditPermission = (permission) => {
     setEditingPermission(permission);
@@ -65,6 +71,7 @@ const PermissionsPage = () => {
 
   const handlePageChange = (newPage) => {
     setPagination((prev) => ({ ...prev, page: newPage }));
+    fetchPermissions({page: newPage, limit: pagination.limit, ...filters,});
   };
 
   return (
@@ -83,6 +90,32 @@ const PermissionsPage = () => {
             Agregar Permiso
           </button>
         </div>
+        {/* Filtros */}
+        <div className="mb-6 flex gap-4 items-center">
+          <input
+            name="name"
+            value={filters.name}
+            onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+            placeholder="Buscar por nombre"
+            className="w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400 dark:border-gray-500 dark:bg-gray-800"
+          />
+          <select
+            name="active"
+            value={filters.active}
+            onChange={(e) => setFilters({ ...filters, active: e.target.value })}
+            className="w-full md:w-48 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400 dark:border-gray-500 dark:bg-gray-800"
+          >
+            <option value="">Todos</option>
+            <option value="true">Activos</option>
+            <option value="false">Inactivos</option>
+          </select>
+          <button
+            onClick={handleSearch}
+            className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition dark:bg-blue-700 dark:hover:bg-blue-900">
+              Buscar
+          </button>
+        </div>
+
         {/* Tabla */}
         <div className="mb-4 text-right">
           <span className="text-lg text-gray-500 dark:text-gray-500">

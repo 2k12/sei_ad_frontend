@@ -49,7 +49,7 @@ export const roleUserApi = {
 };
 
 export const permissionApi = {
-  getPermissions: (page = 1, limit = 10) => axiosInstance.get(`/permissions?page=${page}&limit=${limit}`),
+  getPermissions: (params = {}) => axiosInstance.get(`/permissions`, {params}),
   createPermission: (permissionData) => axiosInstance.post("/permissions", permissionData),
   updatePermission: (id, permissionData) => axiosInstance.put(`/permissions/${id}`, permissionData),
   deletePermission: (id) => axiosInstance.delete(`/permissions/${id}`),
