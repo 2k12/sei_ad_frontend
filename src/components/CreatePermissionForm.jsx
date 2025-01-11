@@ -39,35 +39,38 @@ const CreatePermissionForm = ({ onSave, onCancel }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow">
+        <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow dark:bg-gray-800">
+        <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-bold text-gray-400 dark:text-white">Nuevo Permiso</h2>
+        </div>
             <div className="mb-4">
-                <label className="block text-sm font-bold mb-2">Nombre</label>
+                <label className="block text-sm font-bold mb-2 text-gray-400">Nombre</label>
                 <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full text-gray-400 dark:bg-gray-700 dark:text-white"
                     required
                 />
             </div>
             <div className="mb-4">
-                <label className="block text-sm font-bold mb-2">Descripción</label>
+                <label className="block text-sm font-bold mb-2 text-gray-400">Descripción</label>
                 <input
                     type="text"
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full text-gray-400 dark:bg-gray-700 dark:text-white"
                 />
             </div>
             <div className="mb-4">
-                <label className="block text-sm font-bold mb-2">Módulo</label>
+                <label className="block text-sm font-bold mb-2 text-gray-400">Módulo</label>
                 <select
                     name="module_id"
                     value={formData.module_id}
                     onChange={handleChange}
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full text-gray-400 dark:bg-gray-700 dark:text-white"
                     required
                 >
                     <option value="" disabled>Selecciona un módulo</option>
@@ -79,7 +82,7 @@ const CreatePermissionForm = ({ onSave, onCancel }) => {
                 </select>
             </div>
             <div className="mb-4">
-                <label className="block text-sm font-bold mb-2">
+                <label className="block text-sm font-bold mb-2 text-gray-400">
                     <input
                         type="checkbox"
                         name="active"

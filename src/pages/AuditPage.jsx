@@ -13,30 +13,28 @@ const AuditsPage = () => {
   const [filters, setFilters] = useState({ event: "" });
 
   // Manejar cambios en los filtros
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target; // Corregido: usar name en lugar de event
-    setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
-  };
+  const handleSearch = () => {
+    fetchAudits({ page: pagination.page, pageSize: pagination.limit, ...filters });
+  };  
 
   // Llamada inicial para obtener datos
   useEffect(() => {
     fetchAudits({
       page: pagination.page,
       pageSize: pagination.limit,
-      ...filters,
     });
-  }, [pagination.page, pagination.limit, filters]);
+  }, [pagination.page, pagination.limit]);
 
   // Cambiar de página
   const handlePageChange = (newPage) =>
     fetchAudits({ page: newPage, pageSize: pagination.limit, ...filters });
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-6 flex justify-between items-center">
-          <h1 className="text-3xl font-semibold text-gray-800">Auditoría</h1>
+          <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-200">Auditoría</h1>
         </div>
 
         {/* Filtros */}
@@ -44,16 +42,27 @@ const AuditsPage = () => {
           <input
             name="event"
             value={filters.event}
-            onChange={handleFilterChange}
+            onChange={(e) => setFilters({ ...filters, [e.target.name]: e.target.value })}
             placeholder="Buscar por evento"
-            className="w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+            className="w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 dark:border-gray-500 dark:bg-gray-800 dark:text-white"
           />
+          <button
+                        onClick={handleSearch}
+                        className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition dark:bg-blue-700 dark:hover:bg-blue-900"
+                    >
+                        Buscar
+                    </button>
         </div>
 
         {/* Tabla */}
-        <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
-          <table className="table-auto w-full text-sm text-gray-600">
-            <thead className="bg-gray-200">
+        <div className="mb-4 text-right">
+          <span className="text-lg text-gray-500 dark:text-gray-500">
+            Total de registros: {pagination.total}
+          </span>
+        </div>
+        <div className="overflow-x-auto bg-white shadow-lg rounded-lg dark:border-gray-500 dark:bg-cyan-950">
+          <table className="table-auto w-full text-sm text-gray-600 dark:text-white">
+            <thead className="bg-gray-200 dark:bg-cyan-800 dark:text-white">
               <tr>
                 <th className="px-6 py-3 text-left">Evento</th>
                 <th className="px-6 py-3 text-center">Descripción</th>
@@ -71,7 +80,7 @@ const AuditsPage = () => {
                 </tr>
               ) : audits && audits.length > 0 ? (
                 audits.map((audit) => (
-                  <tr key={audit.id} className="hover:bg-gray-100">
+                  <tr key={audit.id} className="hover:bg-gray-100 dark:hover:bg-cyan-900">
                     <td className="px-6 py-3">{audit.event}</td>
                     <td className="px-6 py-3">{audit.description}</td>
                     <td className="px-6 py-3">{audit.user}</td>
@@ -100,11 +109,11 @@ const AuditsPage = () => {
           <button
             disabled={pagination.page === 1}
             onClick={() => handlePageChange(pagination.page - 1)}
-            className="bg-gray-300 p-2 rounded-md disabled:opacity-50 text-gray-700"
+            className="bg-gray-300 p-2 rounded-md disabled:opacity-50 text-gray-700 dark:text-gray-200 dark:bg-cyan-950 dark:disabled:opacity-70 dark:enabled:opacity-100"
           >
             Anterior
           </button>
-          <span className="text-lg">
+          <span className="text-lg dark:text-white">
             Página {pagination.page} de{" "}
             {Math.ceil(pagination.total / pagination.limit)}
           </span>
@@ -113,7 +122,7 @@ const AuditsPage = () => {
               pagination.page === Math.ceil(pagination.total / pagination.limit)
             }
             onClick={() => handlePageChange(pagination.page + 1)}
-            className="bg-gray-300 p-2 rounded-md disabled:opacity-50 text-gray-700"
+            className="bg-gray-300 p-2 rounded-md disabled:opacity-50 text-gray-700 dark:text-gray-200 dark:bg-cyan-950 dark:disabled:opacity-70 dark:enabled:opacity-100"
           >
             Siguiente
           </button>

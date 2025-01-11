@@ -25,9 +25,9 @@ const EditUserForm = ({ user, onSave, onCancel }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow">
+    <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow dark:bg-gray-800">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-bold text-gray-400">Usuario</h2>
+        <h2 className="text-lg font-bold text-gray-400 dark:text-white">Usuario</h2>
         <div className="bg-gray-200 text-gray-600 text-xs font-semibold py-1 px-3 rounded-full">
           FC: {new Date(user.created_at).toLocaleDateString()}
         </div>
@@ -39,7 +39,7 @@ const EditUserForm = ({ user, onSave, onCancel }) => {
           name="name"
           value={formData.name}
           onChange={handleChange}
-          className="border p-2 rounded w-full text-gray-400"
+          className="border p-2 rounded w-full text-gray-400 dark:bg-gray-700"
           required
         />
       </div>
@@ -50,7 +50,7 @@ const EditUserForm = ({ user, onSave, onCancel }) => {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          className="border p-2 rounded w-full text-gray-400"
+          className="border p-2 rounded w-full text-gray-400 dark:bg-gray-700"
           required
         />
       </div>
@@ -61,7 +61,7 @@ const EditUserForm = ({ user, onSave, onCancel }) => {
             name="active"
             checked={formData.active}
             onChange={handleChange}
-            className="mr-2 text-gray-400"
+            className="mr-2"
           />
           Activo
         </label>
