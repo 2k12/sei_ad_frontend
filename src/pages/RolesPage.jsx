@@ -7,13 +7,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEdit,
   faPlus,
-  faArrowsRotate,
   faUserPlus,
-  faExchange,
-  faUser,
   faAddressBook,
 } from "@fortawesome/free-solid-svg-icons";
 import { roleUserApi } from "../api/axios";
+import { faToggleOn } from "@fortawesome/free-solid-svg-icons/faToggleOn";
+import { faToggleOff } from "@fortawesome/free-solid-svg-icons/faToggleOff";
 
 const RolesPage = () => {
   const {
@@ -51,9 +50,8 @@ const RolesPage = () => {
     fetchRoles({
       page: pagination.page,
       pageSize: pagination.limit,
-      ...filters,
     });
-  }, [pagination.page, pagination.limit, filters]);
+  }, [pagination.page, pagination.limit]);
 
   useEffect(() => {
     if (assigningPermissions && selectedRole) {
@@ -86,7 +84,9 @@ const RolesPage = () => {
   }, [assigningPermissions, selectedRole]);
 
   // Handlers
-  const handleFilterChange = (e) => setFilters({ ...filters, [e.target.name]: e.target.value });
+  const handleSearch = () => {
+    fetchRoles({ page: pagination.page, pageSize: pagination.limit, ...filters });
+};
 
   const handleEditRole = (role) => setEditingRole(role);
 
@@ -158,20 +158,20 @@ const RolesPage = () => {
 
   const handlePageChange = (newPage) => fetchRoles({ page: newPage, pageSize: pagination.limit, ...filters });
 
-  const moduleColors = [ "bg-gray-100"];
-  const moduleColorsPer = ["bg-gray-200"];
+  const moduleColors = [ "bg-gray-100 dark:bg-gray-600"];
+  const moduleColorsPer = ["bg-gray-200 dark:bg-gray-700"];
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-6 flex justify-between items-center">
-          <h1 className="text-3xl font-semibold text-gray-800">
+          <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-200">
             Gestión de Roles
           </h1>
           <button
             onClick={() => setAddingRole(true)}
-            className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition"
+            className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition dark:bg-green-700 dark:hover:bg-green-900"
           >
             <FontAwesomeIcon icon={faPlus} className="mr-2" />
             Agregar Rol
@@ -183,26 +183,36 @@ const RolesPage = () => {
           <input
             name="name"
             value={filters.name}
-            onChange={handleFilterChange}
+            onChange={(e) => setFilters({ ...filters, [e.target.name]: e.target.value })}
             placeholder="Buscar por nombre"
-            className="w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400"
+            className="w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400 dark:border-gray-500 dark:bg-gray-800"
           />
           <select
             name="active"
             value={filters.active}
-            onChange={handleFilterChange}
-            className="w-full md:w-48 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400"
+            onChange={(e) => setFilters({ ...filters, [e.target.name]: e.target.value })}
+            className="w-full md:w-48 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400 dark:border-gray-500 dark:bg-gray-800"
           >
             <option value="">Todos</option>
             <option value="true">Activos</option>
             <option value="false">Inactivos</option>
           </select>
+          <button
+            onClick={handleSearch}
+            className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition dark:bg-blue-700 dark:hover:bg-blue-900">
+              Buscar
+          </button>
         </div>
 
         {/* Tabla */}
-        <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
-          <table className="table-auto w-full text-sm text-gray-600">
-            <thead className="bg-gray-200">
+        <div className="mb-4 text-right">
+          <span className="text-lg text-gray-500 dark:text-gray-500">
+            Total de registros: {pagination.total}
+          </span>
+        </div>
+        <div className="overflow-x-auto bg-white shadow-lg rounded-lg dark:border-gray-500 dark:bg-cyan-950">
+          <table className="table-auto w-full text-sm text-gray-600 dark:text-white">
+            <thead className="bg-gray-200 dark:bg-cyan-800 dark:text-white">
               <tr>
                 <th className="px-6 py-3 text-left">Nombre del Rol</th>
                 <th className="px-6 py-3 text-left">Descripción</th>
@@ -219,16 +229,16 @@ const RolesPage = () => {
                 </tr>
               ) : (
                 roles.map((role) => (
-                  <tr key={role.id} className="hover:bg-gray-100">
+                  <tr key={role.id} className="hover:bg-gray-100 dark:hover:bg-cyan-900">
                     <td className="px-6 py-3"><FontAwesomeIcon icon={faAddressBook} className="mr-5"/>{role.name}</td>
                     <td className="px-6 py-3">{role.description}</td>
                     <td className="px-6 py-3">
                       {role.active ? (
-                        <span className="px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs font-bold">
+                        <span className="px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs font-bold dark:bg-green-300 dark:text-green-900">
                           Activo
                         </span>
                       ) : (
-                        <span className="px-2 py-1 bg-red-200 text-red-800 rounded-full text-xs font-bold">
+                        <span className="px-2 py-1 bg-red-200 text-red-800 rounded-full text-xs font-bold dark:bg-red-300 dark:text-red-900">
                           Inactivo
                         </span>
                       )}
@@ -236,21 +246,21 @@ const RolesPage = () => {
                     <td className="px-6 py-3 flex items-center gap-2">
                       <button
                         onClick={() => handleEditRole(role)}
-                        className="px-3 py-2 bg-gray-200 text-blue-500 rounded-lg hover:bg-gray-400 transition"
+                        className="px-3 py-2 bg-gray-200 text-blue-500 rounded-lg hover:bg-gray-400 transition dark:text-gray-200 dark:bg-blue-800 dark:hover:bg-blue-500"
                         title="Editar Rol"
                       >
                         <FontAwesomeIcon icon={faEdit} />
                       </button>
                       <button
                         onClick={() => handleToggleActive(role.id, role.active)}
-                        className="px-3 py-2 bg-gray-200 text-orange-500 rounded-lg hover:bg-gray-400 transition"
+                        className="px-3 py-2 bg-gray-200 text-orange-500 rounded-lg hover:bg-gray-400 transition dark:bg-gray-300 dark:hover:bg-gray-400"
                         title={role.active ? "Desactivar Rol" : "Activar Rol"}
                       >
-                        <FontAwesomeIcon icon={faExchange} className="" />
+                        <FontAwesomeIcon icon={role.active ? faToggleOn : faToggleOff} className={role.active ? "text-green-800" : "text-red-800"} />
                       </button>
                       <button
                         onClick={() => handleAssignPermissions(role)}
-                        className="px-3 py-2 bg-gray-200 text-green-500 rounded-lg hover:bg-yellow-600 transition"
+                        className="px-3 py-2 bg-gray-200 text-green-500 rounded-lg hover:bg-yellow-600 transition dark:text-white dark:bg-orange-500 dark:hover:bg-orange-700"
                         title="Asignar Permisos"
                       >
                         <FontAwesomeIcon icon={faUserPlus} className=""/>
@@ -268,11 +278,11 @@ const RolesPage = () => {
           <button
             disabled={pagination.page === 1}
             onClick={() => handlePageChange(pagination.page - 1)}
-            className="bg-gray-300 p-2 rounded-md disabled:opacity-50 text-gray-700"
+            className="bg-gray-300 p-2 rounded-md disabled:opacity-50 text-gray-700 dark:text-gray-200 dark:bg-cyan-950 dark:disabled:opacity-70 dark:enabled:opacity-100"
           >
             Anterior
           </button>
-          <span className="text-lg">
+          <span className="text-lg dark:text-gray-200">
             Página {pagination.page} de{" "}
             {Math.ceil(pagination.total / pagination.limit)}
           </span>
@@ -281,7 +291,7 @@ const RolesPage = () => {
               pagination.page === Math.ceil(pagination.total / pagination.limit)
             }
             onClick={() => handlePageChange(pagination.page + 1)}
-            className="bg-gray-300 p-2 rounded-md disabled:opacity-50 text-gray-700"
+            className="bg-gray-300 p-2 rounded-md disabled:opacity-50 text-gray-700 dark:text-gray-200 dark:bg-cyan-900 dark:disabled:opacity-70 dark:enabled:opacity-100"
           >
             Siguiente
           </button>
@@ -290,13 +300,13 @@ const RolesPage = () => {
         {/* Modales */}
         {assigningPermissions && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 sm:p-6">
-            <div className="bg-gray-200 text-gray-800 p-6 rounded-lg shadow-lg w-full max-w-2xl sm:max-w-4xl lg:max-w-5xl overflow-y-auto max-h-full">
-              <h2 className="text-2xl font-semibold mb-4 text-center">Asignar Permisos</h2>
+            <div className="bg-gray-200 text-gray-800 p-6 dark:bg-slate-700 rounded-lg shadow-lg w-full max-w-2xl sm:max-w-4xl lg:max-w-5xl overflow-y-auto max-h-full">
+              <h2 className="text-2xl font-semibold mb-4 text-center dark:text-white">Asignar Permisos</h2>
               {Object.keys(groupedPermissions).map((moduleName, index) => (
                 <div
                   key={moduleName}
                   className={`p-4 rounded-lg shadow-md ${moduleColors[index % moduleColors.length]
-                    } text-gray-800 mb-4`}
+                    } text-gray-800 mb-4 dark:text-white`}
                 >
                   <h3 className="text-lg font-semibold mb-2">{moduleName}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -340,13 +350,13 @@ const RolesPage = () => {
 
         {confirmChanges && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-gray-100 text-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
-              <h2 className="text-xl font-semibold mb-4">Confirmar Cambios</h2>
+            <div className="bg-gray-100 text-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md dark:bg-gray-700">
+              <h2 className="text-xl font-semibold mb-4 dark:text-white">Confirmar Cambios</h2>
               <div>
                 {changes.toAdd.length > 0 && (
                   <>
-                    <p className="mb-2">Permisos a agregar:</p>
-                    <ul className="mb-4">
+                    <p className="mb-2 text-black dark:text-white">Permisos a agregar:</p>
+                    <ul className="mb-4 text-black dark:text-white">
                       {changes.toAdd.map((id) => {
                         const permission = allPermissions.find(
                           (perm) => perm.id === id
@@ -358,8 +368,8 @@ const RolesPage = () => {
                 )}
                 {changes.toRemove.length > 0 && (
                   <>
-                    <p className="mb-2">Permisos a eliminar:</p>
-                    <ul className="mb-4">
+                    <p className="mb-2 text-black dark:text-white">Permisos a eliminar:</p>
+                    <ul className="mb-4 text-black dark:text-white">
                       {changes.toRemove.map((id) => {
                         const permission = allPermissions.find(
                           (perm) => perm.id === id
@@ -370,7 +380,7 @@ const RolesPage = () => {
                   </>
                 )}
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-between sm:justify-end mt-4 flex-wrap gap-4">
                 <button
                   className="px-4 py-2 bg-gray-500 text-white rounded-lg"
                   onClick={() => setConfirmChanges(false)}
@@ -390,7 +400,7 @@ const RolesPage = () => {
 
         {editingRole && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md dark:bg-gray-700">
               <EditRoleForm
                 role={editingRole}
                 onSave={handleSaveRole}
@@ -403,8 +413,8 @@ const RolesPage = () => {
         {/* Modal de agregar rol */}
         {addingRole && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-              <h2 className="text-xl font-bold mb-4">Agregar Rol</h2>
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md dark:bg-gray-700">
+              <h2 className="text-xl font-bold mb-4 dark:text-white">Agregar Rol</h2>
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -412,23 +422,23 @@ const RolesPage = () => {
                 }}
               >
                 <div className="mb-4">
-                  <label className="block text-gray-700">Nombre</label>
+                  <label className="block text-gray-700 dark:text-gray-400">Nombre</label>
                   <input
                     type="text"
                     name="name"
                     value={newRole.name}
                     onChange={handleNewRoleChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    className="w-full p-2 border border-gray-300 rounded-lg dark:text-white dark:bg-gray-700"
                     required
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">Descripción</label>
+                  <label className="block text-gray-700 dark:text-gray-400">Descripción</label>
                   <textarea
                     name="description"
                     value={newRole.description}
                     onChange={handleNewRoleChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    className="w-full p-2 border border-gray-300 rounded-lg dark:text-white dark:bg-gray-700"
                   />
                 </div>
                 <div className="flex justify-end">
@@ -441,7 +451,7 @@ const RolesPage = () => {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-green-500 text-white rounded-lg"
+                    className="px-4 py-2 bg-blue-500 text-white rounded-lg"
                   >
                     Guardar
                   </button>

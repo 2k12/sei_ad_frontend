@@ -20,6 +20,7 @@ export const RoleProvider = ({ children }) => {
         page: params.page || pagination.page,
         pageSize: params.pageSize || pagination.limit,
         name: params.name || "",
+        active: params.active || "",
       });
       setRoles(data.roles);
       setPagination({

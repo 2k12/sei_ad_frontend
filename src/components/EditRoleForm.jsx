@@ -21,9 +21,9 @@ const EditRoleForm = ({ role, onSave, onCancel }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow">
+    <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow dark:bg-gray-700">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-bold text-gray-400">Editar Rol</h2>
+        <h2 className="text-lg font-bold text-gray-400 dark:text-white">Editar Rol</h2>
         <div className="bg-gray-200 text-gray-600 text-xs font-semibold py-1 px-3 rounded-full">
           ID: {role.id}
         </div>
@@ -37,7 +37,7 @@ const EditRoleForm = ({ role, onSave, onCancel }) => {
           name="name"
           value={formData.name}
           onChange={handleChange}
-          className="border p-2 rounded w-full text-gray-400"
+          className="border p-2 rounded w-full text-gray-400 dark:bg-gray-700"
           required
         />
       </div>
@@ -49,7 +49,7 @@ const EditRoleForm = ({ role, onSave, onCancel }) => {
           name="description"
           value={formData.description}
           onChange={handleChange}
-          className="border p-2 rounded w-full text-gray-400"
+          className="border p-2 rounded w-full text-gray-400 dark:bg-gray-700"
           rows="3"
         />
       </div>

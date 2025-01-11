@@ -50,39 +50,42 @@ const EditPermissionForm = ({ permission, onSave, onCancel }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow">
+        <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow dark:bg-gray-800">
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-bold text-gray-400 dark:text-white">Usuario</h2>
+                <div className="bg-gray-200 text-gray-600 text-xs font-semibold py-1 px-3 rounded-full">
+                FC: {new Date(permission.created_at).toLocaleDateString()}
+                </div>
+            </div>
             <div className="mb-4">
-                <label className="block text-sm font-bold mb-2">Nombre</label>
+                <label className="block text-sm font-bold mb-2 text-gray-400">Nombre</label>
                 <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full text-gray-400 dark:bg-gray-700"
                     required
                 />
             </div>
             <div className="mb-4">
-                <label className="block text-sm font-bold mb-2">Descripción</label>
+                <label className="block text-sm font-bold mb-2 text-gray-400">Descripción</label>
                 <input
-                    type="text"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    className="border p-2 rounded w-full"
+                type="text"
+                name="name"
+                value={formData.description}
+                onChange={handleChange}
+                className="border p-2 rounded w-full text-gray-400 dark:bg-gray-700"
+                required
                 />
             </div>
             <div className="mb-4">
-                <label className="block text-sm font-bold mb-2">Módulo</label>
-                <div>
-                    {isLoadingModules && <p className="text-sm text-gray-500">Cargando módulos...</p>}
-                    {error && <p className="text-sm text-red-500">{error}</p>}
-                </div>
+                <label className="block text-sm font-bold mb-2 text-gray-400">Módulo</label>
                 <select
                     name="module_id"
                     value={formData.module_id}
                     onChange={handleChange}
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full text-gray-400 dark:bg-gray-700"
                     required
                     disabled={isLoadingModules || error !== null}
                 >
@@ -95,7 +98,7 @@ const EditPermissionForm = ({ permission, onSave, onCancel }) => {
                 </select>
             </div>
             <div className="mb-4">
-                <label className="block text-sm font-bold mb-2">
+                <label className="block text-sm font-bold mb-2 text-gray-400">
                     <input
                         type="checkbox"
                         name="active"
