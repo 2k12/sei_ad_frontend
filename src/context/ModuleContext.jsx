@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { moduleApi } from "../api/axios.js";
+import { toast } from 'react-toastify';
 
 // Crear el contexto
 const ModuleContext = createContext();
@@ -33,35 +34,36 @@ export const ModuleProvider = ({ children }) => {
   //   }
   // };
 
-  
-      const fetchModules = async (params = {}) => {
-          setLoading(true);
-          try {
-              const { data } = await moduleApi.getModules({
-                  page: params.page || pagination.page,
-                  pageSize: params.pageSize || pagination.limit,
-                  name: params.name || '',
-              });
-              setModules(data.modules);
-              setPagination({
-                  page: data.page,
-                  limit: data.pageSize,
-                  total: data.total,
-              });
-          } catch (error) {
-              console.error('Error fetching modules:', error);
-          } finally {
-              setLoading(false);
-          }
-      };
-  
+  const fetchModules = async (params = {}) => {
+    setLoading(true);
+    try {
+      const { data } = await moduleApi.getModules({
+        page: params.page || pagination.page,
+        pageSize: params.pageSize || pagination.limit,
+        name: params.name || "",
+      });
+      setModules(data.modules);
+      setPagination({
+        page: data.page,
+        limit: data.pageSize,
+        total: data.total,
+      });
+    } catch (error) {
+      console.error("Error fetching modules:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Función para agregar un módulo
   const addModule = async (moduleData) => {
     try {
       await moduleApi.createModule(moduleData);
       await fetchModules(pagination.page, pagination.limit); // Refresca la lista después de agregar
+      toast.success('Módulo agregado satisfactoriamente');
     } catch (error) {
       console.error("Error adding module:", error);
+      toast.error('Error al agregar el módulo');
     }
   };
 
@@ -70,8 +72,10 @@ export const ModuleProvider = ({ children }) => {
     try {
       await moduleApi.updateModule(id, moduleData);
       await fetchModules(pagination.page, pagination.limit); // Refresca la lista después de actualizar
+      toast.success('Módulo actualizado satisfactoriamente');
     } catch (error) {
       console.error("Error updating module:", error);
+      toast.error('Error al actualizar el módulo');
     }
   };
 
@@ -90,8 +94,10 @@ export const ModuleProvider = ({ children }) => {
     try {
       await moduleApi.toggleModuleActive(id);
       await fetchModules(pagination.page, pagination.limit); // Refresca la lista después de alternar el estado
+      toast.success('Estado del módulo actualizado satisfactoriamente');
     } catch (error) {
       console.error("Error toggling module active state:", error);
+      toast.error('Error al actualizar el estado del módulo');
     }
   };
 

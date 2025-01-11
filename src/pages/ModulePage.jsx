@@ -27,13 +27,12 @@ const ModulePage = () => {
     fetchModules({
       page: pagination.page,
       pageSize: pagination.limit,
-      ...filters
     });
-  }, [pagination.page, pagination.limit, filters]);
+  }, [pagination.page, pagination.limit]);
 
-  const handleFilterChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
-  };
+  const handleSearch = () => {
+    fetchModules({ page: pagination.page, pageSize: pagination.limit, ...filters });
+}; 
 
 
   const handleAddModule = async () => {
@@ -91,18 +90,24 @@ const ModulePage = () => {
             name="name"
             value={filters.name}
             // onChange={(e) => setFilters({ ...filters, name: e.target.value })}
-            onChange={handleFilterChange}
+            onChange={(e) => setFilters({ ...filters, [e.target.name]: e.target.value })}
             placeholder="Buscar por nombre"
             className="w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400 dark:bg-gray-800"
           />
+          <button
+                        onClick={handleSearch}
+                        className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition dark:bg-blue-700 dark:hover:bg-blue-900"
+                    >
+                        Buscar
+                    </button>
         </div>
 
         {/* Tabla */}
-        {/* <div className="mb-4 text-right">
+        <div className="mb-4 text-right">
           <span className="text-lg text-gray-500 dark:text-gray-500">
               Total de registros: {pagination.total}
           </span>
-        </div> */}
+        </div>
         <div className="overflow-x-auto bg-white shadow-lg rounded-lg dark:border-gray-500 dark:bg-cyan-950">
           <table className="table-auto w-full text-sm text-gray-600 dark:text-white">
             <thead className="bg-gray-200 dark:bg-cyan-800 dark:text-white">
@@ -171,7 +176,7 @@ const ModulePage = () => {
           >
             Anterior
           </button>
-          <span className="text-lg">
+          <span className="text-lg dark:text-white">
             Página {pagination.page} de {Math.ceil(pagination.total / pagination.limit)}
           </span>
           <button
