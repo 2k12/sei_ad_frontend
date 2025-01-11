@@ -5,7 +5,7 @@ import EditUserForm from "../components/EditUserForm";
 import ReportModalForm from "../components/ReportModalForm";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPlus, faEye, faExchange } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faPlus, faEye, faFolder } from "@fortawesome/free-solid-svg-icons";
 import { faToggleOn } from "@fortawesome/free-solid-svg-icons/faToggleOn";
 import { faToggleOff } from "@fortawesome/free-solid-svg-icons/faToggleOff";
 
