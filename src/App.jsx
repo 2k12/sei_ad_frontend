@@ -10,15 +10,18 @@ import Navbar from "./components/Navbar";
 import DashboardPage from "./pages/DashboardPage";
 import LoginPage from "./pages/LoginPage";
 import UsersPage from "./pages/UsersPage";
-import ProfileUserPage from './pages/ProfileUserPage'; 
+import ProfileUserPage from './pages/ProfileUserPage';
 import { Navigate } from 'react-router-dom';
-import PermissionsPage from './pages/PermissionsPage'; 
-import PermissionDetailPage from './pages/PermissionDetailPage'; 
+import PermissionsPage from './pages/PermissionsPage';
+import PermissionDetailPage from './pages/PermissionDetailPage';
 // import Breadcrumbs from './components/Breadcrumbs';
 import RolesPage from "./pages/RolesPage";
 import ModulePage from "./pages/ModulePage";
 import { AuditProvider } from "./context/AuditContext";
 import AuditsPage from "./pages/auditPage";
+
+import ProtectedRoute from "./components/ProtectedRoutes";
+
 
 const App = () => {
   useEffect(() => { }, []);
@@ -27,13 +30,13 @@ const App = () => {
     <Router>
       <AuthProvider>
         <UserProvider>
-            <RoleProvider>
+          <RoleProvider>
             <AuditProvider>
-                <PermissionProvider>
-                  <ModuleProvider>
-                <Layout />
-                  </ModuleProvider>
-            </PermissionProvider>
+              <PermissionProvider>
+                <ModuleProvider>
+                  <Layout />
+                </ModuleProvider>
+              </PermissionProvider>
             </AuditProvider>
           </RoleProvider>
         </UserProvider>
@@ -53,13 +56,62 @@ const Layout = () => {
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/users" element={<UsersPage />} />{" "}
-          <Route path="/users/:userId" element={<ProfileUserPage />} />
-          <Route path="/permissions" element={<PermissionsPage />} />
-          <Route path="/permissions/:permissionId" element={<PermissionDetailPage />} /> 
-          <Route path="/roles" element={<RolesPage />} />
-          <Route path="/audits" element={<AuditsPage />} />
-          <Route path="/modules" element={<ModulePage />} />  
+          <Route
+            path="/users"
+            element={
+              <ProtectedRoute requiredPermission="Gestionar Usuarios">
+                <UsersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/users/:userId"
+            element={
+              <ProtectedRoute requiredPermission="Gestionar Usuarios">
+                <ProfileUserPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/permissions"
+            element={
+              <ProtectedRoute requiredPermission="Gestionar Usuarios">
+                <PermissionsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/permissions/:permissionId"
+            element={
+              <ProtectedRoute requiredPermission="Gestionar Usuarios">
+                <PermissionDetailPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/roles"
+            element={
+              <ProtectedRoute requiredPermission="Gestionar Usuarios">
+                <RolesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/audits"
+            element={
+              <ProtectedRoute requiredPermission="Gestionar Usuarios">
+                <AuditsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/modules"
+            element={
+              <ProtectedRoute requiredPermission="Gestionar Usuarios">
+                <ModulePage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </div>
     </div>

@@ -2,18 +2,20 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUsers } from "../context/UserContext";
 import EditUserForm from "../components/EditUserForm";
+import ReportModalForm from "../components/ReportModalForm";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPlus, faEye, faExchange } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faPlus, faEye, faFolder } from "@fortawesome/free-solid-svg-icons";
 import { faToggleOn } from "@fortawesome/free-solid-svg-icons/faToggleOn";
 import { faToggleOff } from "@fortawesome/free-solid-svg-icons/faToggleOff";
 
 
 const UsersPage = () => {
     const { users, fetchUsers, updateUser, createUser, loading, pagination } = useUsers();
-    const [filters, setFilters] = useState({email: "", active: "" });
+    const [filters, setFilters] = useState({ email: "", active: "" });
     const [editingUser, setEditingUser] = useState(null);
-    const [addingUser, setAddingUser] = useState(false); 
+    const [addingUser, setAddingUser] = useState(false);
+    const [modalreport, setShowModalReport] = useState(false);
     const [newUser, setNewUser] = useState({ name: "", email: "", password: "", active: true });
     const navigate = useNavigate();
 
@@ -50,8 +52,8 @@ const UsersPage = () => {
 
     const handleAddUser = () => {
         createUser(newUser);
-        setAddingUser(false); 
-        setNewUser({ name: "", email: "", password: "", active: true }); 
+        setAddingUser(false);
+        setNewUser({ name: "", email: "", password: "", active: true });
     };
 
     const handleNewUserChange = (e) => {
@@ -66,13 +68,26 @@ const UsersPage = () => {
             <div className="max-w-7xl mx-auto px-4 py-8">
                 <div className="mb-6 flex justify-between items-center">
                     <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-200">Gestión de Usuarios</h1>
-                    <button
-                        onClick={() => setAddingUser(true)}
-                        className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition dark:bg-green-700 dark:hover:bg-green-900"
-                    >
-                        <FontAwesomeIcon icon={faPlus} className="mr-2" />
-                        Agregar Usuario
-                    </button>
+                    <div className="mb-6 flex justify-end items-end">
+                        <button
+                            onClick={() => setAddingUser(true)}
+                            className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition dark:bg-green-700 dark:hover:bg-green-900 mr-2"
+                        >
+                            <FontAwesomeIcon icon={faPlus} className="mr-2" />
+                            Agregar Usuario
+                        </button>
+                        <div>
+                            <button
+                                className="px-4 py-2 bg-purple-500 text-white font-semibold rounded-lg shadow-md hover:bg-purple-600 transition"
+                                onClick={() => setShowModalReport(true)}
+                            >
+                                <FontAwesomeIcon icon={faFolder} className="mr-2" />
+                                Reportes
+                            </button>
+                            { modalreport && <ReportModalForm onClose={() => setShowModalReport(false)} />}
+                        </div>
+                    </div>
+
                 </div>
                 <div className="mb-6 flex gap-4 items-center">
                     <input
