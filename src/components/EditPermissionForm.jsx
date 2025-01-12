@@ -72,7 +72,7 @@ const EditPermissionForm = ({ permission, onSave, onCancel }) => {
                 <label className="block text-sm font-bold mb-2 text-gray-400">Descripción</label>
                 <input
                 type="text"
-                name="name"
+                name="description"
                 value={formData.description}
                 onChange={handleChange}
                 className="border p-2 rounded w-full text-gray-400 dark:bg-gray-700"

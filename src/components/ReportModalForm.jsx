@@ -69,62 +69,72 @@ const ReportModal = ({ onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                <h2 className="text-xl font-semibold mb-4">Generar Reporte</h2>
-                <div className="mb-4 space-y-2">
-                    <label className="flex items-center space-x-2">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
+            <div className="bg-white p-8 rounded-xl shadow-2xl w-[400px] dark:bg-gray-900">
+                <h2 className="text-2xl font-extrabold mb-6 text-gray-800 dark:text-white text-center">
+                    Generar Reporte
+                </h2>
+                <div className="mb-6">
+                    <label className="flex items-center space-x-4 cursor-pointer">
                         <input
                             type="checkbox"
                             name="active"
                             checked={filters.active === true}
                             onChange={handleCheckboxChange}
-                            className="h-5 w-5"
+                            className="h-5 w-5 accent-blue-500 rounded focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-700"
                         />
-                        <span>Activos</span>
+                        <span className="text-lg font-medium text-gray-700 dark:text-gray-300">
+                            Activos
+                        </span>
                     </label>
-                    <label className="flex items-center space-x-2">
+                    <label className="flex items-center space-x-4 mt-4 cursor-pointer">
                         <input
                             type="checkbox"
                             name="inactive"
                             checked={filters.active === false}
                             onChange={handleCheckboxChange}
-                            className="h-5 w-5"
+                            className="h-5 w-5 accent-blue-500 rounded focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-700"
                         />
-                        <span>Inactivos</span>
+                        <span className="text-lg font-medium text-gray-700 dark:text-gray-300">
+                            Inactivos
+                        </span>
                     </label>
                 </div>
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Módulo</label>
+                <div className="mb-6">
+                    <label className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-300">
+                        Módulo
+                    </label>
                     <select
                         value={filters.module_key || ""}
                         onChange={handleDropdownChange}
-                        className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
+                        className="block w-full px-4 py-3 text-sm border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
                     >
-                        <option value="">Seleccione un módulo</option>
-                        <option value="INVM">Inventario</option>
-                        <option value="ARM">Cuentas por Cobrar</option>
-                        <option value="BILM">Facturación</option>
-                        <option value="PURM">Compras</option>
-                        <option value="SECM">Seguridad</option>
+                        <option value="" className="text-gray-500">
+                            Seleccione un módulo
+                        </option>
+                        <option value="INVM">INVM</option>
+                        <option value="ARM">ARM</option>
+                        <option value="BILM">BILM</option>
+                        <option value="PURM">PURM</option>
+                        <option value="SECM">SECM</option>
                     </select>
                 </div>
-                <div className="flex justify-end space-x-4">
+                <div className="flex justify-between items-center space-x-4">
                     <button
                         onClick={handleSubmit}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                        className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold text-lg shadow-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition-transform transform hover:scale-105"
                     >
                         Generar
                     </button>
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400 transition"
+                        className="w-full px-6 py-3 bg-gray-300 text-gray-800 rounded-lg font-semibold text-lg shadow-lg hover:bg-gray-400 focus:ring-2 focus:ring-gray-400 focus:outline-none dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 transition-transform transform hover:scale-105"
                     >
                         Cerrar
                     </button>
                 </div>
             </div>
-        </div>
+</div>
     );
 };
 
