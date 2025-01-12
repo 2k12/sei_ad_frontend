@@ -39,7 +39,7 @@ const PermissionDetailPage = () => {
                     Detalles del Permiso
                 </h1>
                 {permission ? (
-                    <div className="mb-6 bg-white p-6 rounded-lg shadow-md dark:bg-gray-900">
+                    <div className="mb-6 bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md dark:border border-gray-500">
                         <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
                             Información del Permiso
                         </h2>

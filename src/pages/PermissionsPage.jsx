@@ -158,25 +158,25 @@ const PermissionsPage = () => {
                     {/* Mostrar el estado */}
                     <td className="px-6 py-3 flex items-center gap-2">
                       <button
-                        onClick={() => handleViewPermission(permission)}
-                        className="mr-3 px-4 py-2 bg-gray-200 text-green-500 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out dark:text-gray-200 dark:bg-green-800 dark:hover:bg-green-500"
-                      >
-                        <FontAwesomeIcon icon={faEye} className="" />
-                      </button>
-                      <button
                         onClick={() => handleEditPermission(permission)}
-                        className="mr-3 px-4 py-2 bg-gray-200 text-blue-500 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out dark:text-gray-200 dark:bg-blue-800 dark:hover:bg-blue-500"
+                        className="px-3 py-2 bg-gray-200 text-blue-500 rounded-lg hover:bg-gray-400 transition dark:text-gray-200 dark:bg-blue-800 dark:hover:bg-blue-500"
                       >
                         <FontAwesomeIcon icon={faEdit} className="" />
                       </button>
                       <button
                         onClick={() => handleToggleActive(permission)}
-                        className="mr-3 px-4 py-2 bg-gray-200 text-orange-500 font-semibold rounded-lg shadow-md hover:bg-gray-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out dark:bg-gray-300 dark:hover:bg-gray-400"
+                        className="px-3 py-2 bg-gray-200 text-orange-500 rounded-lg hover:bg-gray-400 transition dark:bg-gray-300 dark:hover:bg-gray-400"
                         title={
                           permission.active ? "Desactivar Rol" : "Activar Rol"
                         }
                       >
                         <FontAwesomeIcon icon={permission.active ? faToggleOn : faToggleOff} className={permission.active ? "text-green-800" : "text-red-800"} />
+                      </button>
+                      <button
+                        onClick={() => handleViewPermission(permission)}
+                        className="px-3 py-2 bg-gray-200 text-green-500 rounded-lg hover:bg-gray-400 transition dark:text-gray-200 dark:bg-orange-500 dark:hover:bg-orange-700"
+                      >
+                        <FontAwesomeIcon icon={faEye} className="" />
                       </button>
                     </td>
                   </tr>
