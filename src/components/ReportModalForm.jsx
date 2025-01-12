@@ -71,7 +71,7 @@ const ReportModal = ({ onClose }) => {
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
             <div className="bg-white p-8 rounded-xl shadow-2xl w-[400px] dark:bg-gray-900">
-                <h2 className="text-2xl font-extrabold mb-6 text-gray-800 dark:text-white text-center">
+                <h2 className="text-2xl font-semibold mb-6 text-gray-600 dark:text-white dark:font-semibold text-center">
                     Generar Reporte
                 </h2>
                 <div className="mb-6">
