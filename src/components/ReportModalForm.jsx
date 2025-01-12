@@ -4,6 +4,9 @@ import { toast } from 'react-toastify';
 
 const ReportModal = ({ onClose }) => {
     const [filters, setFilters] = useState({ active: null, module_key: null }); // Estado para manejar los filtros
+    const token = localStorage.getItem("token");
+    const decodedToken = token ? JSON.parse(atob(token.split(".")[1])) : {};
+    const userName = decodedToken.Name || "Nombre de usuario";
 
     const handleCheckboxChange = (e) => {
         const { name, checked } = e.target;
@@ -32,6 +35,7 @@ const ReportModal = ({ onClose }) => {
                     ...(filters.active !== null && { active: filters.active }),
                     ...(filters.module_key && { module_key: filters.module_key }),
                 },
+                username: userName
             };
 
             // Llama a la función `generateReport` de `reportApi`
