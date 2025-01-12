@@ -102,11 +102,11 @@ const ReportModal = ({ onClose }) => {
                         className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
                     >
                         <option value="">Seleccione un módulo</option>
-                        <option value="INVM">INVM</option>
-                        <option value="ARM">ARM</option>
-                        <option value="BILM">BILM</option>
-                        <option value="PURM">PURM</option>
-                        <option value="SECM">SECM</option>
+                        <option value="INVM">Inventario</option>
+                        <option value="ARM">Cuentas por Cobrar</option>
+                        <option value="BILM">Facturación</option>
+                        <option value="PURM">Compras</option>
+                        <option value="SECM">Seguridad</option>
                     </select>
                 </div>
                 <div className="flex justify-end space-x-4">
