@@ -24,6 +24,7 @@ axiosInstance.interceptors.request.use(
 
 export const userApi = {
   getUsers: (params) => axiosInstance.get("/users", { params }),
+  getUsersForDropdown: () => axiosInstance.get("/users-dropdown"),
   createUser: (userData) => axiosInstance.post("/users", userData),
   updateUser: (id, userData) => axiosInstance.put(`/users/${id}`, userData),
   deleteUser: (id) => axiosInstance.delete(`/users/${id}`),
