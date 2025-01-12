@@ -101,10 +101,10 @@ export const ModuleProvider = ({ children }) => {
     }
   };
 
-  // Obtener los módulos cuando el componente se monta
-  useEffect(() => {
-    fetchModules(pagination.page, pagination.limit);
-  }, [pagination.page, pagination.limit]);
+  // // Obtener los módulos cuando el componente se monta
+  // useEffect(() => {
+  //   fetchModules(pagination.page, pagination.limit);
+  // }, [pagination.page, pagination.limit]);
 
   // Proveer el estado y las funciones al contexto
   return (

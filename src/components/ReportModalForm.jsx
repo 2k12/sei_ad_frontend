@@ -3,12 +3,14 @@ import { reportApi } from "../api/axios"; // Asegúrate de que este archivo est�
 import { toast } from 'react-toastify';
 
 const ReportModal = ({ onClose }) => {
-    const [filters, setFilters] = useState({ active: null, module_key: null }); // Estado para manejar los filtros
+    const [filters, setFilters] = useState({ active: null, module_key: null, format: "pdf" });
+    const token = localStorage.getItem("token");
+    const decodedToken = token ? JSON.parse(atob(token.split(".")[1])) : {};
+    const userName = decodedToken.Name || "Nombre de usuario";
 
     const handleCheckboxChange = (e) => {
         const { name, checked } = e.target;
 
-        // Actualiza el estado de los filtros según el checkbox seleccionado
         setFilters({
             ...filters,
             active: checked ? (name === "active" ? true : false) : null,
@@ -19,45 +21,44 @@ const ReportModal = ({ onClose }) => {
         const { value } = e.target;
         setFilters({
             ...filters,
-            module_key: value !== "" ? value : null, // Actualiza el filtro module_key
+            module_key: value !== "" ? value : null,
+        });
+    };
+
+    const handleFormatChange = (format) => {
+        setFilters({
+            ...filters,
+            format,
         });
     };
 
     const handleSubmit = async () => {
         try {
-            // Payload a enviar a la API
             const payload = {
                 model: "User",
                 filters: {
                     ...(filters.active !== null && { active: filters.active }),
                     ...(filters.module_key && { module_key: filters.module_key }),
                 },
+                format: filters.format,
+                username: userName,
             };
 
-            // Llama a la función `generateReport` de `reportApi`
             const response = await reportApi.generateReport(payload);
 
             if (response.status === 200) {
-                // Crea un Blob a partir de la respuesta.
-                const blob = new Blob([response.data], { type: "application/pdf" });
-
-                // Verifica si el Blob es válido.
-                if (!(blob instanceof Blob)) {
-                    throw new Error("La respuesta no es un Blob válido.");
-                }
-
-                // Genera la URL para la descarga del archivo.
+                const blob = new Blob([response.data], { type: filters.format === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = "reporte.pdf"; // Nombre del archivo.
+                a.download = filters.format === "pdf" ? "reporte.pdf" : "reporte.xlsx";
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
                 window.URL.revokeObjectURL(url);
 
                 toast.success("Reporte generado exitosamente.");
-                onClose(); // Cierra el modal si es necesario.
+                onClose();
             } else {
                 console.error("Error al generar el reporte:", response.statusText);
                 toast.error("No se pudo generar el reporte.");
@@ -74,6 +75,33 @@ const ReportModal = ({ onClose }) => {
                 <h2 className="text-2xl font-semibold mb-6 text-gray-600 dark:text-white dark:font-semibold text-center">
                     Generar Reporte
                 </h2>
+                <div className="mb-6">
+                    <label className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-300">
+                        Formato
+                    </label>
+                    <div className="flex space-x-4">
+                        <button
+                            onClick={() => handleFormatChange("pdf")}
+                            className={`px-4 py-2 rounded-full text-sm font-semibold ${
+                                filters.format === "pdf"
+                                    ? "bg-green-600 text-white"
+                                    : "bg-gray-300 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
+                            }`}
+                        >
+                            PDF
+                        </button>
+                        <button
+                            onClick={() => handleFormatChange("excel")}
+                            className={`px-4 py-2 rounded-full text-sm font-semibold ${
+                                filters.format === "excel"
+                                    ? "bg-red-600 text-white"
+                                    : "bg-gray-300 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
+                            }`}
+                        >
+                            Excel
+                        </button>
+                    </div>
+                </div>
                 <div className="mb-6">
                     <label className="flex items-center space-x-4 cursor-pointer">
                         <input
@@ -112,13 +140,14 @@ const ReportModal = ({ onClose }) => {
                         <option value="" className="text-gray-500">
                             Seleccione un módulo
                         </option>
-                        <option value="INVM">INVM</option>
-                        <option value="ARM">ARM</option>
-                        <option value="BILM">BILM</option>
-                        <option value="PURM">PURM</option>
-                        <option value="SECM">SECM</option>
+                        <option value="INVM">Inventario</option>
+                        <option value="ARM">Cuentas por Cobrar</option>
+                        <option value="BILM">Facturación</option>
+                        <option value="PURM">Compras</option>
+                        <option value="SECM">Seguridad</option>
                     </select>
                 </div>
+               
                 <div className="flex justify-between items-center space-x-4">
                     <button
                         onClick={handleSubmit}
@@ -134,7 +163,7 @@ const ReportModal = ({ onClose }) => {
                     </button>
                 </div>
             </div>
-</div>
+        </div>
     );
 };
 
