@@ -32,6 +32,16 @@ export const UserProvider = ({ children }) => {
         }
     };
 
+    const fetchUsersForDropdown = async () => {
+        try {
+            const { data } = await userApi.getUsersForDropdown();
+            return data.users;
+        } catch (error) {
+            console.error('Error fetching users for dropdown:', error);
+            return [];
+        }
+    };
+
     const createUser = async (userData) => {
         try {
             await userApi.createUser(userData);
@@ -77,6 +87,7 @@ export const UserProvider = ({ children }) => {
                 createUser,
                 updateUser,
                 deleteUser,
+                fetchUsersForDropdown,
                 loading,
                 pagination,
             }}
