@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ReportModalModulesForm from "../components/ReportModalModulesForm";
 import { faEdit, faPlus, faToggleOn, faToggleOff, faAddressBook, faCertificate, faAddressCard } from "@fortawesome/free-solid-svg-icons";
 import { useModuleContext } from "../context/ModuleContext";
 import { faMinus } from "@fortawesome/free-solid-svg-icons/faMinus";
+import { faFolder } from "@fortawesome/free-solid-svg-icons/faFolder";
 
 
 const ModulePage = () => {
@@ -21,7 +23,7 @@ const ModulePage = () => {
   const [editingModule, setEditingModule] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [newModule, setNewModule] = useState({ name: "", description: "", active: true });
-
+  const [modalreport, setShowModalReportModules] = useState(false);
 
   useEffect(() => {
     fetchModules({
@@ -71,17 +73,29 @@ const ModulePage = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-6 flex justify-between items-center">
           <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-200">Gestión de Módulos</h1>
-          <button
-            onClick={() => {
-              setEditingModule(null);
-              setNewModule({ name: "", description: "", active: true });
-              setShowModal(true);
-            }}
-            className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition"
-          >
-            <FontAwesomeIcon icon={faPlus} className="mr-2" />
-            Agregar Módulo
-          </button>
+          <div className="mb-6 flex justify-end items-center">
+            <button
+              onClick={() => {
+                setEditingModule(null);
+                setNewModule({ name: "", description: "", active: true });
+                setShowModal(true);
+              }}
+              className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition dark:bg-green-700 dark:hover:bg-green-900 mr-2"
+            >
+              <FontAwesomeIcon icon={faPlus} className="mr-2" />
+              Agregar Módulo
+            </button>
+            <div>
+              <button
+              className="px-4 py-2 bg-purple-500 text-white font-semibold rounded-lg shadow-md hover:bg-purple-600 transition"
+              onClick={() => setShowModalReportModules(true)}
+              >
+                  <FontAwesomeIcon icon={faFolder} className="mr-2" />
+                  Reportes
+                </button>
+                { modalreport && <ReportModalModulesForm onClose={() => setShowModalReportModules(false)} />}
+                </div>
+              </div>
         </div>
 
         {/* Filtros */}

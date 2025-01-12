@@ -1,41 +1,23 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useRoles } from "../context/RoleContext";
 import Navbar from "../components/Navbar";
 import EditRoleForm from "../components/EditRoleForm";
+import ReportModalRolesForm from "../components/ReportModalRolesForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faEdit,
-  faPlus,
-  faUserPlus,
-  faAddressBook,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faPlus, faUserPlus, faAddressBook } from "@fortawesome/free-solid-svg-icons";
 import { roleUserApi } from "../api/axios";
 import { faToggleOn } from "@fortawesome/free-solid-svg-icons/faToggleOn";
 import { faToggleOff } from "@fortawesome/free-solid-svg-icons/faToggleOff";
+import { faFolder } from "@fortawesome/free-solid-svg-icons/faFolder";
 
 const RolesPage = () => {
-  const {
-    roles,
-    fetchRoles,
-    updateRole,
-    createRole,
-    updateRoleState,
-    loading,
-    pagination,
-  } = useRoles();
-
-  const navigate = useNavigate();
-
-  // Estados
+  const { roles, fetchRoles, updateRole, createRole, updateRoleState, loading, pagination,} = useRoles();
+  // Operaciones
   const [filters, setFilters] = useState({ name: "", active: "" });
   const [editingRole, setEditingRole] = useState(null);
   const [addingRole, setAddingRole] = useState(false);
-  const [newRole, setNewRole] = useState({
-    name: "",
-    description: "",
-    active: true,
-  });
+  const [modalreport, setShowModalReportRoles] = useState(false);
+  const [newRole, setNewRole] = useState({ name: "", description: "", active: true });
   const [assigningPermissions, setAssigningPermissions] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
   const [permissions, setPermissions] = useState([]);
@@ -166,17 +148,29 @@ const RolesPage = () => {
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-6 flex justify-between items-center">
-          <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-200">
-            Gestión de Roles
+          <h1 className="mb-6 text-3xl font-semibold text-gray-800 dark:text-gray-200">
+              Gestión de Roles
           </h1>
-          <button
-            onClick={() => setAddingRole(true)}
-            className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition dark:bg-green-700 dark:hover:bg-green-900"
-          >
-            <FontAwesomeIcon icon={faPlus} className="mr-2" />
-            Agregar Rol
-          </button>
+          <div className="mb-6 flex justify-end items-center">
+            <button
+              onClick={() => setAddingRole(true)}
+              className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition dark:bg-green-700 dark:hover:bg-green-900 mr-2"
+            >
+              <FontAwesomeIcon icon={faPlus} className="mr-2" />
+              Agregar Rol
+            </button>
+            <div>
+              <button
+              className="px-4 py-2 bg-purple-500 text-white font-semibold rounded-lg shadow-md hover:bg-purple-600 transition"
+              onClick={() => setShowModalReportRoles(true)}
+              >
+                <FontAwesomeIcon icon={faFolder} className="mr-2" />
+                Reportes
+              </button>
+              { modalreport && <ReportModalRolesForm onClose={() => setShowModalReportRoles(false)} />}
+            </div>
         </div>
+      </div>
 
         {/* Filtros */}
         <div className="mb-6 flex gap-4 items-center">

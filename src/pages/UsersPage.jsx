@@ -67,7 +67,7 @@ const UsersPage = () => {
 
             <div className="max-w-7xl mx-auto px-4 py-8">
                 <div className="mb-6 flex justify-between items-center">
-                    <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-200">Gestión de Usuarios</h1>
+                    <h1 className="mb-6 text-3xl font-semibold text-gray-800 dark:text-gray-200">Gestión de Usuarios</h1>
                     <div className="mb-6 flex justify-end items-end">
                         <button
                             onClick={() => setAddingUser(true)}
