@@ -1,9 +1,9 @@
 import { useState } from "react";
 import * as XLSX from "xlsx";
 import { toast } from "react-toastify";
-import { permissionApi } from "../api/axios"; // Asegúrate de importar el método uploadPermissions
+import { permissionApi } from "../api/axios";
 
-const CargarPermisosModal = ({ onClose }) => {
+const ModalFastChargeOfData = ({ onClose }) => {
     const [file, setFile] = useState(null);
 
     const handleFileChange = (e) => {
@@ -20,15 +20,15 @@ const CargarPermisosModal = ({ onClose }) => {
             // Leer el archivo Excel
             const data = await file.arrayBuffer();
             const workbook = XLSX.read(data, { type: "array" });
-            const sheetName = workbook.SheetNames[0]; // Asume que la hoja a procesar es la primera
+            const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
             const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
             // Transformar los datos para la API
             const transformedData = jsonData.map((row) => ({
-                name: row.name?.trim() || null, // Limpia espacios innecesarios
-                description: row.description?.trim() || null, // Limpia espacios innecesarios
-                module_id: parseInt(row.module_id, 10), // Convierte module_id a número
+                name: row.name?.trim() || null,
+                description: row.description?.trim() || null,
+                module_id: parseInt(row.module_id, 10),
             }));
 
             // Validar los datos
@@ -43,11 +43,10 @@ const CargarPermisosModal = ({ onClose }) => {
                 return;
             }
 
-            // Enviar los datos a la API usando permissionApi
             await permissionApi.uploadPermissions(transformedData);
 
             toast.success("Permisos cargados exitosamente.");
-            onClose(); // Cerrar el modal
+            onClose();
         } catch (error) {
             console.error("Error al procesar el archivo:", error);
             toast.error(
@@ -115,4 +114,4 @@ const CargarPermisosModal = ({ onClose }) => {
     );
 };
 
-export default CargarPermisosModal;
+export default ModalFastChargeOfData;
