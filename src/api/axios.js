@@ -64,6 +64,7 @@ export const permissionApi = {
       throw error;
     }
   },
+  uploadPermissions: (permissionsData) => axiosInstance.post("/permissions/fastCharge", permissionsData),
 };
 
 export const moduleApi = {

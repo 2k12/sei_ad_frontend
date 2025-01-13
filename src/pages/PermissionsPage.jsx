@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePermissions } from "../context/PermissionContext";
+import ModalFastChargeOfData from "../components/ModalFastChargeOfData";
 import Navbar from "../components/Navbar";
 import EditPermissionForm from "../components/EditPermissionForm";
 import CreatePermissionForm from "../components/CreatePermissionForm"; // Importa el nuevo componente
@@ -15,6 +16,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faToggleOn } from "@fortawesome/free-solid-svg-icons/faToggleOn";
 import { faToggleOff } from "@fortawesome/free-solid-svg-icons/faToggleOff";
+import { faDatabase } from "@fortawesome/free-solid-svg-icons/faDatabase";
 
 const PermissionsPage = () => {
   const {
@@ -26,6 +28,7 @@ const PermissionsPage = () => {
     pagination,
     setPagination,
   } = usePermissions();
+  const [modalfastcharge, setShowModalFastChargeOfData] = useState(false);
   const [editingPermission, setEditingPermission] = useState(null);
   const [creatingPermission, setCreatingPermission] = useState(false);
   const [filters, setFilters] = useState({ name: "", active: "" });
@@ -74,6 +77,11 @@ const PermissionsPage = () => {
     fetchPermissions({page: newPage, limit: pagination.limit, ...filters,});
   };
 
+  const handleCloseModalFastCharge = () => {
+    setShowModalFastChargeOfData(false);
+    fetchPermissions({ page: pagination.page, limit: pagination.limit });
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       <Navbar />
@@ -82,13 +90,25 @@ const PermissionsPage = () => {
           <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-200">
             Gestión de Permisos
           </h1>
+          <div className="mb-6 flex justify-end items-end">
           <button
             onClick={() => setCreatingPermission(true)}
-            className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition dark:bg-green-700 dark:hover:bg-green-900"
+            className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition dark:bg-green-700 dark:hover:bg-green-900 mr-2"
           >
             <FontAwesomeIcon icon={faPlus} className="mr-2" />
             Agregar Permiso
           </button>
+          <div>
+            <button
+              className="px-4 py-2 bg-red-800 text-white font-semibold rounded-lg shadow-md hover:bg-red-950 transition"
+              onClick={() => setShowModalFastChargeOfData(true)}
+              >
+                <FontAwesomeIcon icon={faDatabase} className="mr-2" />
+                Carga Rápida
+            </button>
+            { modalfastcharge && <ModalFastChargeOfData onClose={handleCloseModalFastCharge} />}
+          </div>
+          </div>
         </div>
         {/* Filtros */}
         <div className="mb-6 flex gap-4 items-center">
