@@ -109,6 +109,31 @@ const UsersPage = () => {
                         </div>
                     </div>
                 </div>
+                <div className="mb-6 flex gap-4 items-center">
+                    <input
+                        name="email"
+                        value={filters.email}
+                        onChange={(e) => setFilters({ ...filters, [e.target.name]: e.target.value })}
+                        placeholder="Buscar por correo electrónico"
+                        className="w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400 dark:border-gray-500 dark:bg-gray-800"
+                    />
+                    <select
+                        name="active"
+                        value={filters.active}
+                        onChange={(e) => setFilters({ ...filters, [e.target.name]: e.target.value })}
+                        className="w-full md:w-48 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400 dark:border-gray-500 dark:bg-gray-800"
+                    >
+                        <option value="">Todo</option>
+                        <option value="true">Activo</option>
+                        <option value="false">Inactivo</option>
+                    </select>
+                    <button
+                        onClick={handleSearch}
+                        className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition dark:bg-blue-700 dark:hover:bg-blue-900"
+                    >
+                        Buscar
+                    </button>
+                </div>
                 <div className="mb-4 text-right">
                     <span className="text-lg text-gray-500 dark:text-gray-500">
                         Total de registros: {pagination.total}
