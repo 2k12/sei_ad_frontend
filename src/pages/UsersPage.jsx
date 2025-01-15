@@ -3,16 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { useUsers } from "../context/UserContext";
 import EditUserForm from "../components/EditUserForm";
 import ReportModalForm from "../components/ReportModalForm";
+import ModalFastChargeUsers from "../components/ModalFastChargeUsers";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faPlus, faEye, faFolder } from "@fortawesome/free-solid-svg-icons";
 import { faToggleOn } from "@fortawesome/free-solid-svg-icons/faToggleOn";
 import { faToggleOff } from "@fortawesome/free-solid-svg-icons/faToggleOff";
-
+import { faDatabase } from "@fortawesome/free-solid-svg-icons/faDatabase";
 
 const UsersPage = () => {
     const { users, fetchUsers, updateUser, createUser, loading, pagination } = useUsers();
     const [filters, setFilters] = useState({ email: "", active: "" });
+    const [modalfastcharge, setShowModalFastChargeUsers] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
     const [addingUser, setAddingUser] = useState(false);
     const [modalreport, setShowModalReport] = useState(false);
@@ -21,13 +23,11 @@ const UsersPage = () => {
 
     useEffect(() => {
         fetchUsers({ page: pagination.page, pageSize: pagination.limit });
-    }, 
-    
-    [pagination.page, pagination.limit]);
+    }, [pagination.page, pagination.limit]);
 
     const handleSearch = () => {
         fetchUsers({ page: pagination.page, pageSize: pagination.limit, ...filters });
-    };    
+    };
 
     const handleToggleActive = (id, active) => {
         updateUser(id, { active: !active });
@@ -61,13 +61,19 @@ const UsersPage = () => {
         setNewUser({ ...newUser, [name]: type === "checkbox" ? checked : value });
     };
 
+    const handleCloseModalFastCharge = () => {
+        setShowModalFastChargeUsers(false);
+        fetchUsers({ page: pagination.page, pageSize: pagination.limit }); // Actualiza la lista de usuarios
+    };
+
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
             <Navbar />
-
             <div className="max-w-7xl mx-auto px-4 py-8">
                 <div className="mb-6 flex justify-between items-center">
-                    <h1 className="mb-6 text-3xl font-semibold text-gray-800 dark:text-gray-200">Gestión de Usuarios</h1>
+                    <h1 className="mb-6 text-3xl font-semibold text-gray-800 dark:text-gray-200">
+                        Gestión de Usuarios
+                    </h1>
                     <div className="mb-6 flex justify-end items-end">
                         <button
                             onClick={() => setAddingUser(true)}
@@ -78,44 +84,31 @@ const UsersPage = () => {
                         </button>
                         <div>
                             <button
+                                className="px-4 py-2 bg-red-800 text-white font-semibold rounded-lg shadow-md hover:bg-red-950 transition mr-2"
+                                onClick={() => setShowModalFastChargeUsers(true)}
+                            >
+                                <FontAwesomeIcon icon={faDatabase} className="mr-2" />
+                                Carga Rápida
+                            </button>
+                            {modalfastcharge && (
+                                <ModalFastChargeUsers
+                                    onClose={handleCloseModalFastCharge} // Cierra el modal y actualiza la tabla
+                                    fetchUsers={fetchUsers} // Asegúrate de pasar fetchUsers aquí
+                                />
+                            )}
+                        </div>
+                        <div>
+                            <button
                                 className="px-4 py-2 bg-purple-500 text-white font-semibold rounded-lg shadow-md hover:bg-purple-600 transition"
                                 onClick={() => setShowModalReport(true)}
                             >
                                 <FontAwesomeIcon icon={faFolder} className="mr-2" />
                                 Reportes
                             </button>
-                            { modalreport && <ReportModalForm onClose={() => setShowModalReport(false)} />}
+                            {modalreport && <ReportModalForm onClose={() => setShowModalReport(false)} />}
                         </div>
                     </div>
-
                 </div>
-                <div className="mb-6 flex gap-4 items-center">
-                    <input
-                        name="email"
-                        value={filters.email}
-                        onChange={(e) => setFilters({ ...filters, [e.target.name]: e.target.value })}
-                        placeholder="Buscar por correo electrónico"
-                        className="w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400 dark:border-gray-500 dark:bg-gray-800"
-                    />
-                    <select
-                        name="active"
-                        value={filters.active}
-                        onChange={(e) => setFilters({ ...filters, [e.target.name]: e.target.value })}
-                        className="w-full md:w-48 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400 dark:border-gray-500 dark:bg-gray-800"
-                    >
-                        <option value="">Todo</option>
-                        <option value="true">Activo</option>
-                        <option value="false">Inactivo</option>
-                    </select>
-                    <button
-                        onClick={handleSearch}
-                        className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition dark:bg-blue-700 dark:hover:bg-blue-900"
-                    >
-                        Buscar
-                    </button>
-                </div>
-
-                {/* Tabla */}
                 <div className="mb-4 text-right">
                     <span className="text-lg text-gray-500 dark:text-gray-500">
                         Total de registros: {pagination.total}
