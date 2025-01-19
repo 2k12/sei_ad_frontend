@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUsers } from "../context/UserContext";
+import { useRoles } from "../context/RoleContext";
 import EditUserForm from "../components/EditUserForm";
 import ReportModalForm from "../components/ReportModalForm";
 import ModalFastChargeUsers from "../components/ModalFastChargeUsers";
@@ -13,6 +14,7 @@ import { faDatabase } from "@fortawesome/free-solid-svg-icons/faDatabase";
 
 const UsersPage = () => {
     const { users, fetchUsers, updateUser, createUser, loading, pagination } = useUsers();
+    const { roles, fetchRolesForDropdown } = useRoles();
     const [filters, setFilters] = useState({ email: "", active: "" });
     const [modalfastcharge, setShowModalFastChargeUsers] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
@@ -23,6 +25,7 @@ const UsersPage = () => {
 
     useEffect(() => {
         fetchUsers({ page: pagination.page, pageSize: pagination.limit });
+        fetchRolesForDropdown();
     }, [pagination.page, pagination.limit]);
 
     const handleSearch = () => {
@@ -53,7 +56,8 @@ const UsersPage = () => {
     const handleAddUser = () => {
         createUser(newUser);
         setAddingUser(false);
-        setNewUser({ name: "", email: "", password: "", active: true });
+        setNewUser({ name: "", email: "", password: "", active: true, rolId: "" });
+        console.log(newUser);
     };
 
     const handleNewUserChange = (e) => {
@@ -160,16 +164,16 @@ const UsersPage = () => {
                                         <td className="px-6 py-3">👤 {user.name}</td>
                                         <td className="px-6 py-3">{user.email}</td>
                                         <td className="px-6 py-3">{user.active ? (
-                                                <span className="px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs font-bold dark:bg-green-300 dark:text-green-900">
+                                            <span className="px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs font-bold dark:bg-green-300 dark:text-green-900">
                                                 Activo
-                                                </span>
-                                            ) : (
-                                                <span className="px-2 py-1 bg-red-200 text-red-800 rounded-full text-xs font-bold dark:bg-red-300 dark:text-red-900">
+                                            </span>
+                                        ) : (
+                                            <span className="px-2 py-1 bg-red-200 text-red-800 rounded-full text-xs font-bold dark:bg-red-300 dark:text-red-900">
                                                 Inactivo
-                                                </span>
-                                            )}</td>
+                                            </span>
+                                        )}</td>
                                         <td className="px-6 py-3 flex items-center gap-2">
-                                            
+
                                             <button
                                                 onClick={() => handleEditUser(user)}
                                                 className="px-3 py-2 bg-gray-200 text-blue-500 rounded-lg hover:bg-gray-400 transition dark:text-gray-200 dark:bg-blue-800 dark:hover:bg-blue-500"
@@ -270,6 +274,24 @@ const UsersPage = () => {
                                         className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-white"
                                         required
                                     />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-300">
+                                        Rol
+                                    </label>
+                                    <select
+                                        name="rolId"
+                                        value={roles.id}
+                                        onChange={handleNewUserChange}
+                                        className="block w-full px-4 py-3 text-sm border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
+                                    >
+                                        <option value="" className="text-gray-500">Seleccione un rol</option>
+                                        {roles.map((role) => (
+                                            <option key={role.id} value={role.id}>
+                                                {role.name}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div className="mb-4 flex items-center">
                                     <input

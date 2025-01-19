@@ -36,6 +36,18 @@ export const RoleProvider = ({ children }) => {
     }
   };
 
+  const fetchRolesForDropdown = async () => {
+    try {
+      const { data } = await roleApi.getRolesForDropdown();
+      setRoles(data.roles);
+      // return data.roles;
+    } catch (error) {
+      console.error('Error fetching roles for dropdown:', error);
+      return [];
+    }
+  };
+
+
   const createRole = async (roleData) => {
     try {
       const { data } = await roleApi.createRole(roleData);
@@ -90,6 +102,7 @@ export const RoleProvider = ({ children }) => {
         updateRole,
         updateRoleState,
         deleteRole,
+        fetchRolesForDropdown,
         loading,
         pagination,
       }}
