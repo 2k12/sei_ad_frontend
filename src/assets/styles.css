@@ -1,0 +1,130 @@
+/* Contenedor principal de la página */
+.page-container {
+  @apply min-h-screen bg-gray-100 dark:bg-gray-900;
+}
+
+/* Contenedor principal */
+.main-container {
+  @apply max-w-7xl mx-auto px-4 py-8;
+}
+
+/* Encabezado */
+.header-title {
+  @apply mb-6 text-3xl font-semibold text-gray-800 dark:text-gray-200;
+}
+
+.header-actions {
+  @apply mb-6 flex justify-end items-center;
+}
+
+/* Botones principales */
+.btn-Add {
+  @apply px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md transition dark:bg-blue-700 mr-2;
+}
+
+.btn-Add:hover {
+  @apply hover:bg-blue-700 dark:hover:bg-blue-900;
+}
+
+.btn-Charge {
+  @apply px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md transition dark:bg-blue-700 mr-2;
+}
+
+.btn-Charge:hover {
+  @apply hover:bg-red-950 dark:hover:bg-blue-900;
+}
+
+.btn-Report {
+  @apply px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md transition dark:bg-blue-700 mr-2;
+}
+
+.btn-Report:hover {
+  @apply hover:bg-red-950 dark:hover:bg-blue-900;
+}
+
+/* Barra de filtros */
+.filter-container {
+  @apply mb-6 flex gap-4 items-center;
+}
+
+.filter-input {
+  @apply w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400 dark:border-gray-500 dark:bg-gray-800;
+}
+
+.filter-select {
+  @apply w-full md:w-48 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400 dark:border-gray-500 dark:bg-gray-800;
+}
+
+.btn-Search {
+  @apply px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md transition dark:bg-blue-700 mr-2;
+}
+
+.btn-Search:hover {
+  @apply hover:bg-red-950 dark:hover:bg-blue-900;
+}
+
+/* Contenedor principal */
+.table-container {
+  @apply overflow-x-auto bg-white shadow-lg rounded-lg dark:bg-gray-900;
+}
+  
+/* Tabla */
+.table {
+  @apply border dark:border-gray-600 table-auto w-full text-sm text-gray-600 dark:text-white;
+}
+  
+/* Encabezado de la tabla */
+.table-header {
+  @apply bg-gray-200 dark:bg-gray-600 dark:text-white;
+}
+
+/* Filas del cuerpo */
+.table-row {
+  @apply hover:bg-gray-100 dark:hover:bg-gray-800;
+}
+
+/* Filas del encabezado */ 
+.table-row-header {
+  @apply px-6 py-3 text-left;
+}
+  
+/* Celda */
+.table-cell {
+  @apply px-6 py-3;
+}
+  
+/* Etiqueta activa */
+.label-active {
+  @apply px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs font-bold dark:bg-green-900 dark:text-green-300;
+}
+  
+/* Etiqueta inactiva */
+.label-inactive {
+  @apply px-2 py-1 bg-red-200 text-red-800 rounded-full text-xs font-bold dark:bg-red-900 dark:text-red-300;
+}
+  
+/* Botones */
+.btn {
+  @apply px-3 py-2 rounded-lg transition bg-gray-200 hover:bg-gray-400 dark:bg-blue-700 dark:hover:bg-blue-900 mr-1;
+}
+  
+.btn-icon {
+  @apply text-blue-500 dark:text-gray-200;
+}
+  
+.btn-icon-toggle {
+  @apply text-orange-500;
+}
+  
+.btn-icon-active {
+  @apply text-blue-500 dark:text-white;
+}
+
+/* Paginación */
+.pagination-container {
+  @apply mt-6 flex justify-between items-center;
+}
+
+.pagination-button {
+  @apply bg-gray-300 p-2 rounded-md disabled:opacity-50 text-gray-700 dark:text-white dark:bg-gray-600 dark:disabled:opacity-50 dark:enabled:opacity-100;
+}

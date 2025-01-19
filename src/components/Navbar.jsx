@@ -66,7 +66,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="bg-gray-800 text-white p-4 flex justify-between items-center">
+        <nav className="bg-gray-300 dark:bg-gray-800 text-black dark:text-white p-4 flex justify-between items-center">
             <div className="flex items-center">
                 <button
                     ref={buttonRef}
@@ -92,7 +92,7 @@ const Navbar = () => {
             </div>
             <button
                 onClick={logout}
-                className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm font-medium"
+                className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm font-medium text-white"
             >
                 Cerrar sesión
             </button>
@@ -101,14 +101,14 @@ const Navbar = () => {
             <div
                 ref={drawerRef}
                 id="drawer"
-                className={`fixed top-16 left-0 h-full w-48 bg-gray-800 shadow-lg p-4 transition-transform duration-300 ${isDrawerOpen ? "transform translate-x-0" : "transform -translate-x-full"
+                className={`fixed top-16 left-0 h-full w-48 bg-gray-300 dark:bg-gray-800 shadow-lg p-4 transition-transform duration-300 ${isDrawerOpen ? "transform translate-x-0" : "transform -translate-x-full"
                     }`}
             >
                 <ul>
                     <li
                         className={`py-2 cursor-pointer rounded ${selectedPermission === "Dashboard"
                             ? "text-blue-500"
-                            : "hover:text-blue-500 text-white"
+                            : "hover:text-blue-500 text-black dark:text-white"
                             }`}
                         onClick={() => handlePermissionClick("Dashboard")}
                     >
@@ -120,7 +120,7 @@ const Navbar = () => {
                             key={index}
                             className={`py-2 cursor-pointer rounded ${permiso === selectedPermission
                                 ? "text-blue-500"
-                                : "hover:text-blue-500 text-white"
+                                : "hover:text-blue-500 text-black dark:text-white"
                                 }`}
                             onClick={() => handlePermissionClick(permiso)}
                         >
