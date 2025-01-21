@@ -5,6 +5,8 @@ import ModalFastChargeOfData from "../components/ModalFastChargeOfData";
 import Navbar from "../components/Navbar";
 import EditPermissionForm from "../components/EditPermissionForm";
 import CreatePermissionForm from "../components/CreatePermissionForm"; // Importa el nuevo componente
+import ReportModalPermissionsForm from "../components/ReportModalPermissionsForm"; // Modal para exportación
+
 import {
   faAddressCard,
   faEdit,
@@ -17,6 +19,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faToggleOn } from "@fortawesome/free-solid-svg-icons/faToggleOn";
 import { faToggleOff } from "@fortawesome/free-solid-svg-icons/faToggleOff";
 import { faDatabase } from "@fortawesome/free-solid-svg-icons/faDatabase";
+import { faFolder } from "@fortawesome/free-solid-svg-icons"; // Ícono para exportar
+
 
 const PermissionsPage = () => {
   const {
@@ -33,15 +37,18 @@ const PermissionsPage = () => {
   const [creatingPermission, setCreatingPermission] = useState(false);
   const [filters, setFilters] = useState({ name: "", active: "" });
   const navigate = useNavigate();
+  const [modalReport, setShowModalReport] = useState(false);
+  
+
 
   useEffect(() => {
-    fetchPermissions({page: pagination.page, limit: pagination.limit,});
+    fetchPermissions({ page: pagination.page, limit: pagination.limit, });
   }, [pagination.page, pagination.limit]);
 
   const handleSearch = () => {
     fetchPermissions({ page: pagination.page, limit: pagination.limit, ...filters, });
   };
-  
+
 
   const handleEditPermission = (permission) => {
     setEditingPermission(permission);
@@ -74,7 +81,7 @@ const PermissionsPage = () => {
 
   const handlePageChange = (newPage) => {
     setPagination((prev) => ({ ...prev, page: newPage }));
-    fetchPermissions({page: newPage, limit: pagination.limit, ...filters,});
+    fetchPermissions({ page: newPage, limit: pagination.limit, ...filters, });
   };
 
   const handleCloseModalFastCharge = () => {
@@ -82,48 +89,60 @@ const PermissionsPage = () => {
     fetchPermissions({ page: pagination.page, limit: pagination.limit });
   };
 
+  
+
   return (
-    <div className="page-container">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       <Navbar />
-      <div className="main-container">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-6 flex justify-between items-center">
-          <h1 className="header-title">
+          <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-200">
             Gestión de Permisos
           </h1>
-          <div className="header-actions">
-          <button
-            onClick={() => setCreatingPermission(true)}
-            className="btn-Add"
-          >
-            <FontAwesomeIcon icon={faPlus} className="mr-2" />
-            Agregar Permiso
-          </button>
-          <div>
+          <div className="mb-6 flex justify-end items-end">
             <button
-              className="btn-Charge"
-              onClick={() => setShowModalFastChargeOfData(true)}
+              onClick={() => setCreatingPermission(true)}
+              className="btn-Add"
+            >
+              <FontAwesomeIcon icon={faPlus} className="mr-2" />
+              Agregar Permiso
+            </button>
+            <div>
+              <button
+                className="btn-Charge"
+                onClick={() => setShowModalFastChargeOfData(true)}
               >
                 <FontAwesomeIcon icon={faDatabase} className="mr-2" />
                 Carga Rápida
-            </button>
-            { modalfastcharge && <ModalFastChargeOfData onClose={handleCloseModalFastCharge} />}
-          </div>
+              </button>
+              {modalfastcharge && <ModalFastChargeOfData onClose={handleCloseModalFastCharge} />}
+            </div>
+            <div>
+              <button
+                className="btn-Report"
+                onClick={() => setShowModalReport(true)}
+              >
+                <FontAwesomeIcon icon={faFolder} className="mr-2" />
+                Exportar
+              </button>
+              {modalReport && <ReportModalPermissionsForm onClose={() => setShowModalReport(false)} />}
+            </div>
           </div>
         </div>
         {/* Filtros */}
-        <div className="filter-container">
+        <div className="mb-6 flex gap-4 items-center">
           <input
             name="name"
             value={filters.name}
             onChange={(e) => setFilters({ ...filters, name: e.target.value })}
             placeholder="Buscar por nombre"
-            className="filter-input"
+            className="w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400 dark:border-gray-500 dark:bg-gray-800"
           />
           <select
             name="active"
             value={filters.active}
             onChange={(e) => setFilters({ ...filters, active: e.target.value })}
-            className="filter-select"
+            className="w-full md:w-48 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-400 dark:border-gray-500 dark:bg-gray-800"
           >
             <option value="">Todos</option>
             <option value="true">Activos</option>
@@ -131,25 +150,26 @@ const PermissionsPage = () => {
           </select>
           <button
             onClick={handleSearch}
-            className="btn-Search">
-              Buscar
+            className="btn-Search"
+          >
+            Buscar
           </button>
         </div>
-
+  
+        {/* Tabla */}
         <div className="mb-4 text-right">
           <span className="text-lg text-gray-500 dark:text-gray-500">
             Total de registros: {pagination.total}
           </span>
         </div>
-        {/* Tabla */}
-        <div className="table-container">
-          <table className="table">
-            <thead className="table-header">
+        <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
+          <table className="table-auto w-full text-sm text-gray-600 dark:bg-cyan-950 dark:text-gray-200">
+            <thead className="bg-gray-200 dark:bg-cyan-800 dark:text-white">
               <tr>
-                <th className="table-row-header">Nombre</th>
-                <th className="table-row-header">Descripción</th>
-                <th className="table-row-header">Estado</th>
-                <th className="table-row-header">Acciones</th>
+                <th className="px-6 py-3 text-left">Nombre</th>
+                <th className="px-6 py-3 text-left">Descripción</th>
+                <th className="px-6 py-3 text-left">Estado</th>
+                <th className="px-6 py-3 text-left">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -161,20 +181,21 @@ const PermissionsPage = () => {
                 </tr>
               ) : (
                 permissions.map((permission) => (
-                  <tr key={permission.id} className="table-row">
-                    <td className="table-cell"><FontAwesomeIcon icon={faAddressCard} className="mr-5"/>{permission.name}</td>
-                    <td className="table-cell">{permission.description}</td>
-                    <td className="table-cell">
+                  <tr key={permission.id} className="hover:bg-gray-100 dark:hover:bg-cyan-900">
+                    <td className="px-6 py-3"><FontAwesomeIcon icon={faAddressCard} className="mr-5" />{permission.name}</td>
+                    <td className="px-6 py-3">{permission.description}</td>
+                    <td className="px-6 py-3">
                       {permission.active ? (
-                        <span className="label-active">
+                        <span className="px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs font-bold dark:bg-green-300 dark:text-green-900">
                           Activo
                         </span>
                       ) : (
-                        <span className="label-inactive">
+                        <span className="px-2 py-1 bg-red-200 text-red-800 rounded-full text-xs font-bold dark:bg-red-300 dark:text-red-900">
                           Inactivo
                         </span>
                       )}
                     </td>
+                    {/* Mostrar el estado */}
                     <td className="px-6 py-3 flex items-center gap-2">
                       <button
                         onClick={() => handleEditPermission(permission)}
@@ -185,11 +206,9 @@ const PermissionsPage = () => {
                       <button
                         onClick={() => handleToggleActive(permission)}
                         className="btn btn-icon-toggle"
-                        title={
-                          permission.active ? "Desactivar Rol" : "Activar Rol"
-                        }
+                        title={permission.active ? "Desactivar Rol" : "Activar Rol"}
                       >
-                        <FontAwesomeIcon icon={permission.active ? faToggleOn : faToggleOff} className="btn-icon-active" />
+                        <FontAwesomeIcon icon={permission.active ? faToggleOn : faToggleOff} className={permission.active ? "btn-icon-active" : ""} />
                       </button>
                       <button
                         onClick={() => handleViewPermission(permission)}
@@ -204,7 +223,7 @@ const PermissionsPage = () => {
             </tbody>
           </table>
         </div>
-        <div className="pagination-container">
+        <div className="flex justify-between items-center mt-4">
           <button
             disabled={pagination.page === 1}
             onClick={() => handlePageChange(pagination.page - 1)}
@@ -217,9 +236,7 @@ const PermissionsPage = () => {
             {Math.ceil(pagination.total / pagination.limit)}
           </span>
           <button
-            disabled={
-              pagination.page === Math.ceil(pagination.total / pagination.limit)
-            }
+            disabled={pagination.page === Math.ceil(pagination.total / pagination.limit)}
             onClick={() => handlePageChange(pagination.page + 1)}
             className="pagination-button"
           >
@@ -251,5 +268,6 @@ const PermissionsPage = () => {
     </div>
   );
 };
-
 export default PermissionsPage;
+
+
