@@ -46,8 +46,10 @@ const PermissionsPage = () => {
   }, [pagination.page, pagination.limit]);
 
   const handleSearch = () => {
-    fetchPermissions({ page: pagination.page, limit: pagination.limit, ...filters, });
+    console.log("Filtros enviados:", filters);
+    fetchPermissions({ page: pagination.page, limit: pagination.limit, ...filters });
   };
+  
 
 
   const handleEditPermission = (permission) => {

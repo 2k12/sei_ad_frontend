@@ -1,14 +1,38 @@
-import { useState } from "react";
-import { reportApi } from "../api/axios";  
+import { useState, useEffect } from "react";
+import { reportApi, moduleApi } from "../api/axios";
 import { toast } from "react-toastify";
 
 const ReportModalPermissionsForm = ({ onClose }) => {
   const [filters, setFilters] = useState({ active: null, module_id: null });
   const [format, setFormat] = useState("pdf");
+  const [modules, setModules] = useState([]);
+  const [isLoadingModules, setIsLoadingModules] = useState(true);
+  const [error, setError] = useState(null);
 
   const token = localStorage.getItem("token");
   const decodedToken = token ? JSON.parse(atob(token.split(".")[1])) : {};
   const userName = decodedToken.Name || "Usuario desconocido";
+
+  useEffect(() => {
+    const fetchModules = async () => {
+      try {
+        const response = await moduleApi.getModules();
+        const { modules } = response.data; // Extrae los módulos de la respuesta
+        if (Array.isArray(modules)) {
+          setModules(modules);
+        } else {
+          console.error("La propiedad 'modules' no es un arreglo:", modules);
+          setError("Formato de datos incorrecto.");
+        }
+      } catch (error) {
+        console.error("Error al cargar los módulos:", error);
+        setError("Error al cargar los módulos.");
+      } finally {
+        setIsLoadingModules(false);
+      }
+    };
+    fetchModules();
+  }, []);
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
@@ -132,13 +156,14 @@ const ReportModalPermissionsForm = ({ onClose }) => {
             value={filters.module_id || ""}
             onChange={handleDropdownChange}
             className="w-full px-3 py-2 text-gray-700 border rounded dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
+            disabled={isLoadingModules || error !== null}
           >
             <option value="">Seleccionar módulo</option>
-            <option value="INVM">Inventario</option>
-            <option value="ARM">Cuentas por Cobrar</option>
-            <option value="BILM">Facturación</option>
-            <option value="PURM">Compras</option>
-            <option value="SECM">Seguridad</option>
+            {modules.map((module) => (
+              <option key={module.id} value={module.id}>
+                {module.name}
+              </option>
+            ))}
           </select>
         </div>
         <div className="flex mt-6 space-x-4">
