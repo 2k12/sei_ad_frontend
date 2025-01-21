@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAudits } from "../context/AuditContext";
 import Navbar from "../components/Navbar";
+import ReportModalAudits from "../components/ReportModalAudits"; // Importar el modal
 
 const AuditsPage = () => {
   // Extraer datos del contexto
@@ -11,11 +12,12 @@ const AuditsPage = () => {
 
   // Estados locales para filtros
   const [filters, setFilters] = useState({ event: "" });
+  const [showReportModal, setShowReportModal] = useState(false); // Estado para controlar el modal
 
   // Manejar cambios en los filtros
   const handleSearch = () => {
     fetchAudits({ page: pagination.page, pageSize: pagination.limit, ...filters });
-  };  
+  };
 
   // Llamada inicial para obtener datos
   useEffect(() => {
@@ -33,8 +35,15 @@ const AuditsPage = () => {
     <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Título y botón para reportes */}
         <div className="mb-6 flex justify-between items-center">
           <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-200">Auditoría</h1>
+          <button
+            onClick={() => setShowReportModal(true)} // Mostrar el modal
+            className="px-4 py-2 bg-purple-500 text-white font-semibold rounded-lg shadow-md hover:bg-purple-600 transition dark:bg-purple-700 dark:hover:bg-purple-900"
+          >
+            Generar Reporte
+          </button>
         </div>
 
         {/* Filtros */}
@@ -47,11 +56,11 @@ const AuditsPage = () => {
             className="w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 dark:border-gray-500 dark:bg-gray-800 dark:text-white"
           />
           <button
-                        onClick={handleSearch}
-                        className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition dark:bg-blue-700 dark:hover:bg-blue-900"
-                    >
-                        Buscar
-                    </button>
+            onClick={handleSearch}
+            className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition dark:bg-blue-700 dark:hover:bg-blue-900"
+          >
+            Buscar
+          </button>
         </div>
 
         {/* Tabla */}
@@ -128,6 +137,9 @@ const AuditsPage = () => {
           </button>
         </div>
       </div>
+
+      {/* Modal de Reportes */}
+      {showReportModal && <ReportModalAudits onClose={() => setShowReportModal(false)} />}
     </div>
   );
 };
