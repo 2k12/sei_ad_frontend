@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useAuth } from '../context/AuthContext'; 
+import { useAuth } from '../context/AuthContext';
 
 function LoginPage() {
-    const { login } = useAuth(); 
+    const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -10,7 +10,7 @@ function LoginPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await login(email, password, "SECM"); 
+            await login(email, password, "SECM");
         } catch (err) {
             console.log(err);
             setError('Error al iniciar sesión');
@@ -64,11 +64,11 @@ function LoginPage() {
                 {error && (
                     <div className="mt-4 text-red-500 text-center">{error}</div>
                 )}
-                  <div className="mt-4 text-center text-sm text-gray-500">
-                V 1.1.5
-            </div>
+                <div className="mt-4 text-center text-sm text-gray-500">
+                    V 1.2.0
+                </div>
             </form>
-            
+
         </div>
     );
 }
