@@ -32,8 +32,12 @@ const AuditStatistics = () => {
 
         setIsFetching(true);
         try {
+            console.log(filters);
             const response = await auditApi.getAuditStatistics(filters);
             setStatistics(response.data);
+            console.log(response);
+            console.log(response.data);
+
             updateChart(response.data);
         } catch (error) {
             console.error("Error al obtener estadísticas:", error);
@@ -43,12 +47,92 @@ const AuditStatistics = () => {
     };
 
     // Inicializar o actualizar el gráfico
+    // const updateChart = (data) => {
+    //     if (chart) {
+    //         chart.destroy(); // Destruir el gráfico anterior si existe
+    //     }
+
+    //     const ctx = document.getElementById("auditChart").getContext("2d");
+    //     const newChart = new Chart(ctx, {
+    //         type: "bar",
+    //         data: {
+    //             labels: data.map((stat) => `${stat.event} (${stat.origin_service})`),
+    //             datasets: [
+    //                 {
+    //                     label: "Cantidad",
+    //                     data: data.map((stat) => stat.total),
+    //                     backgroundColor: [
+    //                         "rgba(75, 192, 192, 0.6)",
+    //                         "rgba(54, 162, 235, 0.6)",
+    //                         "rgba(255, 206, 86, 0.6)",
+    //                         "rgba(153, 102, 255, 0.6)",
+    //                         "rgba(255, 159, 64, 0.6)",
+    //                     ],
+    //                     borderColor: [
+    //                         "rgba(75, 192, 192, 1)",
+    //                         "rgba(54, 162, 235, 1)",
+    //                         "rgba(255, 206, 86, 1)",
+    //                         "rgba(153, 102, 255, 1)",
+    //                         "rgba(255, 159, 64, 1)",
+    //                     ],
+    //                     borderWidth: 1,
+    //                 },
+    //             ],
+    //         },
+    //         options: {
+    //             responsive: true,
+    //             maintainAspectRatio: false, // Asegura que el gráfico se adapte a su contenedor
+    //             plugins: {
+    //                 legend: {
+    //                     position: "top",
+    //                 },
+    //                 title: {
+    //                     display: true,
+    //                     text: "Estadísticas de Auditoría",
+    //                 },
+    //             },
+    //             scales: {
+    //                 x: {
+    //                     ticks: {
+    //                         autoSkip: true,
+    //                         maxRotation: 45,
+    //                         minRotation: 0,
+    //                     },
+    //                     grid: {
+    //                         display: false,
+    //                     },
+    //                 },
+    //                 y: {
+    //                     beginAtZero: true,
+    //                     grid: {
+    //                         color: "rgba(200, 200, 200, 0.2)",
+    //                     },
+    //                 },
+    //             },
+    //         },
+    //     });
+
+    //     setChart(newChart);
+    // };
+
     const updateChart = (data) => {
+        const chartContainer = document.getElementById("auditChart").parentNode;
+    
         if (chart) {
             chart.destroy(); // Destruir el gráfico anterior si existe
         }
-
+    
+        // Validar si data es nulo o está vacío
+        if (!data || data.length === 0) {
+            // Mostrar mensaje en lugar del gráfico
+            chartContainer.innerHTML = `<p class="text-center text-gray-600 dark:text-gray-300">No existen registros con los filtros asignados.</p>`;
+            return;
+        }
+    
+        // Restaurar el canvas si existe
+        chartContainer.innerHTML = `<canvas id="auditChart"></canvas>`;
         const ctx = document.getElementById("auditChart").getContext("2d");
+    
         const newChart = new Chart(ctx, {
             type: "bar",
             data: {
@@ -107,10 +191,10 @@ const AuditStatistics = () => {
                 },
             },
         });
-
+    
         setChart(newChart);
     };
-
+    
     // Manejar cambios en los filtros
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
