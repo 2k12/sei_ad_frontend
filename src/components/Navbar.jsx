@@ -14,12 +14,20 @@ const Navbar = () => {
         .map((permiso) => permiso.split(" ")[1]);
 
     const routes = {
-        Dashboard: "/dashboard", // Añadido la ruta para Dashboard
+        Dashboard: "/dashboard",
         Usuarios: "/users",
         Roles: "/roles",
         Modulos: "/modules",
         Permisos: "/permissions",
         Auditoria: "/audits",
+    };
+
+    const permissionDisplayNames = {
+        Usuarios: "Usuarios",
+        Roles: "Roles",
+        Permisos: "Permisos",
+        Modulos: "Módulos",
+        Auditoria: "Auditoría",
     };
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -115,19 +123,26 @@ const Navbar = () => {
                         <FontAwesomeIcon icon={faHandPointRight} className="mr-2" />
                         Dashboard
                     </li>
-                    {gestionarPermissions.map((permiso, index) => (
-                        <li
-                            key={index}
-                            className={`py-2 cursor-pointer rounded ${permiso === selectedPermission
-                                ? "text-blue-500"
-                                : "hover:text-blue-500 text-black dark:text-white"
-                                }`}
-                            onClick={() => handlePermissionClick(permiso)}
-                        >
-                            <FontAwesomeIcon icon={faHandPointRight} className="mr-2" />
-                            {permiso}
-                        </li>
-                    ))}
+                    {gestionarPermissions.map((permiso, index) => {
+                        const displayName =
+                            permissionDisplayNames[permiso] || permiso; 
+                        return (
+                            <li
+                                key={index}
+                                className={`py-2 cursor-pointer rounded ${permiso === selectedPermission
+                                    ? "text-blue-500"
+                                    : "hover:text-blue-500 text-black dark:text-white"
+                                    }`}
+                                onClick={() => handlePermissionClick(permiso)}
+                            >
+                                <FontAwesomeIcon
+                                    icon={faHandPointRight}
+                                    className="mr-2"
+                                />
+                                {displayName}
+                            </li>
+                        );
+                    })}
                 </ul>
             </div>
         </nav>
