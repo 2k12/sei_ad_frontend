@@ -42,6 +42,7 @@ export const roleApi = {
 };
 export const auditApi = {
   getAudits: (params) => axiosInstance.get("/audit", { params }),
+  getAuditStatistics: (params) => axiosInstance.get("/audit/statistics", { params }), 
 };
 
 export const roleUserApi = {

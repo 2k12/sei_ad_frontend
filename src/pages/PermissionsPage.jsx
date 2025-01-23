@@ -125,7 +125,7 @@ const PermissionsPage = () => {
                 onClick={() => setShowModalReport(true)}
               >
                 <FontAwesomeIcon icon={faFolder} className="mr-2" />
-                Exportar
+                Reportes
               </button>
               {modalReport && <ReportModalPermissionsForm onClose={() => setShowModalReport(false)} />}
             </div>
