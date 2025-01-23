@@ -103,6 +103,28 @@ const ReportModalAudits = ({ onClose }) => {
                     Generar Reporte de Auditoría
                 </h2>
                 <div className="mb-6">
+                    <div className="flex justify-center space-x-4 mb-6">
+                        <button
+                            onClick={() => handleFormatChange("pdf")}
+                            className={`px-4 py-2 rounded-full text-sm font-semibold ${filters.format === "pdf"
+                                ? "bg-red-600 text-white border-red-600"
+                                : "bg-gray-200 text-gray-700 border-gray-300"
+                                }`}
+                        >
+                            PDF
+                        </button>
+                        <button
+                            onClick={() => handleFormatChange("excel")}
+                            className={`px-4 py-2 rounded-full text-sm font-semibold border ${filters.format === "excel"
+                                ? "bg-green-600 text-white border-green-600"
+                                : "bg-gray-200 text-gray-700 border-gray-300"
+                                }`}
+                        >
+                            Excel
+                        </button>
+                    </div>
+                </div>
+                <div className="mb-6">
                     <label className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-300">
                         Usuario
                     </label>
@@ -120,31 +142,7 @@ const ReportModalAudits = ({ onClose }) => {
                         ))}
                     </select>
                 </div>
-                <div className="mb-6">
-                    <label className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-300">
-                        Formato
-                    </label>
-                    <div className="flex space-x-4">
-                        <button
-                            onClick={() => handleFormatChange("pdf")}
-                            className={`px-4 py-2 rounded-full text-sm font-semibold ${filters.format === "pdf"
-                                ? "bg-green-600 text-white"
-                                : "bg-gray-300 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
-                                }`}
-                        >
-                            PDF
-                        </button>
-                        <button
-                            onClick={() => handleFormatChange("excel")}
-                            className={`px-4 py-2 rounded-full text-sm font-semibold ${filters.format === "excel"
-                                ? "bg-red-600 text-white"
-                                : "bg-gray-300 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
-                                }`}
-                        >
-                            Excel
-                        </button>
-                    </div>
-                </div>
+
                 <div className="mb-6">
                     <label className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-300">
                         Rango de Fechas

@@ -98,52 +98,50 @@ const ReportModalPermissionsForm = ({ onClose }) => {
         <div className="flex justify-center space-x-4 mb-6">
           <button
             onClick={() => setFormat("pdf")}
-            className={`px-4 py-2 rounded-full text-sm font-semibold border ${
-              format === "pdf"
-                ? "bg-red-600 text-white border-red-600"
-                : "bg-gray-200 text-gray-700 border-gray-300"
-            }`}
+            className={`px-4 py-2 rounded-full text-sm font-semibold border ${format === "pdf"
+              ? "bg-red-600 text-white border-red-600"
+              : "bg-gray-200 text-gray-700 border-gray-300"
+              }`}
           >
             PDF
           </button>
           <button
             onClick={() => setFormat("excel")}
-            className={`px-4 py-2 rounded-full text-sm font-semibold border ${
-              format === "excel"
-                ? "bg-green-600 text-white border-green-600"
-                : "bg-gray-200 text-gray-700 border-gray-300"
-            }`}
+            className={`px-4 py-2 rounded-full text-sm font-semibold border ${format === "excel"
+              ? "bg-green-600 text-white border-green-600"
+              : "bg-gray-200 text-gray-700 border-gray-300"
+              }`}
           >
             Excel
           </button>
         </div>
         <div className="mb-4">
-          <label className="block mb-2 font-semibold text-gray-700 dark:text-gray-200">
+          <label className="block mb-2 font-semibold text-gray-800 mb-2 dark:text-gray-300">
             Estados
           </label>
-          <div className="flex space-x-4">
-            <label className="flex items-center">
+          <div className="mb-4">
+            <label className="flex items-center space-x-4 cursor-pointer">
               <input
                 type="checkbox"
                 name="active"
                 checked={filters.active === true}
                 onChange={handleCheckboxChange}
-                className="w-5 h-5 text-blue-500 rounded dark:bg-gray-800"
+                className="h-5 w-5 accent-blue-500 rounded focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-700"
               />
-              <span className="ml-2 text-gray-700 dark:text-gray-200">
-                Activos
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                Usuarios Activos
               </span>
             </label>
-            <label className="flex items-center">
+            <label className="flex items-center space-x-4 mt-4 cursor-pointer">
               <input
                 type="checkbox"
                 name="inactive"
                 checked={filters.active === false}
                 onChange={handleCheckboxChange}
-                className="w-5 h-5 text-red-500 rounded dark:bg-gray-800"
+                className="h-5 w-5 accent-blue-500 rounded focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-700"
               />
-              <span className="ml-2 text-gray-700 dark:text-gray-200">
-                Inactivos
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                Usuarios Inactivos
               </span>
             </label>
           </div>
