@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: "https://seri-api-utn-2024.fly.dev/api",
   headers: {
     "Content-Type": "application/json",
   },

@@ -18,7 +18,7 @@ import PermissionDetailPage from './pages/PermissionDetailPage';
 import RolesPage from "./pages/RolesPage";
 import ModulePage from "./pages/ModulePage";
 import { AuditProvider } from "./context/AuditContext";
-import AuditsPage from "./pages/auditPage";
+import AuditsPage from "./pages/AuditPage";
 
 import ProtectedRoute from "./components/ProtectedRoutes";
 
