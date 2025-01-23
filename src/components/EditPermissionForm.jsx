@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { moduleApi } from "../api/axios";
-import { moduleApi } from "../api/axios";
 
 const EditPermissionForm = ({ permission, onSave, onCancel }) => {
     const [formData, setFormData] = useState({
@@ -10,8 +9,6 @@ const EditPermissionForm = ({ permission, onSave, onCancel }) => {
         active: permission.active,
     });
     const [modules, setModules] = useState([]);
-    const [isLoadingModules, setIsLoadingModules] = useState(true);
-    const [error, setError] = useState(null);
     const [isLoadingModules, setIsLoadingModules] = useState(true);
     const [error, setError] = useState(null);
 
@@ -26,19 +23,7 @@ const EditPermissionForm = ({ permission, onSave, onCancel }) => {
                     console.error("La propiedad 'modules' no es un arreglo:", modules);
                     setError('Formato de datos incorrecto');
                 }
-                const response = await moduleApi.getModules();
-                const { modules } = response.data; // Extraer la propiedad 'modules' de la respuesta
-                if (Array.isArray(modules)) {
-                    setModules(modules);
-                } else {
-                    console.error("La propiedad 'modules' no es un arreglo:", modules);
-                    setError('Formato de datos incorrecto');
-                }
             } catch (error) {
-                console.error("Error al cargar los módulos:", error);
-                setError('Error al cargar los módulos');
-            } finally {
-                setIsLoadingModules(false);
                 console.error("Error al cargar los módulos:", error);
                 setError('Error al cargar los módulos');
             } finally {
@@ -60,7 +45,6 @@ const EditPermissionForm = ({ permission, onSave, onCancel }) => {
         e.preventDefault();
         onSave(permission.id, {
             ...formData,
-            module_id: parseInt(formData.module_id, 10),
             module_id: parseInt(formData.module_id, 10),
         });
     };
@@ -103,7 +87,6 @@ const EditPermissionForm = ({ permission, onSave, onCancel }) => {
                     onChange={handleChange}
                     className="border p-2 rounded w-full text-gray-400 dark:bg-gray-700"
                     required
-                    disabled={isLoadingModules || error !== null}
                     disabled={isLoadingModules || error !== null}
                 >
                     <option value="" disabled>Selecciona un módulo</option>

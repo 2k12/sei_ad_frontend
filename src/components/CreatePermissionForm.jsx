@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { moduleApi } from '../api/axios';
-import { useState, useEffect } from 'react';
-import { moduleApi } from '../api/axios';
 
 const CreatePermissionForm = ({ onSave, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -13,29 +11,7 @@ const CreatePermissionForm = ({ onSave, onCancel }) => {
   const [modules, setModules] = useState([]);
   const [isLoadingModules, setIsLoadingModules] = useState(true);
   const [error, setError] = useState(null);
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    module_id: "",
-    active: true,
-  });
-  const [modules, setModules] = useState([]);
-  const [isLoadingModules, setIsLoadingModules] = useState(true);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchModules = async () => {
-      try {
-        const response = await moduleApi.getModules();
-        setModules(response.data.modules || []);
-        setIsLoadingModules(false);
-      } catch (error) {
-        setError('Error al cargar los módulos');
-        setIsLoadingModules(false);
-      }
-    };
-    fetchModules();
-  }, []);
   useEffect(() => {
     const fetchModules = async () => {
       try {
@@ -57,21 +33,7 @@ const CreatePermissionForm = ({ onSave, onCancel }) => {
       [name]: type === "checkbox" ? checked : value,
     });
   };
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
-  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave({
-      ...formData,
-      module_id: parseInt(formData.module_id, 10),
-    });
-  };
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave({
