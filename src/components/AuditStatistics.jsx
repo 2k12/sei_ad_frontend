@@ -14,12 +14,12 @@ const AuditStatistics = () => {
 
     const eventOptions = [
         { value: "", label: "Todos los eventos" },
-        { value: "CREATE", label: "Crear" },
+        { value: "INSERT", label: "Crear" },
         { value: "UPDATE", label: "Actualizar" },
         { value: "DELETE", label: "Eliminar" },
-        { value: "TOGGLE_ACTIVE", label: "Cambiar estado" },
-        { value: "ASSIGN_ROLE", label: "Asignar Rol" },
-        { value: "REMOVE_ROLE", label: "Remover Rol" },
+        // { value: "TOGGLE_ACTIVE", label: "Cambiar estado" },
+        // { value: "ASSIGN_ROLE", label: "Asignar Rol" },
+        // { value: "REMOVE_ROLE", label: "Remover Rol" },
     ];
 
     // Obtener estadísticas desde la API
@@ -38,7 +38,7 @@ const AuditStatistics = () => {
             console.log(response);
             console.log(response.data);
 
-            updateChart(response.data);
+            updateChart(response.data.statistics);
         } catch (error) {
             console.error("Error al obtener estadísticas:", error);
         } finally {
@@ -116,11 +116,11 @@ const AuditStatistics = () => {
     // };
 
     const updateChart = (data) => {
-        const chartContainer = document.getElementById("auditChart").parentNode;
+        const chartContainer = document.getElementById("auditChart")?.parentNode;
     
         if (chart) {
             chart.destroy(); // Destruir el gráfico anterior si existe
-        }
+        } 
     
         // Validar si data es nulo o está vacío
         if (!data || data.length === 0) {

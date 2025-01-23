@@ -1,21 +1,30 @@
 import { useState, useEffect } from "react";
-import { reportApi } from "../api/axios";
+import { reportApi, userApi } from "../api/axios";
 import { toast } from "react-toastify";
-import { useUsers } from "../context/UserContext";
+// import { useUsers } from "../context/UserContext";
 
 const ReportModal = ({ onClose }) => {
     const [filters, setFilters] = useState({ active: null, module_key: null, id: null });
-    const { users, fetchUsersForDropdown } = useUsers();
+    // const { users, fetchUsersForDropdown } = useUsers();
     const [format, setFormat] = useState("pdf");
     const [activeSection, setActiveSection] = useState("usuarios"); // "usuarios" o "usuariosCompletos"
     const [option, setOption] = useState("usuarios"); // Establecer opción predeterminada según activeSection
     const token = localStorage.getItem("token");
     const decodedToken = token ? JSON.parse(atob(token.split(".")[1])) : {};
     const userName = decodedToken.Name || "Nombre de usuario";
+    const [usersDrop, setUsersDrop] = useState([]);
 
     useEffect(() => {
-        fetchUsersForDropdown();
-    }, [fetchUsersForDropdown]);
+        const fetchUsers = async () => {
+            try {
+                const response = await userApi.getUsersForDropdown();
+                setUsersDrop(response.data.users);
+            } catch (error) {
+                console.error("Error al obtener usuarios:", error);
+            }
+        };
+        fetchUsers();
+    }, []);
 
     const handleCheckboxChange = (e) => {
         const { name, checked } = e.target;
@@ -192,7 +201,7 @@ const ReportModal = ({ onClose }) => {
                             <option value="" className="text-gray-500">
                                 Seleccione un usuario
                             </option>
-                            {users.map((user) => (
+                            {usersDrop.map((user) => (
                                 <option key={user.id} value={user.id}>
                                     {user.name}
                                 </option>
