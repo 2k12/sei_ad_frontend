@@ -98,18 +98,34 @@ const ModalFastChargeUsers = ({ onClose, fetchUsers }) => {
                     <button
                         onClick={handleSubmit}
                         disabled={loading}
-                        className={`w-full px-6 py-3 ${
+                        className={`w-full px-6 py-3 rounded-lg font-semibold text-lg shadow-lg flex items-center justify-center ${
                             loading ? "bg-indigo-500 text-gray-200 cursor-not-allowed" : "bg-blue-600 text-white"
                         } rounded-lg font-semibold text-lg shadow-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition-transform transform hover:scale-105`}
                     >
                         {loading ? (
-                            <div className="flex items-center justify-center">
-                                <svg
-                                    className="animate-spin h-5 w-5 mr-3 text-white"
-                                    viewBox="0 0 24 24"
-                                ></svg>
-                                Procesando...
-                            </div>
+                            <>
+                            <svg
+                                className="animate-spin h-5 w-5 mr-3 text-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                ></circle>
+                                <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8v8H4z"
+                                ></path>
+                            </svg>
+                            Procesando...
+                        </>
                         ) : (
                             "Subir"
                         )}

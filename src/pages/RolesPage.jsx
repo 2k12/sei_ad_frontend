@@ -9,6 +9,7 @@ import { roleUserApi } from "../api/axios";
 import { faToggleOn } from "@fortawesome/free-solid-svg-icons/faToggleOn";
 import { faToggleOff } from "@fortawesome/free-solid-svg-icons/faToggleOff";
 import { faFolder } from "@fortawesome/free-solid-svg-icons/faFolder";
+import { toast } from "react-toastify";
 import '../assets/styles.css';
 
 const RolesPage = () => {
@@ -97,11 +98,14 @@ const RolesPage = () => {
 
   const confirmSave = async () => {
     try {
+      let mensaje = "Ningun Cambio Realizado.";
       for (const permissionId of changes.toAdd) {
         await roleUserApi.assignPermission(selectedRole.id, permissionId);
+        mensaje = "Permisos Asignados Correctamente.";
       }
       for (const permissionId of changes.toRemove) {
         await roleUserApi.removePermission(selectedRole.id, permissionId);
+        mensaje = "Permisos Eliminados Correctamente.";
       }
 
       setPermissions(
@@ -109,7 +113,9 @@ const RolesPage = () => {
       );
       setAssigningPermissions(false);
       setConfirmChanges(false);
+      toast.success(mensaje);
     } catch (error) {
+      toast.error("Hubo un error al guardar los cambios. Inténtalo nuevamente.");
       console.error("Error al guardar permisos:", error);
     }
   };
