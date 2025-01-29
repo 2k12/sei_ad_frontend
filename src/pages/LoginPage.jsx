@@ -13,7 +13,11 @@ function LoginPage() {
             await login(email, password, "SECM");
         } catch (err) {
             console.log(err);
-            setError('Error al iniciar sesión');
+            if (err.response?.data?.error.includes("bloqueada")) {
+                setError("Tu cuenta ha sido bloqueada por múltiples intentos fallidos. Inténtalo más tarde.");
+            } else {
+                setError('Error al iniciar sesión');
+            }
         }
     };
 
@@ -68,7 +72,6 @@ function LoginPage() {
                     V 1.2.0
                 </div>
             </form>
-
         </div>
     );
 }
