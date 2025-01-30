@@ -85,7 +85,9 @@ export const moduleApi = {
   getModules: (page = 1, limit = 10) =>
     axiosInstance.get(`/modules?page=${page}&limit=${limit}`),
 
-  getModules: (params) => axiosInstance.get("/modules", { params }), // Recupera todos los módulos con paginación y filtros
+  getModules: (params) => axiosInstance.get("/modules", { params }), 
+  getActiveModules: () => axiosInstance.get("/modules/active"),
+  // Recupera todos los módulos con paginación y filtros
   createModule: (moduleData) => axiosInstance.post("/modules", moduleData),
   updateModule: (id, moduleData) =>
     axiosInstance.put(`/modules/${id}`, moduleData),

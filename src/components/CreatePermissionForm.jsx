@@ -15,8 +15,8 @@ const CreatePermissionForm = ({ onSave, onCancel }) => {
   useEffect(() => {
     const fetchModules = async () => {
       try {
-        const response = await moduleApi.getModules();
-        setModules(response.data.modules || []);
+        const response = await moduleApi.getActiveModules();
+        setModules(response.data || []);
         setIsLoadingModules(false);
       } catch (error) {
         setError('Error al cargar los módulos');
