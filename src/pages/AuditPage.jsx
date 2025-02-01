@@ -4,21 +4,25 @@ import { useAudits } from "../context/AuditContext";
 import Navbar from "../components/Navbar";
 import ReportModalAudits from "../components/ReportModalAudits"; // Importar el modal
 import AuditStatistics from "../components/AuditStatistics"; // Componente de gráficos
+import axios from "axios"; // Para realizar solicitudes HTTP
 
 const AuditsPage = () => {
   // Extraer datos del contexto
   const { audits, loading, pagination, fetchAudits } = useAudits();
-
   const navigate = useNavigate();
 
   // Estados locales
-  const [filters, setFilters] = useState({ event: "" });
+  const [filters, setFilters] = useState({ event: "", module: "" });
   const [showReportModal, setShowReportModal] = useState(false); // Modal para reportes
   const [showGraph, setShowGraph] = useState(false); // Estado para alternar vista
 
   // Manejar cambios en los filtros
   const handleSearch = () => {
-    fetchAudits({ page: pagination.page, pageSize: pagination.limit, ...filters });
+    const updatedFilters = {
+      ...filters,
+      module: filters.module.toUpperCase(),
+    };
+    fetchAudits({ page: pagination.page, pageSize: pagination.limit, ...updatedFilters });
   };
 
   // Llamada inicial para obtener datos
@@ -63,6 +67,7 @@ const AuditsPage = () => {
         {/* Filtros: Mostrar solo si NO está en modo gráfico */}
         {!showGraph && (
           <div className="mb-6 flex gap-4 items-center">
+            {/* Filtro por Evento */}
             <input
               name="event"
               value={filters.event}
@@ -70,6 +75,7 @@ const AuditsPage = () => {
               placeholder="Buscar por evento"
               className="w-full md:w-64 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 dark:border-gray-500 dark:bg-gray-800 dark:text-white"
             />
+            {/* Botón de Búsqueda */}
             <button
               onClick={handleSearch}
               className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition dark:bg-blue-700 dark:hover:bg-blue-900"
