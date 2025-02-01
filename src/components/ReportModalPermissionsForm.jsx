@@ -116,7 +116,7 @@ const ReportModalPermissionsForm = ({ onClose }) => {
           </button>
         </div>
         <div className="mb-4">
-          <label className="block mb-2 font-semibold text-gray-800 mb-2 dark:text-gray-300">
+          <label className="block mb-2 font-semibold text-gray-800 dark:text-gray-300">
             Estados
           </label>
           <div className="mb-4">

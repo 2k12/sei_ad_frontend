@@ -94,14 +94,14 @@ const PermissionsPage = () => {
   
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
+    <div className="page-container">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="main-container">
         <div className="mb-6 flex justify-between items-center">
-          <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-200">
+          <h1 className="header-title">
             Gestión de Permisos
           </h1>
-          <div className="mb-6 flex justify-end items-end">
+          <div className="header-actions">
             <button
               onClick={() => setCreatingPermission(true)}
               className="btn-Add"
@@ -132,7 +132,7 @@ const PermissionsPage = () => {
           </div>
         </div>
         {/* Filtros */}
-        <div className="mb-6 flex gap-4 items-center">
+        <div className="filter-container">
           <input
             name="name"
             value={filters.name}
@@ -158,20 +158,22 @@ const PermissionsPage = () => {
           </button>
         </div>
   
-        {/* Tabla */}
+        
         <div className="mb-4 text-right">
           <span className="text-lg text-gray-500 dark:text-gray-500">
             Total de registros: {pagination.total}
           </span>
         </div>
-        <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
-          <table className="table-auto w-full text-sm text-gray-600 dark:bg-cyan-950 dark:text-gray-200">
-            <thead className="bg-gray-200 dark:bg-cyan-800 dark:text-white">
+
+        {/* Tabla */}
+        <div className="table-container">
+          <table className="table">
+            <thead className="table-header">
               <tr>
-                <th className="px-6 py-3 text-left">Nombre</th>
-                <th className="px-6 py-3 text-left">Descripción</th>
-                <th className="px-6 py-3 text-left">Estado</th>
-                <th className="px-6 py-3 text-left">Acciones</th>
+                <th className="table-row-header">Nombre</th>
+                <th className="table-row-header">Estado</th>
+                <th className="table-row-header">Descripción</th>
+                <th className="table-row-header">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -183,16 +185,16 @@ const PermissionsPage = () => {
                 </tr>
               ) : (
                 permissions.map((permission) => (
-                  <tr key={permission.id} className="hover:bg-gray-100 dark:hover:bg-cyan-900">
-                    <td className="px-6 py-3"><FontAwesomeIcon icon={faAddressCard} className="mr-5" />{permission.name}</td>
-                    <td className="px-6 py-3">{permission.description}</td>
-                    <td className="px-6 py-3">
+                  <tr key={permission.id} className="table-row">
+                    <td className="table-cell"><FontAwesomeIcon icon={faAddressCard} className="mr-5" />{permission.name}</td>
+                    <td className="table-cell">{permission.description}</td>
+                    <td className="table-cell">
                       {permission.active ? (
-                        <span className="px-2 py-1 bg-green-200 text-green-800 rounded-full text-xs font-bold dark:bg-green-300 dark:text-green-900">
+                        <span className="label-active">
                           Activo
                         </span>
                       ) : (
-                        <span className="px-2 py-1 bg-red-200 text-red-800 rounded-full text-xs font-bold dark:bg-red-300 dark:text-red-900">
+                        <span className="label-inactive">
                           Inactivo
                         </span>
                       )}
@@ -202,6 +204,7 @@ const PermissionsPage = () => {
                       <button
                         onClick={() => handleEditPermission(permission)}
                         className="btn btn-icon"
+                        title="Editar Permiso"
                       >
                         <FontAwesomeIcon icon={faEdit} className="" />
                       </button>
@@ -210,11 +213,12 @@ const PermissionsPage = () => {
                         className="btn btn-icon-toggle"
                         title={permission.active ? "Desactivar Rol" : "Activar Rol"}
                       >
-                        <FontAwesomeIcon icon={permission.active ? faToggleOn : faToggleOff} className={permission.active ? "btn-icon-active" : ""} />
+                        <FontAwesomeIcon icon={permission.active ? faToggleOn : faToggleOff} className="btn-icon-active" />
                       </button>
                       <button
                         onClick={() => handleViewPermission(permission)}
                         className="btn btn-icon"
+                        title="Ver Permiso"
                       >
                         <FontAwesomeIcon icon={faEye} className="" />
                       </button>
@@ -225,7 +229,7 @@ const PermissionsPage = () => {
             </tbody>
           </table>
         </div>
-        <div className="flex justify-between items-center mt-4">
+        <div className="pagination-container">
           <button
             disabled={pagination.page === 1}
             onClick={() => handlePageChange(pagination.page - 1)}
