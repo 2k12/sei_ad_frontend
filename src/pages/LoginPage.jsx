@@ -78,7 +78,7 @@ function LoginPage() {
                 </div>
 
                 <div className="mt-4 text-center text-sm text-gray-500">
-                    V 1.2.0
+                    V 1.7.0
                 </div>
             </form>
         </div>
