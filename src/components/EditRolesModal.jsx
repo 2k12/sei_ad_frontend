@@ -17,7 +17,7 @@ const EditRolesModal = ({ onClose, currentRoles = [], userId, onSave }) => {
         setLoading(true);
         setError(null);
         const response = await role_UserApi.getRolesActive();
-
+        console.log("API response:", response.data.roles);
         if (response.data && Array.isArray(response.data.roles)) {
           setAvailableRoles(response.data.roles);
         } else {
@@ -33,7 +33,7 @@ const EditRolesModal = ({ onClose, currentRoles = [], userId, onSave }) => {
 
     fetchRoles();
   }, []);
-
+  console.log("availableRoles", availableRoles);
   const toggleRoleSelection = (roleId) => {
     setSelectedRoles((prevSelectedRoles) =>
       prevSelectedRoles.includes(roleId)

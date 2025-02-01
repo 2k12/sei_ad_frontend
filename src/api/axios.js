@@ -122,7 +122,7 @@ export const role_UserApi = {
   removeRoleFromUser: (userId, roleId) =>
     axiosInstance.delete(`/users/${userId}/roles/${roleId}`),
   getRoles: (params) => axiosInstance.get("/roles", { params }),
-  getRolesActive: (params) => axiosInstance.get("/rolesActive", { params }),
+  getRolesActive: () => axiosInstance.get("/roles-active"),
 };
 
 export const reportApi = {
