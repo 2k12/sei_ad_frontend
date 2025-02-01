@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 function LoginPage() {
     const { login } = useAuth();
@@ -13,7 +14,7 @@ function LoginPage() {
             await login(email, password, "SECM");
         } catch (err) {
             console.log(err);
-            if (err.response?.data?.error.includes("bloqueada")) {
+            if (err.response?.data?.error?.includes("bloqueada")) {
                 setError("Tu cuenta ha sido bloqueada por múltiples intentos fallidos. Inténtalo más tarde.");
             } else {
                 setError('Error al iniciar sesión');
@@ -68,6 +69,14 @@ function LoginPage() {
                 {error && (
                     <div className="mt-4 text-red-500 text-center">{error}</div>
                 )}
+
+                {/* Enlace para restablecer contraseña */}
+                <div className="mt-4 text-center">
+                    <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline dark:text-blue-400">
+                        ¿Olvidaste tu contraseña?
+                    </Link>
+                </div>
+
                 <div className="mt-4 text-center text-sm text-gray-500">
                     V 1.2.0
                 </div>

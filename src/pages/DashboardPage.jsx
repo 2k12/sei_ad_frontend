@@ -13,6 +13,8 @@ const DashboardPage = () => {
   const decodedToken = JSON.parse(atob(token.split(".")[1]));
   const permissions = decodedToken.permissions || [];
 
+  console.log(permissions);
+
   const permissionRoutes = {
     Usuarios: "users",
     Roles: "roles",
