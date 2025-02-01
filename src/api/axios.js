@@ -130,4 +130,14 @@ export const reportApi = {
     axiosInstance.post("/generate-report", all, { responseType: "blob" }),
 };
 
+export const authApi = {
+  // Solicitar restablecimiento de contraseña
+  requestPasswordReset: (email) =>
+    axiosInstance.post("/request-reset", { email: email }, {
+      headers: { "Content-Type": "application/json", Authorization: "" },
+    }),
+
+  resetPassword: (token, password) =>
+    axiosInstance.post("/reset-password", { token, password }),
+};
 export default axiosInstance;

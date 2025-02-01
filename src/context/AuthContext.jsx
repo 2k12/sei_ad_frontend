@@ -56,7 +56,13 @@ export const AuthProvider = ({ children }) => {
             toast.success("Inicio de sesión exitoso");
             navigate("/dashboard");
         } catch (error) {
-            toast.error(error.response?.data?.error || "Error al iniciar sesión");
+            const errorMessage = error.response?.data?.error || "Error al iniciar sesión";
+            toast.error(errorMessage);
+
+            // Si el backend indica que la cuenta está bloqueada, mostramos un mensaje específico
+            if (errorMessage.includes("bloqueada")) {
+                toast.error("Tu cuenta ha sido bloqueada por múltiples intentos fallidos. Inténtalo más tarde.");
+            }
         }
     };
 

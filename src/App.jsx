@@ -14,7 +14,6 @@ import ProfileUserPage from './pages/ProfileUserPage';
 import { Navigate } from 'react-router-dom';
 import PermissionsPage from './pages/PermissionsPage';
 import PermissionDetailPage from './pages/PermissionDetailPage';
-// import Breadcrumbs from './components/Breadcrumbs';
 import RolesPage from "./pages/RolesPage";
 import ModulePage from "./pages/ModulePage";
 import { AuditProvider } from "./context/AuditContext";
@@ -22,6 +21,8 @@ import AuditsPage from "./pages/AuditPage";
 
 import ProtectedRoute from "./components/ProtectedRoutes";
 
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 const App = () => {
   useEffect(() => { }, []);
@@ -51,10 +52,11 @@ const Layout = () => {
     <div>
       {user && <Navbar />}
       <div>
-        {/* <Breadcrumbs /> */}
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route
             path="/users"
