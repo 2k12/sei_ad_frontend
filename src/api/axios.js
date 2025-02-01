@@ -80,7 +80,7 @@ export const roleUserApi = {
     axiosInstance.delete(`/roles/${roleId}/permissions`, {
       data: { permission_id: permissionId },
     }),
-  getAllPermissions: () => axiosInstance.get("/permissions/all"),
+    getPermissionsByModule: (moduleID) => axiosInstance.get(`/modules/${moduleID}/permissions`),
 };
 
 export const permissionApi = {
@@ -122,6 +122,7 @@ export const role_UserApi = {
   removeRoleFromUser: (userId, roleId) =>
     axiosInstance.delete(`/users/${userId}/roles/${roleId}`),
   getRoles: (params) => axiosInstance.get("/roles", { params }),
+  getRolesActive: (params) => axiosInstance.get("/rolesActive", { params }),
 };
 
 export const reportApi = {

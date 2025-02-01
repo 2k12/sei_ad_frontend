@@ -16,7 +16,7 @@ const EditRolesModal = ({ onClose, currentRoles = [], userId, onSave }) => {
       try {
         setLoading(true);
         setError(null);
-        const response = await role_UserApi.getRoles();
+        const response = await role_UserApi.getRolesActive();
 
         if (response.data && Array.isArray(response.data.roles)) {
           setAvailableRoles(response.data.roles);
