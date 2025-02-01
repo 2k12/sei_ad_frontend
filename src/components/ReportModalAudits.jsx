@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { reportApi } from "../api/axios";
+import { useEffect, useState } from "react";
+import { reportApi, userApi } from "../api/axios";
 import { toast } from "react-toastify";
 
 const ReportModalAudits = ({ onClose }) => {
@@ -9,6 +9,20 @@ const ReportModalAudits = ({ onClose }) => {
         endDate: "",
         format: "pdf",
     });
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await userApi.getUsersForDropdown();
+                setUsers(response.data.users);
+            } catch (error) {
+                console.error("Error al obtener usuarios:", error);
+            }
+        };
+        fetchUsers();
+    }, []);
+
     const token = localStorage.getItem("token");
     const decodedToken = token ? JSON.parse(atob(token.split(".")[1])) : {};
     const userName = decodedToken.Name || "Nombre de usuario";
@@ -30,19 +44,30 @@ const ReportModalAudits = ({ onClose }) => {
 
     const handleSubmit = async () => {
         try {
+            let dateRange = {};
+            if (filters.startDate && !filters.endDate) {
+                dateRange.start = filters.startDate;
+                dateRange.end = filters.startDate;
+            } else if (filters.endDate && !filters.startDate) {
+                dateRange.start = filters.endDate;
+                dateRange.end = filters.endDate;
+            } else if (filters.startDate && filters.endDate) {
+                dateRange.start = filters.startDate;
+                dateRange.end = filters.endDate;
+            }
             const payload = {
                 model: "Audit",
                 filters: {
                     ...(filters.userId && { userId: filters.userId }),
-                    ...(filters.startDate && { date_range: { start: filters.startDate } }),
-                    ...(filters.endDate && { date_range: { ...filters.date_range, end: filters.endDate } }),
+                    ...(Object.keys(dateRange).length > 0 && { date_range: dateRange }),
                 },
                 format: filters.format,
                 username: userName,
             };
-
+            if (!Object.keys(payload.filters).length) {
+                delete payload.filters;
+            }
             const response = await reportApi.generateReport(payload);
-
             if (response.status === 200) {
                 const blob = new Blob([response.data], {
                     type:
@@ -78,43 +103,46 @@ const ReportModalAudits = ({ onClose }) => {
                     Generar Reporte de Auditoría
                 </h2>
                 <div className="mb-6">
-                    <label className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-300">
-                        Usuario (ID)
-                    </label>
-                    <input
-                        type="text"
-                        name="userId"
-                        value={filters.userId}
-                        onChange={handleInputChange}
-                        placeholder="Ingrese el ID del usuario"
-                        className="w-full px-4 py-2 border rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
-                    />
-                </div>
-                <div className="mb-6">
-                    <label className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-300">
-                        Formato
-                    </label>
-                    <div className="flex space-x-4">
+                    <div className="flex justify-center space-x-4 mb-6">
                         <button
                             onClick={() => handleFormatChange("pdf")}
                             className={`px-4 py-2 rounded-full text-sm font-semibold ${filters.format === "pdf"
-                                    ? "bg-green-600 text-white"
-                                    : "bg-gray-300 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
+                                ? "bg-red-600 text-white border-red-600"
+                                : "bg-gray-200 text-gray-700 border-gray-300"
                                 }`}
                         >
                             PDF
                         </button>
                         <button
                             onClick={() => handleFormatChange("excel")}
-                            className={`px-4 py-2 rounded-full text-sm font-semibold ${filters.format === "excel"
-                                    ? "bg-red-600 text-white"
-                                    : "bg-gray-300 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
+                            className={`px-4 py-2 rounded-full text-sm font-semibold border ${filters.format === "excel"
+                                ? "bg-green-600 text-white border-green-600"
+                                : "bg-gray-200 text-gray-700 border-gray-300"
                                 }`}
                         >
                             Excel
                         </button>
                     </div>
                 </div>
+                <div className="mb-6">
+                    <label className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-300">
+                        Usuario
+                    </label>
+                    <select
+                        name="userId"
+                        value={filters.userId}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 border rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
+                    >
+                        <option value="">Seleccione un usuario</option>
+                        {users.map((user) => (
+                            <option key={user.id} value={user.id}>
+                                {user.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
                 <div className="mb-6">
                     <label className="block text-sm font-semibold text-gray-800 mb-2 dark:text-gray-300">
                         Rango de Fechas

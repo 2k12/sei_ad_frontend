@@ -50,9 +50,9 @@ const AuditsPage = () => {
             {!showGraph && ( // Mostrar el botón "Generar Reporte" solo si no está en vista de gráficos
               <button
                 onClick={() => setShowReportModal(true)} // Mostrar el modal
-                className="px-4 py-2 bg-purple-500 text-white font-semibold rounded-lg shadow-md hover:bg-purple-600 transition dark:bg-purple-700 dark:hover:bg-purple-900"
-              >
-                Generar Reporte
+                className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition dark:bg-blue-700 dark:hover:bg-blue-900"
+            >
+                Reportes
               </button>
             )}
           </div>
