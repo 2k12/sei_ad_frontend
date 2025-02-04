@@ -351,7 +351,6 @@ const RolesPage = () => {
                     {groupedPermissions[moduleName].map((permission) => (
                       <div
                         key={permission.id}
-                        moduleColorsPer
                         className={`p-2 rounded-md ${moduleColorsPer[index % moduleColorsPer.length]
                           } flex items-center justify-between`}
 

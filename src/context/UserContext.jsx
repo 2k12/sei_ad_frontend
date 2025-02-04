@@ -1,9 +1,9 @@
 import { createContext, useContext, useState } from 'react';
+import PropTypes from 'prop-types'; 
 import { userApi } from '../api/axios.js';
 import { toast } from 'react-toastify';
 
 const UserContext = createContext();
-
 
 export const UserProvider = ({ children }) => {
     const [users, setUsers] = useState([]);
@@ -58,11 +58,9 @@ export const UserProvider = ({ children }) => {
             await userApi.updateUser(id, userData);
             toast.success('Datos del Usuario Actualizados');
             await fetchUsers();
-
         } catch (error) {
             console.error('Error updating user:', error);
-            toast.error('Error actulizando los datos del Usuario');
-
+            toast.error('Error actualizando los datos del Usuario');
         }
     };
 
@@ -71,10 +69,8 @@ export const UserProvider = ({ children }) => {
             await userApi.deleteUser(id);
             toast.success('El estado del Usuario fue actualizado');
             await fetchUsers();
-
         } catch (error) {
-            toast.error('Error actulizando el estado del Usuario');
-
+            toast.error('Error actualizando el estado del Usuario');
             console.error('Error deleting user:', error);
         }
     };
@@ -95,6 +91,10 @@ export const UserProvider = ({ children }) => {
             {children}
         </UserContext.Provider>
     );
+};
+
+UserProvider.propTypes = {
+    children: PropTypes.node.isRequired,  
 };
 
 export const useUsers = () => useContext(UserContext);

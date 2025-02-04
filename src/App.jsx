@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { UserProvider } from "./context/UserContext";
 import { RoleProvider } from "./context/RoleContext";
@@ -11,7 +11,6 @@ import DashboardPage from "./pages/DashboardPage";
 import LoginPage from "./pages/LoginPage";
 import UsersPage from "./pages/UsersPage";
 import ProfileUserPage from './pages/ProfileUserPage';
-import { Navigate } from 'react-router-dom';
 import PermissionsPage from './pages/PermissionsPage';
 import PermissionDetailPage from './pages/PermissionDetailPage';
 import RolesPage from "./pages/RolesPage";

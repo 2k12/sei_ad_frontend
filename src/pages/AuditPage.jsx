@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAudits } from "../context/AuditContext";
 import Navbar from "../components/Navbar";
 import ReportModalAudits from "../components/ReportModalAudits"; // Importar el modal
 import AuditStatistics from "../components/AuditStatistics"; // Componente de gráficos
-import axios from "axios"; // Para realizar solicitudes HTTP
 
 const AuditsPage = () => {
   // Extraer datos del contexto
   const { audits, loading, pagination, fetchAudits } = useAudits();
-  const navigate = useNavigate();
 
   // Estados locales
   const [filters, setFilters] = useState({ event: "", module: "" });

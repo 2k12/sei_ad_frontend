@@ -1,4 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react";
+import PropTypes from 'prop-types';  // Importa PropTypes para la validación
 import { toast, ToastContainer } from "react-toastify";
 import axiosInstance from "../api/axios.js";
 import { useNavigate } from "react-router-dom";
@@ -85,6 +86,11 @@ export const AuthProvider = ({ children }) => {
             <ToastContainer />
         </AuthContext.Provider>
     );
+};
+
+
+AuthProvider.propTypes = {
+    children: PropTypes.node.isRequired,  
 };
 
 export const useAuth = () => useContext(AuthContext);

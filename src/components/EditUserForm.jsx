@@ -1,9 +1,9 @@
 import { useState } from "react";
+import PropTypes from "prop-types"; 
 
 const EditUserForm = ({ user, onSave, onCancel }) => {
   const token = localStorage.getItem("token");
   const decodedToken = token ? JSON.parse(atob(token.split(".")[1])) : {};
-  const userId = decodedToken.id || 1;
 
   const [formData, setFormData] = useState({
     name: user.name || "",
@@ -33,8 +33,9 @@ const EditUserForm = ({ user, onSave, onCancel }) => {
         </div>
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-bold mb-2 text-gray-400">Nombre</label>
+        <label htmlFor="name" className="block text-sm font-bold mb-2 text-gray-400">Nombre</label>
         <input
+          id="name" 
           type="text"
           name="name"
           value={formData.name}
@@ -44,8 +45,9 @@ const EditUserForm = ({ user, onSave, onCancel }) => {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-bold mb-2 text-gray-400">Email</label>
+        <label htmlFor="email" className="block text-sm font-bold mb-2 text-gray-400">Email</label>
         <input
+          id="email" 
           type="email"
           name="email"
           value={formData.email}
@@ -55,8 +57,9 @@ const EditUserForm = ({ user, onSave, onCancel }) => {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-bold mb-2 text-gray-400">
+        <label htmlFor="active" className="block text-sm font-bold mb-2 text-gray-400">
           <input
+            id="active" 
             type="checkbox"
             name="active"
             checked={formData.active}
@@ -66,7 +69,7 @@ const EditUserForm = ({ user, onSave, onCancel }) => {
           Activo
         </label>
       </div>
-      <div className="flex justify-end gap-2">
+      <div className="flex justify-end gap-2 mt-4">
         <button
           type="button"
           onClick={onCancel}
@@ -83,6 +86,18 @@ const EditUserForm = ({ user, onSave, onCancel }) => {
       </div>
     </form>
   );
+};
+
+EditUserForm.propTypes = {
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    active: PropTypes.bool.isRequired,
+    created_at: PropTypes.string.isRequired,
+  }).isRequired,
+  onSave: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
 };
 
 export default EditUserForm;

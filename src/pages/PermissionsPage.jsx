@@ -6,20 +6,9 @@ import Navbar from "../components/Navbar";
 import EditPermissionForm from "../components/EditPermissionForm";
 import CreatePermissionForm from "../components/CreatePermissionForm"; // Importa el nuevo componente
 import ReportModalPermissionsForm from "../components/ReportModalPermissionsForm"; // Modal para exportación
-
-import {
-  faAddressCard,
-  faEdit,
-  faExchange,
-  faEye,
-  faPlug,
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAddressCard, faEdit, faEye, faPlus, faToggleOn, faToggleOff, faDatabase, faFolder } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faToggleOn } from "@fortawesome/free-solid-svg-icons/faToggleOn";
-import { faToggleOff } from "@fortawesome/free-solid-svg-icons/faToggleOff";
-import { faDatabase } from "@fortawesome/free-solid-svg-icons/faDatabase";
-import { faFolder } from "@fortawesome/free-solid-svg-icons"; // Ícono para exportar
+
 
 
 const PermissionsPage = () => {

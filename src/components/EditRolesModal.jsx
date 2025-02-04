@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { role_UserApi } from "../api/axios"; // Asegúrate de importar la API correctamente
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
 
 const EditRolesModal = ({ onClose, currentRoles = [], userId, onSave }) => {
   const [availableRoles, setAvailableRoles] = useState([]);
@@ -91,7 +92,10 @@ const EditRolesModal = ({ onClose, currentRoles = [], userId, onSave }) => {
                     ? "bg-green-200 border-green-500"
                     : "bg-gray-200 border-gray-300"
                 }`}
+                role="button"
+                tabIndex={0}
                 onClick={() => toggleRoleSelection(role.id)}
+                onKeyDown={(e) => e.key === "Enter" && toggleRoleSelection(role.id)}
               >
                 <h3 className="text-lg font-semibold">{role.name}</h3>
                 <p>{role.description || "Sin descripción"}</p>
@@ -118,6 +122,19 @@ const EditRolesModal = ({ onClose, currentRoles = [], userId, onSave }) => {
       </div>
     </div>
   );
+};
+
+EditRolesModal.propTypes = {
+  currentRoles: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired, 
+      name: PropTypes.string.isRequired,
+      description: PropTypes.string,
+    })
+  ).isRequired,
+  userId: PropTypes.number.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
 };
 
 export default EditRolesModal;

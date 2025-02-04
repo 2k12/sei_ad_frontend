@@ -106,10 +106,7 @@ export const permissionApi = {
 };
 
 export const moduleApi = {
-  getModules: (page = 1, limit = 10) =>
-    axiosInstance.get(`/modules?page=${page}&limit=${limit}`),
-
-  getModules: (params) => axiosInstance.get("/modules", { params }),
+  getModules: (params = { page: 1, limit: 10 }) => axiosInstance.get("/modules", { params }),
   createModule: (moduleData) => axiosInstance.post("/modules", moduleData),
   updateModule: (id, moduleData) =>
     axiosInstance.put(`/modules/${id}`, moduleData),

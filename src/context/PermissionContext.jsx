@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useMemo } from "react";
+import PropTypes from "prop-types"; 
 import { permissionApi } from "../api/axios.js";
 import { toast } from "react-toastify";
 
@@ -80,22 +81,26 @@ export const PermissionProvider = ({ children }) => {
     }
   };
 
+  const memoizedValue = useMemo(() => ({
+    permissions,
+    fetchPermissions,
+    createPermission,
+    updatePermission,
+    deletePermission,
+    loading,
+    pagination,
+    setPagination,
+  }), [permissions, loading, pagination]);
+
   return (
-    <PermissionContext.Provider
-      value={{
-        permissions,
-        fetchPermissions,
-        createPermission,
-        updatePermission,
-        deletePermission,
-        loading,
-        pagination,
-        setPagination,
-      }}
-    >
+    <PermissionContext.Provider value={memoizedValue}>
       {children}
     </PermissionContext.Provider>
   );
+};
+
+PermissionProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export const usePermissions = () => useContext(PermissionContext);

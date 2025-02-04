@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { moduleApi } from "../api/axios";
+import PropTypes from "prop-types";
 
 const EditPermissionForm = ({ permission, onSave, onCancel }) => {
     const [formData, setFormData] = useState({
@@ -127,5 +128,18 @@ const EditPermissionForm = ({ permission, onSave, onCancel }) => {
         </form>
     );
 };
+
+EditPermissionForm.propTypes = {
+    permission: PropTypes.shape({
+      id: PropTypes.number.isRequired, 
+      name: PropTypes.string.isRequired,
+      description: PropTypes.string, 
+      module_id: PropTypes.number, 
+      active: PropTypes.bool,
+      created_at: PropTypes.string,
+    }).isRequired,
+    onSave: PropTypes.func.isRequired, 
+    onCancel: PropTypes.func.isRequired,
+  };
 
 export default EditPermissionForm;
