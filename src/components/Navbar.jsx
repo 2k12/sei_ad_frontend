@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHandPointRight } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
     const token = localStorage.getItem("token");
@@ -39,7 +40,8 @@ const Navbar = () => {
 
     const logout = () => {
         localStorage.removeItem("token");
-        window.location.href = "/login";
+        navigate("/login");
+        toast.info("Sesión cerrada");
     };
 
     const toggleDrawer = () => {

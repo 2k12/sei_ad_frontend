@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Chart from "chart.js/auto"; // Asegúrate de tener Chart.js instalado
-import { auditApi } from "../api/axios";
+import { auditApi, moduleApi } from "../api/axios"; // Importar API de auditoría y módulos
 
 const AuditStatistics = () => {
     const [statistics, setStatistics] = useState([]);
     const [chart, setChart] = useState(null);
+    const [modules, setModules] = useState([]); // Lista de módulos
     const [filters, setFilters] = useState({
         start_date: "",
         end_date: "",
         event: "",
+        module: "", // Nuevo filtro por módulo
     });
     const [isFetching, setIsFetching] = useState(false); // Estado para mostrar "Cargando..."
 
@@ -17,122 +19,73 @@ const AuditStatistics = () => {
         { value: "INSERT", label: "Crear" },
         { value: "UPDATE", label: "Actualizar" },
         { value: "DELETE", label: "Eliminar" },
-        // { value: "TOGGLE_ACTIVE", label: "Cambiar estado" },
-        // { value: "ASSIGN_ROLE", label: "Asignar Rol" },
-        // { value: "REMOVE_ROLE", label: "Remover Rol" },
     ];
 
     // Obtener estadísticas desde la API
     const fetchStatistics = async () => {
-        // Validar fechas antes de enviar la solicitud
         if (filters.start_date && filters.end_date && filters.start_date > filters.end_date) {
             alert("La fecha de inicio no puede ser mayor que la fecha de finalización.");
             return;
         }
 
         setIsFetching(true);
-        try {
-            console.log(filters);
-            const response = await auditApi.getAuditStatistics(filters);
-            setStatistics(response.data);
-            console.log(response);
-            console.log(response.data);
+        console.log("Filtros enviados al backend:", filters); // Log de filtros enviados
 
+        try {
+            const response = await auditApi.getAuditStatistics({
+                ...filters,
+                module: filters.module.toUpperCase(), // Enviar módulo en mayúsculas
+            });
+
+            console.log("Datos recibidos del backend:", response.data); // Log de datos recibidos
+            setStatistics(response.data);
             updateChart(response.data.statistics);
         } catch (error) {
-            console.error("Error al obtener estadísticas:", error);
+            // console.error("Error al obtener estadísticas:", error);
+            console.log(error);
         } finally {
             setIsFetching(false);
         }
     };
 
-    // Inicializar o actualizar el gráfico
-    // const updateChart = (data) => {
-    //     if (chart) {
-    //         chart.destroy(); // Destruir el gráfico anterior si existe
-    //     }
+    // Obtener la lista de módulos desde el backend
+    useEffect(() => {
+        const fetchModules = async () => {
+            try {
+                const response = await moduleApi.getModules();
+                console.log("Módulos cargados:", response.data.modules); // Log de módulos cargados
+                setModules(response.data.modules || []);
+            } catch (error) {
+                console.error("Error al cargar los módulos:", error);
+            }
+        };
 
-    //     const ctx = document.getElementById("auditChart").getContext("2d");
-    //     const newChart = new Chart(ctx, {
-    //         type: "bar",
-    //         data: {
-    //             labels: data.map((stat) => `${stat.event} (${stat.origin_service})`),
-    //             datasets: [
-    //                 {
-    //                     label: "Cantidad",
-    //                     data: data.map((stat) => stat.total),
-    //                     backgroundColor: [
-    //                         "rgba(75, 192, 192, 0.6)",
-    //                         "rgba(54, 162, 235, 0.6)",
-    //                         "rgba(255, 206, 86, 0.6)",
-    //                         "rgba(153, 102, 255, 0.6)",
-    //                         "rgba(255, 159, 64, 0.6)",
-    //                     ],
-    //                     borderColor: [
-    //                         "rgba(75, 192, 192, 1)",
-    //                         "rgba(54, 162, 235, 1)",
-    //                         "rgba(255, 206, 86, 1)",
-    //                         "rgba(153, 102, 255, 1)",
-    //                         "rgba(255, 159, 64, 1)",
-    //                     ],
-    //                     borderWidth: 1,
-    //                 },
-    //             ],
-    //         },
-    //         options: {
-    //             responsive: true,
-    //             maintainAspectRatio: false, // Asegura que el gráfico se adapte a su contenedor
-    //             plugins: {
-    //                 legend: {
-    //                     position: "top",
-    //                 },
-    //                 title: {
-    //                     display: true,
-    //                     text: "Estadísticas de Auditoría",
-    //                 },
-    //             },
-    //             scales: {
-    //                 x: {
-    //                     ticks: {
-    //                         autoSkip: true,
-    //                         maxRotation: 45,
-    //                         minRotation: 0,
-    //                     },
-    //                     grid: {
-    //                         display: false,
-    //                     },
-    //                 },
-    //                 y: {
-    //                     beginAtZero: true,
-    //                     grid: {
-    //                         color: "rgba(200, 200, 200, 0.2)",
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     });
+        fetchModules();
+    }, []);
 
-    //     setChart(newChart);
-    // };
+    // Manejar cambios en los filtros
+    const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        setFilters({ ...filters, [name]: value });
+    };
 
+    // Actualizar gráfico
     const updateChart = (data) => {
+        
         const chartContainer = document.getElementById("auditChart")?.parentNode;
-    
+
         if (chart) {
             chart.destroy(); // Destruir el gráfico anterior si existe
-        } 
-    
-        // Validar si data es nulo o está vacío
+        }
+
         if (!data || data.length === 0) {
-            // Mostrar mensaje en lugar del gráfico
             chartContainer.innerHTML = `<p class="text-center text-gray-600 dark:text-gray-300">No existen registros con los filtros asignados.</p>`;
             return;
         }
-    
-        // Restaurar el canvas si existe
+
         chartContainer.innerHTML = `<canvas id="auditChart"></canvas>`;
         const ctx = document.getElementById("auditChart").getContext("2d");
-    
+
         const newChart = new Chart(ctx, {
             type: "bar",
             data: {
@@ -161,44 +114,19 @@ const AuditStatistics = () => {
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false, // Asegura que el gráfico se adapte a su contenedor
+                maintainAspectRatio: false,
                 plugins: {
-                    legend: {
-                        position: "top",
-                    },
-                    title: {
-                        display: true,
-                        text: "Estadísticas de Auditoría",
-                    },
+                    legend: { position: "top" },
+                    title: { display: true, text: "Estadísticas de Auditoría" },
                 },
                 scales: {
-                    x: {
-                        ticks: {
-                            autoSkip: true,
-                            maxRotation: 45,
-                            minRotation: 0,
-                        },
-                        grid: {
-                            display: false,
-                        },
-                    },
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: "rgba(200, 200, 200, 0.2)",
-                        },
-                    },
+                    x: { grid: { display: false } },
+                    y: { beginAtZero: true, grid: { color: "rgba(200, 200, 200, 0.2)" } },
                 },
             },
         });
-    
+
         setChart(newChart);
-    };
-    
-    // Manejar cambios en los filtros
-    const handleFilterChange = (e) => {
-        const { name, value } = e.target;
-        setFilters({ ...filters, [name]: value });
     };
 
     return (
@@ -247,6 +175,27 @@ const AuditStatistics = () => {
                             ))}
                         </select>
                     </div>
+
+                    {/* Nuevo filtro por Módulo */}
+                    <div className="flex flex-col w-full md:w-auto">
+                        <label className="text-sm font-medium text-gray-700 dark:text-white">
+                            Módulo
+                        </label>
+                        <select
+                            name="module"
+                            value={filters.module}
+                            onChange={handleFilterChange}
+                            className="p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="">Todos los módulos</option>
+                            {modules.map((module, index) => (
+                                <option key={index} value={module.name}>
+                                    {module.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
                     <div className="flex items-end w-full md:w-auto">
                         <button
                             onClick={fetchStatistics}
