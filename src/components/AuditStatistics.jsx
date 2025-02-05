@@ -4,7 +4,7 @@ import { auditApi, moduleApi } from "../api/axios"; // Importar API de auditorí
 
 const AuditStatistics = () => {
     const [statistics, setStatistics] = useState([]);
-    const [chart, setChart] = useState(null);
+    const [chart, setChart] = useState([]);
     const [modules, setModules] = useState([]); // Lista de módulos
     const [totals, setTotals] = useState({ insert: 0, update: 0, delete: 0 });
     const [filters, setFilters] = useState({
@@ -32,7 +32,7 @@ const AuditStatistics = () => {
         setIsFetching(true);
         console.log("Filtros enviados al backend:", filters); // Log de filtros enviados
 
-        
+
         try {
             const response = await auditApi.getAuditStatistics({
                 ...filters,
@@ -46,18 +46,19 @@ const AuditStatistics = () => {
             const stats = response.data.statistics || [];
             setStatistics(stats);
             const insertTotal = stats
-            .filter((stat) => stat.event === "INSERT")
-            .reduce((acc, curr) => acc + curr.total, 0);
+                .filter((stat) => stat.event === "INSERT")
+                .reduce((acc, curr) => acc + curr.total, 0);
             const updateTotal = stats
-            .filter((stat) => stat.event === "UPDATE")
-            .reduce((acc, curr) => acc + curr.total, 0);
+                .filter((stat) => stat.event === "UPDATE")
+                .reduce((acc, curr) => acc + curr.total, 0);
             const deleteTotal = stats
-            .filter((stat) => stat.event === "DELETE")
-            .reduce((acc, curr) => acc + curr.total, 0);
+                .filter((stat) => stat.event === "DELETE")
+                .reduce((acc, curr) => acc + curr.total, 0);
 
             setTotals({ insert: insertTotal, update: updateTotal, delete: deleteTotal });
             console.log("Totales de eventos:", totals); // Log de totales de eventos
-            updateChart(response.data.statistics);
+            updateChart(stats, "auditChart1", "bar"); // Gráfico de barras
+            updateChart(stats, "auditChart2", "pie"); // Gráfico de pastel
         } catch (error) {
             // console.error("Error al obtener estadísticas:", error);
             console.log(error);
@@ -88,24 +89,25 @@ const AuditStatistics = () => {
     };
 
     // Actualizar gráfico
-    const updateChart = (data) => {
-        
-        const chartContainer = document.getElementById("auditChart")?.parentNode;
+    const updateChart = (data, chartId, chartType) => {
+        const chartContainer = document.getElementById(chartId)?.parentNode;
 
-        if (chart) {
-            chart.destroy(); // Destruir el gráfico anterior si existe
-        }
-
-        if (!data || data.length === 0) {
-            chartContainer.innerHTML = `<p class="text-center text-gray-600 dark:text-gray-300">No existen registros con los filtros asignados.</p>`;
+        if (!chartContainer) {
+            console.error(`El contenedor para el gráfico con ID "${chartId}" no existe.`);
             return;
         }
 
-        chartContainer.innerHTML = `<canvas id="auditChart"></canvas>`;
-        const ctx = document.getElementById("auditChart").getContext("2d");
+        // Limpiar canvas existente
+        const existingChart = chart.find((chart) => chart.id === chartId);
+        if (existingChart) {
+            existingChart.instance.destroy();
+        }
+
+        chartContainer.innerHTML = `<canvas id="${chartId}"></canvas>`;
+        const ctx = document.getElementById(chartId).getContext("2d");
 
         const newChart = new Chart(ctx, {
-            type: "bar",
+            type: chartType,
             data: {
                 labels: data.map((stat) => `${stat.event} (${stat.origin_service})`),
                 datasets: [
@@ -135,7 +137,7 @@ const AuditStatistics = () => {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: { position: "top" },
-                    title: { display: true, text: "Estadísticas de Auditoría" },
+                    title: { display: true, text: `Gráfico (${chartType})` },
                 },
                 scales: {
                     x: { grid: { display: false } },
@@ -144,8 +146,12 @@ const AuditStatistics = () => {
             },
         });
 
-        setChart(newChart);
+        setChart((prevCharts) => [
+            ...prevCharts.filter((chart) => chart.id !== chartId),
+            { id: chartId, instance: newChart },
+        ]);
     };
+
 
     return (
         <div className="audit-statistics px-4 py-6">
@@ -240,17 +246,33 @@ const AuditStatistics = () => {
                         <p className="text-2xl font-semibold">{totals.delete}</p>
                         <p className="text-sm text-gray-600">Total de eliminaciones</p>
                     </div>
-                </div>                            
-                {/* Contenedor del gráfico */}
-                <div className="bg-white p-4 rounded-lg shadow-md dark:bg-gray-800">
-                    <div className="relative" style={{ height: "400px" }}>
-                        <canvas id="auditChart"></canvas>
-                    </div>
-                    
                 </div>
+                {/* Contenedor de gráficos */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Gráfico 1 */}
+                    <div className="bg-white p-4 rounded-lg shadow-md dark:bg-gray-800">
+                        <h4 className="text-center text-lg font-medium text-gray-700 dark:text-white mb-4">
+                            Gráfico de Barras
+                        </h4>
+                        <div className="relative" style={{ height: "400px" }}>
+                            <canvas id="auditChart1"></canvas>
+                        </div>
+                    </div>
+
+                    {/* Gráfico 2 */}
+                    <div className="bg-white p-4 rounded-lg shadow-md dark:bg-gray-800">
+                        <h4 className="text-center text-lg font-medium text-gray-700 dark:text-white mb-4">
+                            Gráfico de Pastel
+                        </h4>
+                        <div className="relative" style={{ height: "400px" }}>
+                            <canvas id="auditChart2"></canvas>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-        
+
     );
 };
 
