@@ -4,7 +4,6 @@ import Navbar from "../components/Navbar";
 import { useLocation } from "react-router-dom";
 import EditRolesModal from "../components/EditRolesModal";
 
-
 const ProfileUserPage = () => {
     const { users, updateUser } = useUsers();
     const location = useLocation();
@@ -12,69 +11,41 @@ const ProfileUserPage = () => {
     const [editingUserInfo, setEditingUserInfo] = useState(false);
     const [userData, setUserData] = useState({ name: "", email: "", active: false });
     const [roles, setRoles] = useState([]);
-    const [permissions, setPermissions] = useState([]);
-    const [isRoleModalOpen, setIsRoleModalOpen] = useState(false); // Estado para controlar el modal
+    const [permissionsByRole, setPermissionsByRole] = useState({});
+    const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
 
-
-    // useEffect(() => {
-    //     const userFromState = location.state?.user;
-    //     const getUserData = (selectedUser) => {
-    //         setUser(selectedUser);
-    //         setUserData({
-    //             name: selectedUser.name,
-    //             email: selectedUser.email,
-    //             active: selectedUser.active,
-    //         });
-    //         setRoles(Array.isArray(selectedUser.roles) ? selectedUser.roles : []);
-    //         const allPermissions = selectedUser.roles?.reduce((acc, role) => {
-    //             if (Array.isArray(role.permissions)) {
-    //                 return [...acc, ...role.permissions];
-    //             }
-    //             return acc;
-    //         }, []) || [];
-    //         setPermissions(allPermissions);
-    //     };
-
-    //     if (userFromState) {
-    //         getUserData(userFromState);
-    //     } else {
-    //         const userId = parseInt(location.pathname.split("/").pop(), 10);
-    //         const selectedUser = users.find((u) => u.id === userId);
-    //         if (selectedUser) {
-    //             getUserData(selectedUser);
-    //         }
-    //     }
-    // }, [users, location]);
     useEffect(() => {
-        if (!user) {
-            const userId = parseInt(location.pathname.split("/").pop(), 10);
-            const selectedUser = users.find((u) => u.id === userId);
-            if (selectedUser) {
-                setUser(selectedUser);
-                setUserData({
-                    name: selectedUser.name,
-                    email: selectedUser.email,
-                    active: selectedUser.active,
-                });
-                setRoles(Array.isArray(selectedUser.roles) ? selectedUser.roles : []);
-                const allPermissions = selectedUser.roles?.reduce((acc, role) => {
-                    if (Array.isArray(role.permissions)) {
-                        return [...acc, ...role.permissions];
-                    }
-                    return acc;
-                }, []) || [];
-                setPermissions(allPermissions);
-            }
+        const userId = parseInt(location.pathname.split("/").pop(), 10);
+        const selectedUser = users.find((u) => u.id === userId);
+        if (selectedUser) {
+            setUser(selectedUser);
+            setUserData({
+                name: selectedUser.name,
+                email: selectedUser.email,
+                active: selectedUser.active,
+            });
+            setRoles(selectedUser.roles || []);
+            loadPermissionsByRole(selectedUser.roles || []);
         }
-    }, [location]); // Elimina la dependencia de `users`
+    }, [users, location]);
 
+    const loadPermissionsByRole = (roles) => {
+        const groupedPermissions = roles.reduce((acc, role) => {
+            acc[role.name] = role.permissions || [];
+            return acc;
+        }, {});
+        setPermissionsByRole(groupedPermissions);
+    };
 
     const handleSaveUserInfo = () => {
         updateUser(user.id, userData);
         setEditingUserInfo(false);
     };
 
-
+    const handleRolesUpdated = (updatedRoles) => {
+        setRoles(updatedRoles);
+        loadPermissionsByRole(updatedRoles); // Actualizar los permisos basados en los roles actualizados
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -87,7 +58,7 @@ const ProfileUserPage = () => {
                     <>
                         {/* Información Personal */}
                         <div className="mb-6 bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md dark:border border-gray-500">
-                            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4 ">
+                            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
                                 Información Personal
                             </h2>
                             {!editingUserInfo ? (
@@ -161,16 +132,17 @@ const ProfileUserPage = () => {
                                 <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Roles</h2>
                             </div>
                             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                                {roles.length > 0 ? (
-                                    roles.map((role, index) => (
-                                        <div key={index} className="bg-green-100 dark:bg-green-900 p-4 rounded-lg shadow-md">
-                                            <h3 className="text-lg font-semibold text-green-800 dark:text-green-200">{role.name}</h3>
-                                            <p className="text-sm text-gray-600 dark:text-gray-400">{role.description}</p>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p className="text-gray-500 dark:text-gray-300">No hay roles disponibles</p>
-                                )}
+                            {roles.map((role) => (
+                                <div
+                                    key={role.id}  // Usa un identificador único de cada role en lugar del índice
+                                    className="bg-green-100 dark:bg-green-900 p-4 rounded-lg shadow-md"
+                                >
+                                    <h3 className="text-lg font-semibold text-green-800 dark:text-green-200">
+                                        {role.name}
+                                    </h3>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">{role.description}</p>
+                                </div>
+                            ))}
                             </div>
                             <div className="mt-4 flex justify-start">
                                 <button
@@ -180,41 +152,41 @@ const ProfileUserPage = () => {
                                     Editar
                                 </button>
                             </div>
-
                             {isRoleModalOpen && (
                                 <EditRolesModal
                                     currentRoles={roles}
                                     userId={user.id}
                                     onClose={() => setIsRoleModalOpen(false)}
-                                    onSave={(updatedRoles) => setRoles(updatedRoles)}
+                                    onSave={handleRolesUpdated}
                                 />
-
                             )}
-
                         </div>
 
-
-
-
-                        {/* Permisos */}
+                        {/* Permisos por Rol */}
                         <div className="mb-6 bg-white p-6 rounded-lg shadow-md dark:bg-gray-900 dark:border border-gray-500">
-                            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Permisos</h2>
-                            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                                {permissions.length > 0 ? (
-                                    permissions.map((permission, index) => (
-                                        <div key={index} className="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg shadow-md">
-                                            <h3 className="text-lg font-semibold text-yellow-800 dark:text-yellow-200">{permission.name}</h3>
+                            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Permisos por Rol</h2>
+                            {Object.entries(permissionsByRole).map(([roleName, permissions]) => (
+                                <div key={roleName} className="mb-6">
+                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200 mb-4">{roleName}</h3>
+                                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                                    {permissions.map((permission) => (
+                                        <div
+                                            key={permission.id}
+                                            className="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg shadow-md"
+                                        >
+                                            <h4 className="text-md font-medium text-yellow-800 dark:text-yellow-200">
+                                                {permission.name}
+                                            </h4>
                                             {permission.module && (
-                                                <p className="text-sm font-semibold text-yellow-600 dark:text-yellow-400">
-                                                    Módulo {permission.module.name}
+                                                <p className="text-sm text-yellow-600 dark:text-yellow-400">
+                                                    Módulo: {permission.module.name}
                                                 </p>
                                             )}
                                         </div>
-                                    ))
-                                ) : (
-                                    <p className="text-gray-500 dark:text-gray-300">No hay permisos disponibles</p>
-                                )}
-                            </div>
+                                    ))}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </>
                 ) : (

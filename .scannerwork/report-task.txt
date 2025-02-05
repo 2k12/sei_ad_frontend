@@ -1,6 +1,0 @@
-projectKey=security_service_front
-serverUrl=http://localhost:9000
-serverVersion=10.7.0.96327
-dashboardUrl=http://localhost:9000/dashboard?id=security_service_front
-ceTaskId=5226459d-4c8d-4559-a6da-1ac6af2cf751
-ceTaskUrl=http://localhost:9000/api/ce/task?id=5226459d-4c8d-4559-a6da-1ac6af2cf751

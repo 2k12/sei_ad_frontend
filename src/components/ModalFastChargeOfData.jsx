@@ -109,7 +109,7 @@ const ModalFastChargeOfData = ({ onClose }) => {
                             isLoading
                                 ? "bg-indigo-500 text-white"
                                 : "bg-blue-600 text-white hover:bg-blue-700"
-                        }`}
+                        }rounded-lg font-semibold text-lg shadow-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition-transform transform hover:scale-105`}
                         disabled={isLoading}
                     >
                         {isLoading ? (

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { moduleApi } from "../api/axios";
+import PropTypes from "prop-types";
 
 const EditPermissionForm = ({ permission, onSave, onCancel }) => {
     const [formData, setFormData] = useState({
@@ -12,15 +13,15 @@ const EditPermissionForm = ({ permission, onSave, onCancel }) => {
     const [isLoadingModules, setIsLoadingModules] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
+    useEffect(() => {   
         const fetchModules = async () => {
             try {
-                const response = await moduleApi.getModules();
-                const { modules } = response.data; // Extraer la propiedad 'modules' de la respuesta
-                if (Array.isArray(modules)) {
-                    setModules(modules);
+                const response = await moduleApi.getActiveModules();
+                const data = response.data; // Extraer la propiedad 'modules' de la respuesta
+                if (Array.isArray(data)) {
+                    setModules(data);
                 } else {
-                    console.error("La propiedad 'modules' no es un arreglo:", modules);
+                    console.error("La propiedad 'modules' no es un arreglo:", data);
                     setError('Formato de datos incorrecto');
                 }
             } catch (error) {
@@ -31,8 +32,14 @@ const EditPermissionForm = ({ permission, onSave, onCancel }) => {
             }
         };
         fetchModules();
+        
     }, []);
 
+
+    console.log("------------");
+    console.log(modules);
+    console.log("------------");
+    
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData({
@@ -127,5 +134,18 @@ const EditPermissionForm = ({ permission, onSave, onCancel }) => {
         </form>
     );
 };
+
+EditPermissionForm.propTypes = {
+    permission: PropTypes.shape({
+      id: PropTypes.number.isRequired, 
+      name: PropTypes.string.isRequired,
+      description: PropTypes.string, 
+      module_id: PropTypes.number, 
+      active: PropTypes.bool,
+      created_at: PropTypes.string,
+    }).isRequired,
+    onSave: PropTypes.func.isRequired, 
+    onCancel: PropTypes.func.isRequired,
+  };
 
 export default EditPermissionForm;

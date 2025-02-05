@@ -1,10 +1,11 @@
 import { useState } from "react";
+import PropTypes from "prop-types"; 
 
 const EditRoleForm = ({ role, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
     name: role.name || "",
     description: role.description || "",
-    active: role.active || false, // Agregamos el estado inicial del rol
+    active: role.active || false,
   });
 
   const handleChange = (e) => {
@@ -17,7 +18,7 @@ const EditRoleForm = ({ role, onSave, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(role.id, formData); // Guardar los cambios
+    onSave(role.id, formData);
   };
 
   return (
@@ -28,11 +29,13 @@ const EditRoleForm = ({ role, onSave, onCancel }) => {
           ID: {role.id}
         </div>
       </div>
+
       <div className="mb-4">
-        <label className="block text-sm font-bold mb-2 text-gray-400">
+        <label htmlFor="name" className="block text-sm font-bold mb-2 text-gray-400">
           Nombre del Rol
         </label>
         <input
+          id="name"
           type="text"
           name="name"
           value={formData.name}
@@ -41,11 +44,13 @@ const EditRoleForm = ({ role, onSave, onCancel }) => {
           required
         />
       </div>
+
       <div className="mb-4">
-        <label className="block text-sm font-bold mb-2 text-gray-400">
+        <label htmlFor="description" className="block text-sm font-bold mb-2 text-gray-400">
           Descripción
         </label>
         <textarea
+          id="description"
           name="description"
           value={formData.description}
           onChange={handleChange}
@@ -53,18 +58,20 @@ const EditRoleForm = ({ role, onSave, onCancel }) => {
           rows="3"
         />
       </div>
+
       <div className="mb-4">
         <label className="flex items-center text-sm font-bold text-gray-400">
           <input
             type="checkbox"
             name="active"
-            checked={formData.active} // Checkbox para cambiar el estado
+            checked={formData.active}
             onChange={handleChange}
             className="mr-2"
           />
           Activo
         </label>
       </div>
+
       <div className="flex justify-end gap-2">
         <button
           type="button"
@@ -82,6 +89,17 @@ const EditRoleForm = ({ role, onSave, onCancel }) => {
       </div>
     </form>
   );
+};
+
+EditRoleForm.propTypes = {
+  role: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    active: PropTypes.bool.isRequired,
+  }).isRequired,
+  onSave: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
 };
 
 export default EditRoleForm;
