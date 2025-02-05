@@ -6,6 +6,7 @@ const AuditStatistics = () => {
     const [statistics, setStatistics] = useState([]);
     const [chart, setChart] = useState(null);
     const [modules, setModules] = useState([]); // Lista de módulos
+    const [totals, setTotals] = useState({ insert: 0, update: 0, delete: 0 });
     const [filters, setFilters] = useState({
         start_date: "",
         end_date: "",
@@ -31,6 +32,7 @@ const AuditStatistics = () => {
         setIsFetching(true);
         console.log("Filtros enviados al backend:", filters); // Log de filtros enviados
 
+        
         try {
             const response = await auditApi.getAuditStatistics({
                 ...filters,
@@ -39,6 +41,22 @@ const AuditStatistics = () => {
 
             console.log("Datos recibidos del backend:", response.data); // Log de datos recibidos
             setStatistics(response.data);
+
+            // Calcular totales de eventos
+            const stats = response.data.statistics || [];
+            setStatistics(stats);
+            const insertTotal = stats
+            .filter((stat) => stat.event === "INSERT")
+            .reduce((acc, curr) => acc + curr.total, 0);
+            const updateTotal = stats
+            .filter((stat) => stat.event === "UPDATE")
+            .reduce((acc, curr) => acc + curr.total, 0);
+            const deleteTotal = stats
+            .filter((stat) => stat.event === "DELETE")
+            .reduce((acc, curr) => acc + curr.total, 0);
+
+            setTotals({ insert: insertTotal, update: updateTotal, delete: deleteTotal });
+            console.log("Totales de eventos:", totals); // Log de totales de eventos
             updateChart(response.data.statistics);
         } catch (error) {
             // console.error("Error al obtener estadísticas:", error);
@@ -205,15 +223,34 @@ const AuditStatistics = () => {
                         </button>
                     </div>
                 </div>
-
+                {/* Tarjetas */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="bg-green-100 bg-opacity-50 p-4 rounded-lg shadow-md">
+                        <h3 className="text-lg font-bold text-green-700">INSERT</h3>
+                        <p className="text-2xl font-semibold">{totals.insert}</p>
+                        <p className="text-sm text-gray-600">Total de inserciones</p>
+                    </div>
+                    <div className="bg-blue-100 bg-opacity-50 p-4 rounded-lg shadow-md">
+                        <h3 className="text-lg font-bold text-blue-700">UPDATE</h3>
+                        <p className="text-2xl font-semibold">{totals.update}</p>
+                        <p className="text-sm text-gray-600">Total de actualizaciones</p>
+                    </div>
+                    <div className="bg-red-100 bg-opacity-50 p-4 rounded-lg shadow-md">
+                        <h3 className="text-lg font-bold text-red-700">DELETE</h3>
+                        <p className="text-2xl font-semibold">{totals.delete}</p>
+                        <p className="text-sm text-gray-600">Total de eliminaciones</p>
+                    </div>
+                </div>                            
                 {/* Contenedor del gráfico */}
                 <div className="bg-white p-4 rounded-lg shadow-md dark:bg-gray-800">
                     <div className="relative" style={{ height: "400px" }}>
                         <canvas id="auditChart"></canvas>
                     </div>
+                    
                 </div>
             </div>
         </div>
+        
     );
 };
 
