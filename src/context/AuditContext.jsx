@@ -1,6 +1,7 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useMemo } from "react";
 import { auditApi } from "../api/axios.js";
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
 
 const AuditContext = createContext();
 
@@ -35,18 +36,25 @@ export const AuditProvider = ({ children }) => {
     }
   };
 
+  const memoizedValue = useMemo(
+    () => ({
+      audits,
+      fetchAudits,
+      loading,
+      pagination,
+    }),
+    [audits, loading, pagination]
+  );
+
   return (
-    <AuditContext.Provider
-      value={{
-        audits,
-        fetchAudits,
-        loading,
-        pagination,
-      }}
-    >
+    <AuditContext.Provider value={memoizedValue}>
       {children}
     </AuditContext.Provider>
   );
+};
+
+AuditProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export const useAudits = () => useContext(AuditContext);

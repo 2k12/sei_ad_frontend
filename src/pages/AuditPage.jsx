@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAudits } from "../context/AuditContext";
 import Navbar from "../components/Navbar";
 import ReportModalAudits from "../components/ReportModalAudits"; // Importar el modal
 import AuditStatistics from "../components/AuditStatistics"; // Componente de gráficos
-import axios from "axios"; // Para realizar solicitudes HTTP
 
 const AuditsPage = () => {
   // Extraer datos del contexto
   const { audits, loading, pagination, fetchAudits } = useAudits();
-  const navigate = useNavigate();
 
   // Estados locales
   const [filters, setFilters] = useState({ event: "", module: "" });
@@ -40,22 +37,24 @@ const AuditsPage = () => {
   return (
     <div className="page-container">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="main-container">
         {/* Título y botones */}
         <div className="mb-6 flex justify-between items-center">
-          <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-200">Auditoría</h1>
-          <div className="flex gap-4">
+          <h1 className="header-title">
+            Auditoría
+            </h1>
+          <div className="header-actions">
             <button
               onClick={() => setShowGraph(!showGraph)} // Alternar entre vista de gráficos y tabla
-              className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition dark:bg-blue-700 dark:hover:bg-blue-900"
+              className="btn-Add"
             >
               {showGraph ? "Ver Tabla" : "Ver Gráficos"}
             </button>
             {!showGraph && ( // Mostrar el botón "Generar Reporte" solo si no está en vista de gráficos
               <button
                 onClick={() => setShowReportModal(true)} // Mostrar el modal
-                className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition dark:bg-blue-700 dark:hover:bg-blue-900"
-              >
+                className="btn-Add"
+            >
                 Reportes
               </button>
             )}
@@ -94,15 +93,15 @@ const AuditsPage = () => {
                 Total de registros: {pagination.total}
               </span>
             </div>
-            <div className="overflow-x-auto bg-white shadow-lg rounded-lg dark:border-gray-500 dark:bg-cyan-950">
-              <table className="table-auto w-full text-sm text-gray-600 dark:text-white">
-                <thead className="bg-gray-200 dark:bg-cyan-800 dark:text-white">
+            <div className="table-container">
+              <table className="table">
+                <thead className="table-header">
                   <tr>
-                    <th className="px-6 py-3 text-left">Evento</th>
+                    <th className="table-row-header">Evento</th>
                     <th className="px-6 py-3 text-center">Descripción</th>
-                    <th className="px-6 py-3 text-left">Usuario</th>
-                    <th className="px-6 py-3 text-left">Servicio</th>
-                    <th className="px-6 py-3 text-left">Fecha</th>
+                    <th className="table-row-header">Usuario</th>
+                    <th className="table-row-header">Servicio</th>
+                    <th className="table-row-header">Fecha</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -114,12 +113,12 @@ const AuditsPage = () => {
                     </tr>
                   ) : audits && audits.length > 0 ? (
                     audits.map((audit) => (
-                      <tr key={audit.id} className="hover:bg-gray-100 dark:hover:bg-cyan-900">
-                        <td className="px-6 py-3">{audit.event}</td>
-                        <td className="px-6 py-3">{audit.description}</td>
-                        <td className="px-6 py-3">{audit.user}</td>
-                        <td className="px-6 py-3">{audit.origin_service}</td>
-                        <td className="px-6 py-3">
+                      <tr key={audit.id} className="table-row">
+                        <td className="table-cell">{audit.event}</td>
+                        <td className="table-cell">{audit.description}</td>
+                        <td className="table-cell">{audit.user}</td>
+                        <td className="table-cell">{audit.origin_service}</td>
+                        <td className="table-cell">
                           {new Intl.DateTimeFormat("es-ES", {
                             dateStyle: "medium",
                             timeStyle: "short",
@@ -136,6 +135,27 @@ const AuditsPage = () => {
                   )}
                 </tbody>
               </table>
+            </div>
+
+            {/* Paginación */}
+            <div className="pagination-container">
+              <button
+                disabled={pagination.page === 1}
+                onClick={() => handlePageChange(pagination.page - 1)}
+                className="pagination-button"
+              >
+                Anterior
+              </button>
+              <span className="text-lg dark:text-white">
+                Página {pagination.page} de {Math.ceil(pagination.total / pagination.limit)}
+              </span>
+              <button
+                disabled={pagination.page === Math.ceil(pagination.total / pagination.limit)}
+                onClick={() => handlePageChange(pagination.page + 1)}
+                className="pagination-button"
+              >
+                Siguiente
+              </button>
             </div>
           </>
         )}

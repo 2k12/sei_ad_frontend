@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHandPointRight } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
     const token = localStorage.getItem("token");
@@ -39,7 +40,8 @@ const Navbar = () => {
 
     const logout = () => {
         localStorage.removeItem("token");
-        window.location.href = "/login";
+        navigate("/login");
+        toast.info("Sesión cerrada");
     };
 
     const toggleDrawer = () => {
@@ -124,21 +126,17 @@ const Navbar = () => {
                         Dashboard
                     </li>
                     {gestionarPermissions.map((permiso, index) => {
-                        const displayName =
-                            permissionDisplayNames[permiso] || permiso; 
+                        const displayName = permissionDisplayNames[permiso] || permiso; 
                         return (
                             <li
-                                key={index}
+                                key={`${permiso}-${index}`} // ✅ Combinación única
                                 className={`py-2 cursor-pointer rounded ${permiso === selectedPermission
                                     ? "text-blue-500"
                                     : "hover:text-blue-500 text-black dark:text-white"
-                                    }`}
+                                }`}
                                 onClick={() => handlePermissionClick(permiso)}
                             >
-                                <FontAwesomeIcon
-                                    icon={faHandPointRight}
-                                    className="mr-2"
-                                />
+                                <FontAwesomeIcon icon={faHandPointRight} className="mr-2" />
                                 {displayName}
                             </li>
                         );

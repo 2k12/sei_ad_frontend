@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { roleApi } from "../api/axios.js";
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
 
 const RoleContext = createContext();
 
@@ -40,13 +41,11 @@ export const RoleProvider = ({ children }) => {
     try {
       const { data } = await roleApi.getRolesForDropdown();
       setRoles(data.roles);
-      // return data.roles;
     } catch (error) {
-      console.error('Error fetching roles for dropdown:', error);
+      console.error("Error fetching roles for dropdown:", error);
       return [];
     }
   };
-
 
   const createRole = async (roleData) => {
     try {
@@ -70,7 +69,6 @@ export const RoleProvider = ({ children }) => {
     }
   };
 
-  // Nueva función para actualizar solo el estado del rol
   const updateRoleState = async (id, active) => {
     try {
       await roleApi.updateRoleState(id, { active });
@@ -110,6 +108,10 @@ export const RoleProvider = ({ children }) => {
       {children}
     </RoleContext.Provider>
   );
+};
+
+RoleProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export const useRoles = () => useContext(RoleContext);

@@ -31,7 +31,7 @@
 }
 
 .btn-Charge:hover {
-  @apply hover:bg-red-950 dark:hover:bg-blue-900;
+  @apply hover:bg-blue-700 dark:hover:bg-blue-900;
 }
 
 .btn-Report {
@@ -39,7 +39,7 @@
 }
 
 .btn-Report:hover {
-  @apply hover:bg-red-950 dark:hover:bg-blue-900;
+  @apply hover:bg-blue-700 dark:hover:bg-blue-900;
 }
 
 /* Barra de filtros */
@@ -60,7 +60,7 @@
 }
 
 .btn-Search:hover {
-  @apply hover:bg-red-950 dark:hover:bg-blue-900;
+  @apply hover:bg-blue-700 dark:hover:bg-blue-900;
 }
 
 /* Contenedor principal */

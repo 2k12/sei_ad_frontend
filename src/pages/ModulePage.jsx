@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReportModalModulesForm from "../components/ReportModalModulesForm";
-import { faEdit, faPlus, faToggleOn, faToggleOff, faAddressBook, faCertificate, faAddressCard } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faPlus, faToggleOn, faToggleOff, } from "@fortawesome/free-solid-svg-icons";
 import { useModuleContext } from "../context/ModuleContext";
 import { faMinus } from "@fortawesome/free-solid-svg-icons/faMinus";
 import { faFolder } from "@fortawesome/free-solid-svg-icons/faFolder";

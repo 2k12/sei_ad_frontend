@@ -9,7 +9,9 @@ import { roleUserApi } from "../api/axios";
 import { faToggleOn } from "@fortawesome/free-solid-svg-icons/faToggleOn";
 import { faToggleOff } from "@fortawesome/free-solid-svg-icons/faToggleOff";
 import { faFolder } from "@fortawesome/free-solid-svg-icons/faFolder";
-import '../assets/styles.css';
+import { toast } from "react-toastify";
+import { moduleApi } from '../api/axios';
+import "../assets/styles.css";
 
 const RolesPage = () => {
   const { roles, fetchRoles, updateRole, createRole, updateRoleState, loading, pagination, } = useRoles();
@@ -18,7 +20,12 @@ const RolesPage = () => {
   const [editingRole, setEditingRole] = useState(null);
   const [addingRole, setAddingRole] = useState(false);
   const [modalreport, setShowModalReportRoles] = useState(false);
-  const [newRole, setNewRole] = useState({ name: "", description: "", active: true });
+  const [newRole, setNewRole] = useState({
+    name: "",
+    description: "",
+    id_module: "",
+    active: true,
+  });
   const [assigningPermissions, setAssigningPermissions] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
   const [permissions, setPermissions] = useState([]);
@@ -27,6 +34,9 @@ const RolesPage = () => {
   const [groupedPermissions, setGroupedPermissions] = useState({});
   const [confirmChanges, setConfirmChanges] = useState(false);
   const [changes, setChanges] = useState({ toAdd: [], toRemove: [] });
+  const [modules, setModules] = useState([]);
+  const [error, setError] = useState(null);
+  const [isLoadingModules, setIsLoadingModules] = useState(true);
 
   // Hooks
   useEffect(() => {
@@ -37,27 +47,50 @@ const RolesPage = () => {
   }, [pagination.page, pagination.limit]);
 
   useEffect(() => {
+    const fetchModules = async () => {
+      try {
+        const response = await moduleApi.getModules();
+        setModules(response.data.modules || []);
+        setIsLoadingModules(false);
+      } catch (error) {
+        setError("Error al cargar los módulos");
+        setIsLoadingModules(false);
+      }
+    };
+    fetchModules();
+  }, []);
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setNewRole({
+      ...newRole,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
+
+  useEffect(() => {
     if (assigningPermissions && selectedRole) {
       const fetchPermissions = async () => {
         try {
-          // Obtener permisos activos
-          const response = await roleUserApi.getActivePermissions();
-          setAllPermissions(response.data.permissions);
-
-          // Obtener permisos asignados al rol
           const rolePermissions = await roleUserApi.getRolePermissions(selectedRole.id);
           setPermissions(rolePermissions.data.permissions || []);
-          setSelectedPermissions(rolePermissions.data.permissions.map((perm) => perm.id));
-
-          // Agrupar por módulo
-          const grouped = response.data.permissions.reduce((acc, perm) => {
-            if (!acc[perm.module?.name]) {
-              acc[perm.module?.name] = [];
-            }
-            acc[perm.module?.name].push(perm);
-            return acc;
-          }, {});
-          setGroupedPermissions(grouped);
+          setSelectedPermissions(
+            rolePermissions.data.permissions.map((perm) => perm.id)
+          );
+  
+          if (rolePermissions.data.permissions.length > 0) {
+            const moduleID = rolePermissions.data.permissions[0].module_id; 
+  
+            const response = await roleUserApi.getPermissionsByModule(moduleID);
+            setAllPermissions(response.data.permissions);
+  
+            const grouped = response.data.permissions.reduce((acc, perm) => {
+              const moduleName = perm.module?.name || "Sin Módulo";
+              if (!acc[moduleName]) acc[moduleName] = [];
+              acc[moduleName].push(perm);
+              return acc;
+            }, {});
+            setGroupedPermissions(grouped);
+          }
         } catch (error) {
           console.error("Error al cargar permisos:", error);
         }
@@ -142,6 +175,7 @@ const RolesPage = () => {
       setConfirmChanges(false);
       setAssigningPermissions(false); // Aquí cerramos el modal de asignación
     } catch (error) {
+      toast.error("Hubo un error al guardar los cambios. Inténtalo nuevamente.");
       console.error("Error al guardar permisos:", error);
     }
   };
@@ -160,9 +194,13 @@ const RolesPage = () => {
   const handleCancelEdit = () => setEditingRole(null);
 
   const handleAddRole = () => {
-    createRole(newRole);
+    const formattedRole = {
+      ...newRole,
+      id_module: parseInt(newRole.id_module, 10),
+    };
+    createRole(formattedRole);
     setAddingRole(false);
-    setNewRole({ name: "", description: "", active: true });
+    setNewRole({ name: "", description: "", id_module: "", active: true });
   };
 
   const handleNewRoleChange = (e) => {
@@ -341,7 +379,6 @@ const RolesPage = () => {
                     {groupedPermissions[moduleName].map((permission) => (
                       <div
                         key={permission.id}
-                        moduleColorsPer
                         className={`p-2 rounded-md ${moduleColorsPer[index % moduleColorsPer.length]
                           } flex items-center justify-between`}
 
@@ -467,6 +504,27 @@ const RolesPage = () => {
                     onChange={handleNewRoleChange}
                     className="w-full p-2 border border-gray-300 rounded-lg dark:text-white dark:bg-gray-700"
                   />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-bold mb-2 text-gray-400">
+                    Módulo
+                  </label>
+                  <select
+                    name="id_module"
+                    value={newRole.id_module}
+                    onChange={handleChange}
+                    className="border p-2 rounded w-full text-gray-400 dark:bg-gray-700 dark:text-white"
+                    required
+                  >
+                    <option value="" disabled>
+                      Selecciona un módulo
+                    </option>
+                    {modules.map((module) => (
+                      <option key={module.id} value={module.id}>
+                        {module.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="flex justify-end">
                   <button

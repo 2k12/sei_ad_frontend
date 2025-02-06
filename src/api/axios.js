@@ -9,7 +9,17 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token"); // Obtén el token del almacenamiento local
+    if (token) {
+      const base64Payload = token.split(".")[1]; // Obtener la parte payload
+      const payload = JSON.parse(atob(base64Payload)); // Decodificar el payload
+      console.log("Contenido del payload:", payload);
+    }
+    const expirationTime = 1737865743; // Valor del campo exp
+const expirationDate = new Date(expirationTime * 1000); // Convertir a milisegundos
+console.log("Fecha de expiración:", expirationDate);
+
+    
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
@@ -21,6 +31,20 @@ axiosInstance.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Si el token es inválido o ha expirado
+      localStorage.removeItem("token"); // Elimina el token
+      window.location.href = "/login"; // Redirige al login
+      toast.error("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+    }
+    return Promise.reject(error);
+  }
+);
+
 
 export const userApi = {
   getUsers: (params) => axiosInstance.get("/users", { params }),
@@ -87,12 +111,12 @@ export const moduleApi = {
   getModules: (page = 1, limit = 10) =>
     axiosInstance.get(`/modules?page=${page}&limit=${limit}`),
 
-  getModules: (params) => axiosInstance.get("/modules", { params }), // Recupera todos los módulos con paginación y filtros
+  getModules: (params) => axiosInstance.get("/modules", { params }), 
+  getActiveModules: () => axiosInstance.get("/modules/active"),
+  // Recupera todos los módulos con paginación y filtros
   createModule: (moduleData) => axiosInstance.post("/modules", moduleData),
   updateModule: (id, moduleData) =>
     axiosInstance.put(`/modules/${id}`, moduleData),
-  //deleteModule: (id) => axiosInstance.delete(`/modules/${id}`),
-  //toggleModuleActive: (id) => axiosInstance.patch(`/modules/${id}/toggle-active`),
 };
 
 export const role_UserApi = {
@@ -102,6 +126,7 @@ export const role_UserApi = {
   removeRoleFromUser: (userId, roleId) =>
     axiosInstance.delete(`/users/${userId}/roles/${roleId}`),
   getRoles: (params) => axiosInstance.get("/roles", { params }),
+  getRolesActive: () => axiosInstance.get("/roles-active"),
 };
 
 export const reportApi = {
@@ -109,4 +134,14 @@ export const reportApi = {
     axiosInstance.post("/generate-report", all, { responseType: "blob" }),
 };
 
+export const authApi = {
+  // Solicitar restablecimiento de contraseña
+  requestPasswordReset: (email) =>
+    axiosInstance.post("/request-reset", { email: email }, {
+      headers: { "Content-Type": "application/json", Authorization: "" },
+    }),
+
+  resetPassword: (token, password) =>
+    axiosInstance.post("/reset-password", { token, password }),
+};
 export default axiosInstance;
