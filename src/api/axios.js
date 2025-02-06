@@ -52,11 +52,13 @@ export const roleUserApi = {
     axiosInstance.post(`/roles/${roleId}/permissions`, {
       permission_id: permissionId,
     }),
-  removePermission: (roleId, permissionId) =>
-    axiosInstance.delete(`/roles/${roleId}/permissions`, {
-      data: { permission_id: permissionId },
-    }),
-  getAllPermissions: () => axiosInstance.get("/permissions/all"),
+    removePermission: (roleId, permissionId) =>
+      axiosInstance.delete(`/roles/${roleId}/permissions`, {
+        data: { permission_id: permissionId }, // Enviar el ID del permiso en el cuerpo
+      }),
+      getPermissionsByRole: (roleId) =>
+        axiosInstance.get(`/roles/${roleId}/permissions`),          
+  getActivePermissions: () => axiosInstance.get("/permissions/active"), // Utilizamos el nuevo endpoint
 };
 
 export const permissionApi = {
