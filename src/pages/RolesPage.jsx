@@ -14,7 +14,7 @@ import { moduleApi } from '../api/axios';
 import "../assets/styles.css";
 
 const RolesPage = () => {
-  const { roles, fetchRoles, updateRole, createRole, updateRoleState, loading, pagination,} = useRoles();
+  const { roles, fetchRoles, updateRole, createRole, updateRoleState, loading, pagination, } = useRoles();
   // Operaciones
   const [filters, setFilters] = useState({ name: "", active: "" });
   const [editingRole, setEditingRole] = useState(null);
@@ -98,27 +98,53 @@ const RolesPage = () => {
       fetchPermissions();
     }
   }, [assigningPermissions, selectedRole]);
+
+  const fetchRolePermissions = async (roleId) => {
+    try {
+      const response = await roleUserApi.getPermissionsByRole(roleId);
+      setSelectedPermissions(response.data.permissions); // Ajusta esto según cómo almacenes los permisos
+    } catch (error) {
+      console.error("Error al obtener los permisos del rol:", error);
+    }
+  };
   
 
   // Handlers
   const handleSearch = () => {
     fetchRoles({ page: pagination.page, pageSize: pagination.limit, ...filters });
-};
+  };
 
   const handleEditRole = (role) => setEditingRole(role);
 
-  const handleAssignPermissions = (role) => {
+  const handleAssignPermissions = async (role) => {
     setSelectedRole(role);
-    setAssigningPermissions(true);
+    setAssigningPermissions(true); // Esto asegura que el modal se abra
+    try {
+      const allPermissionsResponse = await roleUserApi.getActivePermissions();
+      const rolePermissionsResponse = await roleUserApi.getPermissionsByRole(role.id);
+  
+      setAllPermissions(allPermissionsResponse.data.permissions);
+      setSelectedPermissions(
+        rolePermissionsResponse.data.permissions.map((perm) => perm.id)
+      );
+    } catch (error) {
+      console.error("Error al cargar permisos:", error);
+    }
   };
-
+  
   const handlePermissionChange = (permissionId) => {
-    setSelectedPermissions((prev) =>
-      prev.includes(permissionId)
-        ? prev.filter((id) => id !== permissionId)
-        : [...prev, permissionId]
-    );
+    setSelectedPermissions((prevSelectedPermissions) => {
+      if (prevSelectedPermissions.includes(permissionId)) {
+        // Si ya está seleccionado, remuévelo
+        return prevSelectedPermissions.filter((id) => id !== permissionId);
+      } else {
+        // Si no está seleccionado, agrégalo
+        return [...prevSelectedPermissions, permissionId];
+      }
+    });
   };
+  
+
 
   const handleSavePermissions = () => {
     const currentPermissionIds = permissions.map((perm) => perm.id);
@@ -129,29 +155,31 @@ const RolesPage = () => {
     setConfirmChanges(true);
   };
 
+
   const confirmSave = async () => {
     try {
-      let mensaje = "Ningun Cambio Realizado.";
-      for (const permissionId of changes.toAdd) {
-        await roleUserApi.assignPermission(selectedRole.id, permissionId);
-        mensaje = "Permisos Asignados Correctamente.";
-      }
+      // Eliminamos los permisos marcados para eliminar
       for (const permissionId of changes.toRemove) {
         await roleUserApi.removePermission(selectedRole.id, permissionId);
-        mensaje = "Permisos Eliminados Correctamente.";
       }
-
-      setPermissions(
-        allPermissions.filter((perm) => selectedPermissions.includes(perm.id))
-      );
-      setAssigningPermissions(false);
+  
+      // Asignamos los permisos marcados para agregar
+      for (const permissionId of changes.toAdd) {
+        await roleUserApi.assignPermission(selectedRole.id, permissionId);
+      }
+  
+      // Actualiza los permisos del rol
+      await fetchRolePermissions(selectedRole.id);
+  
+      // Cierra el modal de confirmación y el modal de asignación
       setConfirmChanges(false);
-      toast.success(mensaje);
+      setAssigningPermissions(false); // Aquí cerramos el modal de asignación
     } catch (error) {
       toast.error("Hubo un error al guardar los cambios. Inténtalo nuevamente.");
       console.error("Error al guardar permisos:", error);
     }
   };
+  
 
   const handleCancelAssign = () => {
     setAssigningPermissions(false);
@@ -184,7 +212,7 @@ const RolesPage = () => {
 
   const handlePageChange = (newPage) => fetchRoles({ page: newPage, pageSize: pagination.limit, ...filters });
 
-  const moduleColors = [ "bg-gray-100 dark:bg-gray-600"];
+  const moduleColors = ["bg-gray-100 dark:bg-gray-600"];
   const moduleColorsPer = ["bg-gray-200 dark:bg-gray-700"];
 
   return (
@@ -193,7 +221,7 @@ const RolesPage = () => {
       <div className="main-container">
         <div className="mb-6 flex justify-between items-center">
           <h1 className="header-title">
-              Gestión de Roles
+            Gestión de Roles
           </h1>
           <div className="header-actions">
             <button
@@ -205,16 +233,16 @@ const RolesPage = () => {
             </button>
             <div>
               <button
-              className="btn-Report"
-              onClick={() => setShowModalReportRoles(true)}
+                className="btn-Report"
+                onClick={() => setShowModalReportRoles(true)}
               >
                 <FontAwesomeIcon icon={faFolder} className="mr-2" />
                 Reportes
               </button>
-              { modalreport && <ReportModalRolesForm onClose={() => setShowModalReportRoles(false)} />}
+              {modalreport && <ReportModalRolesForm onClose={() => setShowModalReportRoles(false)} />}
             </div>
+          </div>
         </div>
-      </div>
 
         {/* Filtros */}
         <div className="filter-container">
@@ -238,7 +266,7 @@ const RolesPage = () => {
           <button
             onClick={handleSearch}
             className="btn-Search">
-              Buscar
+            Buscar
           </button>
         </div>
 
@@ -268,7 +296,7 @@ const RolesPage = () => {
               ) : (
                 roles.map((role) => (
                   <tr key={role.id} className="table-row">
-                    <td className="table-cell"><FontAwesomeIcon icon={faAddressBook} className="mr-5"/>{role.name}</td>
+                    <td className="table-cell"><FontAwesomeIcon icon={faAddressBook} className="mr-5" />{role.name}</td>
                     <td className="table-cell">{role.description}</td>
                     <td className="table-cell">
                       {role.active ? (
@@ -301,7 +329,7 @@ const RolesPage = () => {
                         className="btn btn-icon"
                         title="Asignar Permisos"
                       >
-                        <FontAwesomeIcon icon={faUserPlus} className=""/>
+                        <FontAwesomeIcon icon={faUserPlus} className="" />
                       </button>
                     </td>
                   </tr>
@@ -361,8 +389,10 @@ const RolesPage = () => {
                           className="accent-green-500"
                           checked={selectedPermissions.includes(permission.id)}
                           onChange={() => handlePermissionChange(permission.id)}
+
                         />
                       </div>
+
                     ))}
                   </div>
                 </div>
@@ -395,9 +425,7 @@ const RolesPage = () => {
                     <p className="mb-2 text-black dark:text-white">Permisos a agregar:</p>
                     <ul className="mb-4 text-black dark:text-white">
                       {changes.toAdd.map((id) => {
-                        const permission = allPermissions.find(
-                          (perm) => perm.id === id
-                        );
+                        const permission = allPermissions.find((perm) => perm.id === id);
                         return <li key={id}>- {permission?.name}</li>;
                       })}
                     </ul>
@@ -408,9 +436,7 @@ const RolesPage = () => {
                     <p className="mb-2 text-black dark:text-white">Permisos a eliminar:</p>
                     <ul className="mb-4 text-black dark:text-white">
                       {changes.toRemove.map((id) => {
-                        const permission = allPermissions.find(
-                          (perm) => perm.id === id
-                        );
+                        const permission = allPermissions.find((perm) => perm.id === id);
                         return <li key={id}>- {permission?.name}</li>;
                       })}
                     </ul>
@@ -434,6 +460,7 @@ const RolesPage = () => {
             </div>
           </div>
         )}
+
 
         {editingRole && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
