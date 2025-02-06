@@ -5,12 +5,11 @@ import EditRoleForm from "../components/EditRoleForm";
 import ReportModalRolesForm from "../components/ReportModalRolesForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faPlus, faUserPlus, faAddressBook } from "@fortawesome/free-solid-svg-icons";
-import { roleUserApi } from "../api/axios";
+import { roleApi, roleUserApi } from "../api/axios";
 import { faToggleOn } from "@fortawesome/free-solid-svg-icons/faToggleOn";
 import { faToggleOff } from "@fortawesome/free-solid-svg-icons/faToggleOff";
 import { faFolder } from "@fortawesome/free-solid-svg-icons/faFolder";
 import '../assets/styles.css';
-
 const RolesPage = () => {
   const { roles, fetchRoles, updateRole, createRole, updateRoleState, loading, pagination, } = useRoles();
   // Operaciones
