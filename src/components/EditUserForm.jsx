@@ -1,21 +1,15 @@
-<<<<<<< HEAD
 import { useState } from "react";
-import PropTypes from "prop-types"; 
-=======
+import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { role_UserApi } from "../api/axios"; // API para obtener roles
 import { userApi } from "../api/axios"; // API para actualizar usuario
 import { toast } from "react-toastify";
->>>>>>> origin/itsThest_4.0
 
 const EditUserForm = ({ user, onSave, onCancel }) => {
   const token = localStorage.getItem("token");
   const decodedToken = token ? JSON.parse(atob(token.split(".")[1])) : {};
-<<<<<<< HEAD
 
-=======
-  const userId = decodedToken.id || 1; 
->>>>>>> origin/itsThest_4.0
+  const userId = decodedToken.id || 1;
   const [formData, setFormData] = useState({
     name: user.name || "",
     email: user.email || "",
@@ -109,7 +103,7 @@ const EditUserForm = ({ user, onSave, onCancel }) => {
       <div className="mb-4">
         <label htmlFor="name" className="block text-sm font-bold mb-2 text-gray-400">Nombre</label>
         <input
-          id="name" 
+          id="name"
           type="text"
           name="name"
           value={formData.name}
@@ -121,7 +115,7 @@ const EditUserForm = ({ user, onSave, onCancel }) => {
       <div className="mb-4">
         <label htmlFor="email" className="block text-sm font-bold mb-2 text-gray-400">Email</label>
         <input
-          id="email" 
+          id="email"
           type="email"
           name="email"
           value={formData.email}
@@ -133,7 +127,7 @@ const EditUserForm = ({ user, onSave, onCancel }) => {
       <div className="mb-4">
         <label htmlFor="active" className="block text-sm font-bold mb-2 text-gray-400">
           <input
-            id="active" 
+            id="active"
             type="checkbox"
             name="active"
             checked={formData.active}
@@ -143,43 +137,41 @@ const EditUserForm = ({ user, onSave, onCancel }) => {
           Activo
         </label>
       </div>
-<<<<<<< HEAD
       <div className="flex justify-end gap-2 mt-4">
-=======
 
-      {/* Sección de Roles */}
-      <div className="mb-4">
-        <label className="block text-sm font-bold mb-2 text-gray-400">Roles</label>
-        <div className="p-2 border border-gray-300 rounded-lg dark:bg-gray-700">
-          {availableRoles.map((role) => (
-            <div key={role.id} className="flex items-center mb-2">
-              <input
-                type="checkbox"
-                checked={selectedRoles.includes(role.id)} // Verifica si el rol está seleccionado
-                onChange={() => toggleRoleSelection(role.id)}
-                className="mr-2"
-              />
-              <label className="text-gray-400">{role.name}</label>
-            </div>
-          ))}
+        {/* Sección de Roles */}
+        <div className="mb-4">
+          <label className="block text-sm font-bold mb-2 text-gray-400">Roles</label>
+          <div className="p-2 border border-gray-300 rounded-lg dark:bg-gray-700">
+            {availableRoles.map((role) => (
+              <div key={role.id} className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  checked={selectedRoles.includes(role.id)} // Verifica si el rol está seleccionado
+                  onChange={() => toggleRoleSelection(role.id)}
+                  className="mr-2"
+                />
+                <label className="text-gray-400">{role.name}</label>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <div className="flex justify-end gap-2">
->>>>>>> origin/itsThest_4.0
-        <button
-          type="button"
-          onClick={onCancel}
-          className="bg-gray-300 text-gray-700 px-4 py-2 rounded"
-        >
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Guardar
-        </button>
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="bg-gray-300 text-gray-700 px-4 py-2 rounded"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Guardar
+          </button>
+        </div>
       </div>
     </form>
   );
